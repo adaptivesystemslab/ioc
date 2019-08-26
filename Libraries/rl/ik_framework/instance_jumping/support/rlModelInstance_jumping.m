@@ -96,6 +96,7 @@ classdef rlModelInstance_jumping < rlModelInstance % < rlModel
         linkLengthSymmetry = {...
             {'length_base_rhip', 'length_base_lhip'}, ...
             {'length_rhip_rknee', 'length_lhip_lknee'}, ...
+            {'length_rknee_rankle', 'length_lknee_lankle'}, ...
             {'length_rankle_rballfoot', 'length_lankle_lballfoot'}, ...
             {'length_c7rshoulder_rshoulder', 'length_c7lshoulder_lshoulder'}, ...
             {'length_rshoulder_relbow', 'length_lshoulder_lelbow'}, ...
@@ -104,15 +105,17 @@ classdef rlModelInstance_jumping < rlModelInstance % < rlModel
             };
         
         lengthUseInd = 250:400;
+        
         harrington_crop1 = 250;
         harrington_crop2 = 400;
+        
         trcSensorDecorator = {'position'};
 %         trcSensorDecorator = {'position', 'velocity'};
         imuSensorYaw = 1;
              
         % joints to calculate rmse for
         mocapMarkers_rightArm = {'SHOULDER_R', 'ELBOW_R_LAT', 'ELBOW_R_MED', 'WRIST_R_LAT', 'WRIST_R_MED'};
-        mocapMarkers_leftArm = {'SHOULDER_L', 'ELBOW_L_LAT', 'ELBOW_L_MED', 'WRIST_L_LAT', 'WRIST_L_MED'};;
+        mocapMarkers_leftArm = {'SHOULDER_L', 'ELBOW_L_LAT', 'ELBOW_L_MED', 'WRIST_L_LAT', 'WRIST_L_MED'};
         mocapMarkers_rightLeg = {'KNEE_R_LAT', 'KNEE_R_MED', 'ANKLE_R_LAT', 'ANKLE_R_MED', 'FOOT_R_LAT', 'FOOT_R_MED', 'HEEL_R'};
         mocapMarkers_leftLeg = {'KNEE_L_LAT', 'KNEE_L_MED', 'ANKLE_L_LAT', 'ANKLE_L_MED', 'FOOT_L_LAT', 'FOOT_L_MED', 'HEEL_L'};
         mocapMarkers_torso = {'ASIS_R', 'PSIS_R', 'ASIS_L', 'PSIS_L', 'L5', 'C7'};
@@ -160,13 +163,21 @@ classdef rlModelInstance_jumping < rlModelInstance % < rlModel
             data = trc.data;
         end
         
-        function [kinematicTransform, dynamicTransform] = applyLinkTransform(obj, linkFrameStr, sourceFrameStr, linkLength, mocaplinkDistance, lengthUseInd, dataInstance)
+        function [kinematicTransform, dynamicTransform] = applyLinkTransform(obj, targetFrameStr, sourceFrameStr, linkVectorMean, lengthUseInd, dataInstance)
+            % variable setup
+            rotMirror = [-1 0 0; 0 1 0; 0 0 1];
+
+            linkLength = norm(linkVectorMean);
+            
             % set any link-specific information
-            switch linkFrameStr
-                case {'length_base_l5s1', 'length_base_lhip', 'length_base_rhip', ...
+            switch targetFrameStr
+                case {'length_base_l5s1', 'length_base_lhip', ...
                         'length_c7rshoulder_rshoulder', 'length_c7lshoulder_lshoulder'} % either doesn't exist or already accounted for in other limbs
                     dumasFrameStr = '';
-      
+                    
+                case {'length_base_rhip'}
+                    dumasFrameStr = 'pelvis';
+                    
                 case {'length_rhip_rknee', 'length_lhip_lknee'}
                     dumasFrameStr = 'thigh';
                     
@@ -197,63 +208,82 @@ classdef rlModelInstance_jumping < rlModelInstance % < rlModel
             else
                 anthLinkDistance = 0;
             end
-            
-            switch linkFrameStr
+
+            switch targetFrameStr 
                 case {'length_base_rhip'}
-                    [X00Length, ~] = harrington2007prediction(dataInstance.data, obj.harrington_crop1, obj.harrington_crop2);
+                    if ~isempty(dataInstance)
+                        [X00Length, ~] = harrington2007prediction(dataInstance.data, obj.harrington_crop1, obj.harrington_crop2);
+                    else
+                        X00Length = linkVectorMean;
+                    end
+                    
+                    rotMtxDumas = rotz(pi/2)*rotx(pi/2);
                     anthLength = [anthLinkDistance 0 0]';
                     
                 case {'length_base_lhip'}
-                    [~, X00Length] = harrington2007prediction(dataInstance.data, obj.harrington_crop1, obj.harrington_crop2);
+                    if ~isempty(dataInstance)
+                        [~, X00Length] = harrington2007prediction(dataInstance.data, obj.harrington_crop1, obj.harrington_crop2);
+                    else
+                        X00Length = linkVectorMean;
+                    end
+                    
+                    rotMtxDumas = [];
                     anthLength = [-anthLinkDistance 0 0]';
                     
                 case {'length_c7rshoulder_rshoulder'}
-                    X00Length = [mocaplinkDistance 0 0]';
-                    anthLength = [anthLinkDistance 0 0]';
+                    X00Length = [linkLength 0 0]';
+                    rotMtxDumas = [];
 %                     [X00Length2, ~] = amabile2006centre(dataInstance.data, obj.harrington_crop1, obj.harrington_crop2, obj.body_height);
-                    
+           
                 case {'length_c7lshoulder_lshoulder'}
-                    X00Length = [-mocaplinkDistance 0 0]';
-                    anthLength = [-anthLinkDistance 0 0]';
-%                     [~, X00Length2] = amabile2006centre(dataInstance.data, obj.harrington_crop1, obj.harrington_crop2, obj.body_height);
-                     
+                    X00Length = [-linkLength 0 0]';
+                    rotMtxDumas = [];
+                    
                 case {'length_rankle_rballfoot'}
-                    X00Length = [0 mocaplinkDistance 0]';
-                     anthLength = [0 anthLinkDistance 0]';
-                     
-                 case {'length_lankle_lballfoot'}
-                    X00Length = [0 mocaplinkDistance 0]';
+                    X00Length = [0 linkLength 0]';
+                    rotMtxDumas = rotz(pi/2)*rotx(pi/2);
                     anthLength = [0 anthLinkDistance 0]';
-                    
+
+                 case {'length_lankle_lballfoot'}
+                    X00Length = [0 linkLength 0]';
+                    rotMtxDumas = rotMirror*rotz(pi/2)*rotx(pi/2); 
+                    anthLength = [0 anthLinkDistance 0]';
+
                 case {'length_base_l5s1', 'length_l5s1_t1c7'} % first joint is sagittal
-                    X00Length = [0 0 mocaplinkDistance]';
+                    X00Length = [0 0 linkLength]';
+                    rotMtxDumas = roty(pi)*rotz(pi/2)*rotx(pi/2);  % rotating from Dumas, but pointing up
                     anthLength = [0 0 anthLinkDistance]';
-                    
+
                 case {'length_t1c7_c1head'}
-                    X00Length = [0 0 mocaplinkDistance]';
+                    X00Length = [0 0 linkLength]';
                     anthLength = [0 0 anthLinkDistance]';
+                    rotMtxDumas = rotz(pi/2)*rotx(pi/2);
                     
                 case {'length_rhip_rknee', 'length_rknee_rankle'} % first joint is sagittal
-                    X00Length = [0 0 -mocaplinkDistance]';
-                    anthLength = [0 0 -anthLinkDistance]';
-                    
-                case {'length_lhip_lknee', 'length_lknee_lankle'} % first joint is sagittal
-                    X00Length = [0 0 -mocaplinkDistance]';
+                    X00Length = [0 0 -linkLength]';
+                    rotMtxDumas = rotz(pi/2)*rotx(pi/2); % dumas down
                     anthLength = [0 0 -anthLinkDistance]';
 
-                case {'length_rshoulder_relbow', 'length_relbow_rwrist', 'length_rwrist_rhand'}
-                    X00Length = [0 0 -mocaplinkDistance]';
+                case {'length_lhip_lknee', 'length_lknee_lankle'} % first joint is sagittal
+                    X00Length = [0 0 -linkLength]';
+                    rotMtxDumas = rotMirror*rotz(pi/2)*rotx(pi/2); % dumas down
                     anthLength = [0 0 -anthLinkDistance]';
-                     
+                
+                case {'length_rshoulder_relbow', 'length_relbow_rwrist', 'length_rwrist_rhand'}
+                    X00Length = [0 0 -linkLength]';
+                    rotMtxDumas = rotz(pi/2)*rotx(pi/2); % dumas down
+                    anthLength = [0 0 -anthLinkDistance]';
+
                 case {'length_lshoulder_lelbow', 'length_lelbow_lwrist', 'length_lwrist_lhand'}
-                    X00Length = [0 0 -mocaplinkDistance]';
+                    X00Length = [0 0 -linkLength]';
+                    rotMtxDumas = rotz(pi/2)*rotx(pi/2); % dumas down
                     anthLength = [0 0 -anthLinkDistance]';
 
             end
                   
             switch obj.linkDefinition
                 case 'initialpose'
-                    correctedLinkLength = linkLength;
+                    correctedLinkLength = linkVectorMean;
                  
                 case 'X00'
                     correctedLinkLength = X00Length;
@@ -262,11 +292,27 @@ classdef rlModelInstance_jumping < rlModelInstance % < rlModel
             T = eye(4);
             T(1:3, 4) = correctedLinkLength;
           
-            mass = [];
-            com = [];
-            inertial = [];
-
-            [kinematicTransform, dynamicTransform] = obj.assembleKinDynTransform(linkFrameStr, sourceFrameStr, T, mass, com, inertial);
+            if ~isempty(dumasFrameStr)
+                mass =            lookupTableDumas('mass',     dumasFrameStr, obj.gender, [], [])*obj.body_weight;
+                comScale =        lookupTableDumas('com',      dumasFrameStr, obj.gender, linkLength, []);
+                inertialScale =   lookupTableDumas('inertial', dumasFrameStr, obj.gender, linkLength, mass);
+                
+                % parallel axis, since Dumas inertia assumes it's on the edge of
+                % the limb
+                com = rotMtxDumas*comScale;
+                inertial = rotMtxDumas*inertialScale*rotMtxDumas';
+%                 inertial = zeros(3, 3);
+                   
+%                 targetFrameStr
+%                 [maxVal, maxInd] = max(abs([linkLength X00Length com]));
+%                 vec = [linkLength X00Length comScale com];
+            else
+                mass = [];
+                com = [];
+                inertial = [];
+            end
+ 
+            [kinematicTransform, dynamicTransform] = obj.assembleKinDynTransform(targetFrameStr, sourceFrameStr, T, mass, com, inertial);
         end
         
         function sensorTransform = applyMarkerSensor(obj, attachmentFrameStr, sensorMarkerStr, ...

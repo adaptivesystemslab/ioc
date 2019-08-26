@@ -520,12 +520,41 @@ classdef rlModelInstance < handle % < rlModel
             obj.loadModelFromModelStruct(obj.model, modelStruct, sensorList);
         end
         
-        function loadModelFromModelSpecsNoSensor(obj, filepathModel, filepathModelParam)
+        function loadModelFromModelSpecsNoSensor(obj, filepathModel, filepathModelParam, updateDynamicModel)
             load(filepathModelParam);
+            
+            if ~exist('updateDynamicModel', 'var')
+                updateDynamicModel = 0;
+            end
+            
+            if updateDynamicModel 
+                % there's no dynamic model properly passed in, will update
+                obj.linkDefinition = 'initialpose';
+                saveVar.modelStruct.dynamicTransform = generateDynamicTransform(obj, saveVar.modelStruct);
+            end
             
             obj.model = rlCModel(filepathModel);
             sensorList = [];
             obj.loadModelFromModelStruct(obj.model, saveVar.modelStruct, sensorList);
+        end
+        
+        function dynamicTransform = generateDynamicTransform(obj, modelStruct)
+            % calculate link offsets
+            for i = 1:numel(modelStruct.kinematicTransform)
+                % load link length
+                %                 [sourceFrameStr, targetFrameStr, linkLength, linkVectorMean, linkVectorStd] = ...
+                %                     rlModelInstance.linkLengthArrayData(obj.linkLengthArray{i}, linkLengthUseCell{i}, dataInstance);
+                targetFrameStr = modelStruct.kinematicTransform(i).frameName;
+                sourceFrameStr = obj.linkLengthArray{i}{2};
+                linkVectorMean = modelStruct.kinematicTransform(i).t(1:3, 4);
+                linkLengthUseCell = [];
+                dataInstance = [];
+                
+                % figure out how to attach it
+                [~, dynamicTransform(i)] = ...
+                    obj.applyLinkTransform(targetFrameStr, sourceFrameStr, linkVectorMean, linkLengthUseCell, dataInstance);
+                
+            end
         end
         
         function loadModelFromModelStruct(obj, mdl, modelStruct, sensorList)
