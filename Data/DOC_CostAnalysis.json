@@ -1,0 +1,264 @@
+{
+	"Trials": [
+		{
+			"name": "TrialCost01",
+			"model": "3Dof",
+			"modelType": "symoro",
+			"initialState": {
+				"time": 0,
+				"jointAngles": [0, -30, 90],
+				"angularVelocities": [0, 0, 0]
+			},
+			"finalState": {
+				"time": 1,
+				"jointAngles": [60, -70, 70],
+				"angularVelocities": [0, 0, 0]
+			},
+			"bounds":
+			{
+				"minState": [-180, -180, -180, -100, -100, -100],
+				"maxState": [180, 180, 180, 100, 100, 100],
+				"minControl": [-200, -200, -200],
+				"maxControl": [200, 200, 200]
+			},
+			"guess":
+			[
+				{
+					"jointAngles": [-90, 90],
+					"angularVelocities": [-100, 100],
+					"control": [-50, 50]
+				},
+				{
+					"jointAngles": [-90, 90],
+					"angularVelocities": [-100, 100],
+					"control": [-50, 50]
+				},
+				{
+					"jointAngles": [-90, 90],
+					"angularVelocities": [-100, 100],
+					"control": [-50, 50]
+				}
+			],
+			"weights": [5, 5 ,10]
+		},
+		{
+			"name": "TrialCost02",
+			"model": "3Dof",
+			"modelType": "symoro",
+			"initialState": {
+				"time": 0,
+				"jointAngles": [0, -30, 90],
+				"angularVelocities": [0, 0, 0]
+			},
+			"finalState": {
+				"time": 1,
+				"jointAngles": [60, -70, 70],
+				"angularVelocities": [0, 0, 0]
+			},
+			"bounds":
+			{
+				"minState": [-180, -180, -180, -100, -100, -100],
+				"maxState": [180, 180, 180, 100, 100, 100],
+				"minControl": [-200, -200, -200],
+				"maxControl": [200, 200, 200]
+			},
+			"guess": "spline",
+			"weights": [5, 5 ,10]
+		},
+		{
+			"name": "TrialCost03",
+			"model": "3Dof",
+			"modelType": "symoro",
+			"initialState": {
+				"time": 0,
+				"jointAngles": [0, 0, 0],
+				"angularVelocities": [0, 0, 0]
+			},
+			"finalState": {
+				"time": 1,
+				"jointAngles": [90, -90, 90],
+				"angularVelocities": [0, 0, 0]
+			},
+			"bounds":
+			{
+				"minState": [-180, -180, -180, -100, -100, -100],
+				"maxState": [180, 180, 180, 100, 100, 100],
+				"minControl": [-200, -200, -200],
+				"maxControl": [200, 200, 200]
+			},
+			"guess":
+			[
+				{
+					"jointAngles": [-90, 90],
+					"angularVelocities": [-100, 100],
+					"control": [-50, 50]
+				},
+				{
+					"jointAngles": [-90, 90],
+					"angularVelocities": [-100, 100],
+					"control": [-50, 50]
+				},
+				{
+					"jointAngles": [-90, 90],
+					"angularVelocities": [-100, 100],
+					"control": [-50, 50]
+				}
+			],
+			"weights": [5, 5 ,10]
+		},
+		{
+			"name": "TrialCost04",
+			"model": "3Dof",
+			"modelType": "symoro",
+			"initialState": {
+				"time": 0,
+				"jointAngles": [0, 0, 0],
+				"angularVelocities": [0, 0, 0]
+			},
+			"finalState": {
+				"time": 1,
+				"jointAngles": [90, -90, 90],
+				"angularVelocities": [0, 0, 0]
+			},
+			"bounds":
+			{
+				"minState": [-180, -180, -180, -100, -100, -100],
+				"maxState": [180, 180, 180, 100, 100, 100],
+				"minControl": [-200, -200, -200],
+				"maxControl": [200, 200, 200]
+			},
+			"guess": "spline",
+			"weights": [5, 5 ,10]
+		},
+		{
+			"name": "TrialCost05",
+			"model": "3Dof",
+			"modelType": "symoro",
+			"initialState": {
+				"time": 0,
+				"jointAngles": [0, -30, 90],
+				"angularVelocities": [0, 0, 0]
+			},
+			"finalState": {
+				"time": 1,
+				"jointAngles": [60, -70, 70],
+				"angularVelocities": [0, 0, 0]
+			},
+			"bounds":
+			{
+				"minState": [-180, -180, -180, -100, -100, -100],
+				"maxState": [180, 180, 180, 100, 100, 100],
+				"minControl": [-200, -200, -200],
+				"maxControl": [200, 200, 200]
+			},
+			"guess":
+			[
+				{
+					"jointAngles": [-90, 90],
+					"angularVelocities": [-100, 100],
+					"control": [-50, 50]
+				},
+				{
+					"jointAngles": [-90, 90],
+					"angularVelocities": [-100, 100],
+					"control": [-50, 50]
+				},
+				{
+					"jointAngles": [-90, 90],
+					"angularVelocities": [-100, 100],
+					"control": [-50, 50]
+				}
+			],
+			"weights": [5, 5, 5]
+		},
+		{
+			"name": "TrialCost06",
+			"model": "3Dof",
+			"modelType": "symoro",
+			"initialState": {
+				"time": 0,
+				"jointAngles": [0, -30, 90],
+				"angularVelocities": [0, 0, 0]
+			},
+			"finalState": {
+				"time": 1,
+				"jointAngles": [60, -70, 70],
+				"angularVelocities": [0, 0, 0]
+			},
+			"bounds":
+			{
+				"minState": [-180, -180, -180, -100, -100, -100],
+				"maxState": [180, 180, 180, 100, 100, 100],
+				"minControl": [-200, -200, -200],
+				"maxControl": [200, 200, 200]
+			},
+			"guess": "spline",
+			"weights": [5, 5, 5]
+		},
+		{
+			"name": "TrialCost07",
+			"model": "3Dof",
+			"modelType": "symoro",
+			"initialState": {
+				"time": 0,
+				"jointAngles": [0, 0, 0],
+				"angularVelocities": [0, 0, 0]
+			},
+			"finalState": {
+				"time": 1,
+				"jointAngles": [90, -90, 90],
+				"angularVelocities": [0, 0, 0]
+			},
+			"bounds":
+			{
+				"minState": [-180, -180, -180, -100, -100, -100],
+				"maxState": [180, 180, 180, 100, 100, 100],
+				"minControl": [-200, -200, -200],
+				"maxControl": [200, 200, 200]
+			},
+			"guess":
+			[
+				{
+					"jointAngles": [-90, 90],
+					"angularVelocities": [-100, 100],
+					"control": [-50, 50]
+				},
+				{
+					"jointAngles": [-90, 90],
+					"angularVelocities": [-100, 100],
+					"control": [-50, 50]
+				},
+				{
+					"jointAngles": [-90, 90],
+					"angularVelocities": [-100, 100],
+					"control": [-50, 50]
+				}
+			],
+			"weights": [5, 5, 5]
+		},
+		{
+			"name": "TrialCost08",
+			"model": "3Dof",
+			"modelType": "symoro",
+			"initialState": {
+				"time": 0,
+				"jointAngles": [0, 0, 0],
+				"angularVelocities": [0, 0, 0]
+			},
+			"finalState": {
+				"time": 1,
+				"jointAngles": [90, -90, 90],
+				"angularVelocities": [0, 0, 0]
+			},
+			"bounds":
+			{
+				"minState": [-180, -180, -180, -100, -100, -100],
+				"maxState": [180, 180, 180, 100, 100, 100],
+				"minControl": [-200, -200, -200],
+				"maxControl": [200, 200, 200]
+			},
+			"guess": "spline",
+			"weights": [5, 5, 5]
+		}
+	]
+}
