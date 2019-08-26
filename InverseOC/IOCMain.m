@@ -11,12 +11,6 @@ setPaths();
 %% Define internal settings
 overwriteFiles = 1;
 configFilePath = '../Data/IOC_gitupload_test.json';
-% if ~exist('configFilePath', 'var')
-%         configFilePath = '../Data/IOC_IITFatigue_Full.json';
-% %        configFilePath = '../Data/IOC_IITFatigue_Sharcnet_subj05.json';
-% %        configFilePath = '../Data/IOC_IITFatigue_Sharcnet_subj09.json';
-% %        configFilePath = '../Data/IOC_IITFatigue_Sharcnet_subj10.json';
-% end
 
 %% Create and/or look for folder where solutions are going to be saved
 % currentDate = datestr(datetime("now"),"yyyy_mm_dd_HH_MM_SS");

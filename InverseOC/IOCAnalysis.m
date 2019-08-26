@@ -6,8 +6,8 @@ function IOCAnalysis()
 
     
     nowstr = datestr(now, 'yyyymmdd_HHMMSS');
-    basePath = 'D:\aslab_gitlab\expressive-ioc\Data\IOC\';
-    masterPathCsv = ['D:\aslab_gitlab\expressive-ioc\Data\IOC\a_summary_' nowstr '.csv'];
+    basePath = '..\Data\IOC\';
+    masterPathCsv = ['..\Data\IOC\a_summary_' nowstr '.csv'];
     
     % iterate through all the folders in bathpath to produce figures and
     % table summary of the results
