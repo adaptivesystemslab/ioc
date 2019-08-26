@@ -10,7 +10,8 @@ setPaths();
 
 %% Define internal settings
 overwriteFiles = 1;
-configFilePath = '../Data/IOC_gitupload_test.json';
+% configFilePath = '../Data/IOC_gitupload_test.json';
+configFilePath = '../Data/IOC_IITFatigue_test.json';
 % if ~exist('configFilePath', 'var')
 %         configFilePath = '../Data/IOC_IITFatigue_Full.json';
 % %        configFilePath = '../Data/IOC_IITFatigue_Sharcnet_subj05.json';
