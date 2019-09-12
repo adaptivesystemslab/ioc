@@ -2,6 +2,8 @@ classdef ArmModelRL < handle
 
     properties
         model;
+        model_old;
+        modelJointNameRemap;
 %         modelBaseFolder = '../../kalmanfilter/ik_framework';
         modelBaseFolder = '../Libraries/rl/ik_framework';
         
@@ -98,12 +100,25 @@ classdef ArmModelRL < handle
         function loadJumpingModel(obj, filepathSourceMat, trialInfo)
             switch trialInfo.model
                 case 'Jumping'
-                    filepathModelInitPose = [obj.modelBaseFolder '/instance_jumping/model/JumpModel_IIT.xml']; % 3D, 17dof half body model
+                    % load original IIT-based RL form
+                    filepathModelInitPose = [obj.modelBaseFolder '/instance_jumping/model/JumpModel_IIT.xml'];
+                    modelInstance = rlModelInstance_jumping(0);
+                    modelInstance.loadModelFromModelSpecsNoSensor(filepathModelInitPose, filepathSourceMat, 1);
+                    obj.model = modelInstance.model;
+                    
+                case 'Jumping2D'
+                    % load Kevin's modified form
+                    filepathModelInitPose = [obj.modelBaseFolder '/instance_jumping/model/JumpModel_Eul_inertia_2D.xml'];
+                    obj.model_old = createJumpModel_ioc_2D_modForIOC(trialInfo.path, trialInfo.targNum, trialInfo.jumpNum, filepathModelInitPose);
+                    obj.modelJointNameRemap = {obj.model_old.joints.name};
+                    
+                    filepathModelInitPose = [obj.modelBaseFolder '/instance_jumping/model/JumpModel_Eul_inertia_2D_rightHalfBody.xml'];
+                    obj.model = createJumpModel_ioc_2D_modHalfBody(trialInfo.path, trialInfo.targNum, trialInfo.jumpNum, filepathModelInitPose);
+                    obj.model.forwardPosition();
+                    obj.model.base = 'rtoe0';
+%                     obj.model.base = 'rframe1';
+                    obj.model.forwardPosition();
             end
-            
-            modelInstance = rlModelInstance_jumping(0);
-            modelInstance.loadModelFromModelSpecsNoSensor(filepathModelInitPose, filepathSourceMat);
-            obj.model = modelInstance.model;
         end
         
         function loadIITModel(obj, filepathSourceMat, trialInfo)
@@ -156,11 +171,6 @@ classdef ArmModelRL < handle
         end
         
         function loadAndSetupJumping(obj, filepathSourceMat, trialInfo)
-                % present patient variables
-            height = 1.70;
-            weight = 62;
-            gender = 'f';
-            
             % load the model
             obj.loadJumpingModel(filepathSourceMat, trialInfo);
 %             obj.model.base = 'frame_6dof_root';

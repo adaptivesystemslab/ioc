@@ -24,6 +24,7 @@ function IOCRun(trialInfo, savePath)
         [q, dq, ddq, tau, states, control, trajT, trajU, trajX, frameInds] = loadData(trialInfo, model);
     end
     
+    trialInfo.frameInds = frameInds;
     trialInfo.numWeights = length(trialInfo.candidateFeatures);
     trialInfo.numDofs = model.totalActuatedJoints;
     
@@ -259,55 +260,122 @@ function [q, dq, ddq, tau, states, control, trajT, trajU, trajX, frameInds] = lo
     % Load state, control and time trajectories to be analyzed.
     switch trialInfo.baseModel
         case {'IIT','Jumping'}
-            load(trialInfo.path);
-            
-            % keep only the joint angles corresponding
-            qInds = [];
-            allJointStr = {model.model.joints.name}';
-             
-            for indQ = 1:length(allJointStr)
-                qInds(indQ) = find(ismember(saveVar.jointLabels, allJointStr{indQ}));
+            switch trialInfo.model
+                case 'Jumping2D'
+                    load(trialInfo.path);
+                    
+                    targNum = trialInfo.targNum;
+                    jumpNum = trialInfo.jumpNum;
+                            
+                    param.jump.takeoffFrame = JA.TOFrame(jumpNum,targNum);
+                    param.jump.landFrame = JA.LandFrame(jumpNum,targNum);
+                    param.jump.locationLand = JA.locationLand(12*(targNum-1) + jumpNum);
+                    param.jump.grade = JA.jumpGrades(12*(targNum-1) + jumpNum);
+                    param.jump.modelLinks = JA.modelLinks;
+                    param.jump.world2base = squeeze(JA.world2base((12*(targNum-1) + jumpNum),:,:));
+                    param.jump.bad2d = JA.bad2D(jumpNum,targNum);
+                    
+                    % Crop out initial and final calibration motions
+                    takeoffFrames = 200; % 1 second before takeoff frame ...
+                    landFrames = 300; % ... to 1.5 seconds after takeoff frame (~ 1 second after landing)
+                    framesToUse = (param.jump.takeoffFrame-takeoffFrames):(param.jump.takeoffFrame+landFrames);
+                    
+                    if(numel(framesToUse) < size(JA.targ(targNum).jump(jumpNum).data,1))
+                        fullDataAngles = JA.targ(targNum).jump(jumpNum).data(framesToUse,:);
+                    else % jump recording stops sooner than "landFrames" after TOFrame
+                        fullDataAngles = JA.targ(targNum).jump(jumpNum).data( framesToUse(1):end ,:);
+                        fullDataAngles = [fullDataAngles; repmat(fullDataAngles(end,:),(numel(framesToUse) - size(fullDataAngles,1)),1)]; % repeat last joint angle measurement for remainder of frames
+                    end
+                    
+                    % keep only a subset of the joint angles
+                    qInds = [];
+                    allJointStr = {model.model.joints.name}';
+                    for indQ = 1:length(allJointStr)
+                        qInds(indQ) = find(ismember(model.modelJointNameRemap, allJointStr{indQ}));
+                    end
+                    
+                    % also, negate the following joints since they're past
+                    % the flip
+                    qFlip = fullDataAngles;
+                    jointsToFlip = {'rankle_jDorsiflexion', 'rknee_jExtension', 'rhip_jFlexion'};
+%                     jointsToFlip = {'rankle_jDorsiflexion', 'rknee_jExtension', 'rhip_jFlexion', 'back_jFB', 'rjoint1'};
+                    for indQ = 1:length(jointsToFlip)
+                        qIndsFlip(indQ) = find(ismember(model.modelJointNameRemap, jointsToFlip{indQ}));
+                        qFlip(:, qIndsFlip(indQ)) = -fullDataAngles(:, qIndsFlip(indQ));
+                    end
+                    
+                    dt = 0.005;
+                    time = dt*(0:(size(qFlip, 1)-1));
+                    qRaw = qFlip(:, qInds);
+                    q = filter_dualpassBW(qRaw, 0.04, 0, 5);
+                    
+                    dqRaw = calcDerivVert(q, dt);
+                    dq = filter_dualpassBW(dqRaw, 0.04, 0, 5);
+                    %             dq = dqRaw;
+                    
+                    % don't filter ddq and tau to keep
+                    ddqRaw = calcDerivVert(dq, dt);
+                    %             ddq = filter_dualpassBW(ddqRaw, 0.04, 0, 5);
+                    ddq = ddqRaw;
+                    
+                    tauRaw = zeros(size(q));
+                    for indTime = 1:length(time) % recalc torque given redistributed masses
+                        %                 model.updateState(q(indTime, :), dq(indTime, :));
+                        tauRaw(indTime, :) = model.inverseDynamicsQDqDdq(q(indTime, :), dq(indTime, :), ddq(indTime, :));
+                    end
+                    
+                    %             tau = filter_dualpassBW(tauRaw, 0.04, 0, 5);
+                    tau = tauRaw;
+                    
+                    %             states = [q dq];
+                    states = encodeState(q, dq);
+                    control = tau;
+                    
+                    trajT = time';
+                    trajU = control;
+                    trajX = states;
+                    
+                otherwise
+                    load(trialInfo.path);
+                    
+                    % keep only the joint angles corresponding
+                    qInds = [];
+                    allJointStr = {model.model.joints.name}';
+                    
+                    for indQ = 1:length(allJointStr)
+                        qInds(indQ) = find(ismember(saveVar.jointLabels, allJointStr{indQ}));
+                    end
+                    
+                    time = saveVar.time;
+                    qRaw = saveVar.jointAngle.array(:, qInds);
+                    q = filter_dualpassBW(qRaw, 0.04, 0, 5);
+                    
+                    dqRaw = calcDerivVert(q, saveVar.dt);
+                    dq = filter_dualpassBW(dqRaw, 0.04, 0, 5);
+                    %             dq = dqRaw;
+                    
+                    % don't filter ddq and tau to keep
+                    ddqRaw = calcDerivVert(dq, saveVar.dt);
+                    %             ddq = filter_dualpassBW(ddqRaw, 0.04, 0, 5);
+                    ddq = ddqRaw;
+                    
+                    tauRaw = zeros(size(q));
+                    for indTime = 1:length(time) % recalc torque given redistributed masses
+                        %                 model.updateState(q(indTime, :), dq(indTime, :));
+                        tauRaw(indTime, :) = model.inverseDynamicsQDqDdq(q(indTime, :), dq(indTime, :), ddq(indTime, :));
+                    end
+                    
+                    %             tau = filter_dualpassBW(tauRaw, 0.04, 0, 5);
+                    tau = tauRaw;
+                    
+                    %             states = [q dq];
+                    states = encodeState(q, dq);
+                    control = tau;
+                    
+                    trajT = time';
+                    trajU = control;
+                    trajX = states;
             end
-           
-            if ~isempty(trialInfo.runInds)
-                frameInds = trialInfo.runInds(1):trialInfo.runInds(2);
-            else
-                frameInds = 1:length(saveVar.time);
-            end
-            
-            if max(frameInds) > length(saveVar.time)
-                frameInds = frameInds(1):length(saveVar.time);
-            end
-
-            time = saveVar.time;
-            qRaw = saveVar.jointAngle.array(:, qInds);
-            q = filter_dualpassBW(qRaw, 0.04, 0, 5);
-            
-            dqRaw = calcDerivVert(q, saveVar.dt);
-            dq = filter_dualpassBW(dqRaw, 0.04, 0, 5);
-%             dq = dqRaw;
-            
-            % don't filter ddq and tau to keep 
-            ddqRaw = calcDerivVert(dq, saveVar.dt);
-%             ddq = filter_dualpassBW(ddqRaw, 0.04, 0, 5);
-            ddq = ddqRaw;
-            
-            tauRaw = zeros(size(q));
-            for indTime = 1:length(time) % recalc torque given redistributed masses
-%                 model.updateState(q(indTime, :), dq(indTime, :));
-                tauRaw(indTime, :) = model.inverseDynamicsQDqDdq(q(indTime, :), dq(indTime, :), ddq(indTime, :));
-            end
-            
-%             tau = filter_dualpassBW(tauRaw, 0.04, 0, 5);
-            tau = tauRaw;
-            
-%             states = [q dq];
-            states = encodeState(q, dq);
-            control = tau;
-            
-            trajT = time';
-            trajU = control;
-            trajX = states;
             
          otherwise
              inputPath = char(trialInfo.path);
@@ -329,6 +397,16 @@ function [q, dq, ddq, tau, states, control, trajT, trajU, trajX, frameInds] = lo
             trajX = interp1(time, states, trajT,'spline');
     end    
     
+    if ~isempty(trialInfo.runInds)
+        frameInds = trialInfo.runInds(1):trialInfo.runInds(2);
+    else
+        frameInds = 1:length(trajT);
+    end
+    
+    if max(frameInds) > length(trajT)
+        frameInds = frameInds(1):length(trajT);
+    end
+    
     if 0
         mdl = model.model;
         vis = rlVisualizer('vis',640,480);
@@ -339,12 +417,26 @@ function [q, dq, ddq, tau, states, control, trajT, trajU, trajX, frameInds] = lo
         vis.addMarker('z-axis', [0 0 1], [0.2 0.2 0.2 1]);
         vis.update();
         
+%         mdl.base = 'world'; % ok
+%         mdl.base = 'pframe0'; % ok
+%         mdl.base = 'rframe0'; % ok
+%         mdl.base = 'mid_asis';
+%         mdl.base = 'rhip0';
+%         mdl.base = 'rtoe0';
+        
+%         q(:, 1:3) = zeros(size(q(:, 1:3)));
+        qFull = filter_dualpassBW(fullDataAngles, 0.04, 0, 5);
+        qFull(:, 1) = qFull(:, 1) + 0.4;
+        mdl_old = model.model_old;
+        vis.addModel(mdl_old);
+        
         for i = 1:length(trajT)
             mdl.position = q(i, :);
             mdl.forwardPosition();
-            mdl.forwardVelocity();
-            mdl.forwardAcceleration();
-            mdl.inverseDynamics();
+            
+            mdl_old.position = qFull(i, :);
+            mdl_old.forwardPosition();
+            
             vis.update();
             pause(0.01);
         end
@@ -362,7 +454,7 @@ function [progressVar, processSecondaryVar, precalcGradient] = calcWinLenAndH(tr
     % frameIndsFullRange
     frameIndsFullRange = (startInd-trialInfo.maxWinLen):(startInd+trialInfo.maxWinLen);
     frameIndsFullRange = frameIndsFullRange(frameIndsFullRange > 0);
-    frameIndsFullRange = frameIndsFullRange(frameIndsFullRange <= trialInfo.runInds(end)+trialInfo.maxWinLen);
+    frameIndsFullRange = frameIndsFullRange(frameIndsFullRange <= trialInfo.frameInds(end)+trialInfo.maxWinLen);
     
     precalcGradient = precalculateGradient_pushpop(trajX, trajU, ioc, precalcGradient, frameIndsFullRange);
     

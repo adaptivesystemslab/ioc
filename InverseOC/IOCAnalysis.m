@@ -2,7 +2,7 @@ function IOCAnalysis()
     setPaths();
     
     perturbAmount = 1e-3;
-    residualThreshold = 1e-3; % 0.1%
+    residualThreshold = 1e-2; % 0.1%
 
     
     nowstr = datestr(now, 'yyyymmdd_HHMMSS');
@@ -46,20 +46,20 @@ function IOCAnalysis()
 
 %             try
                 % plot results
-                fprintf('%s\n', suffix);
-                outputPathFig1 = fullfile(basePath, ['fig_results_individual_' suffix]);
-                outputPathFig2 = fullfile(basePath, ['fig_results_cumulativeAllPass_' suffix]);
-                outputPathFig3 = fullfile(basePath, ['fig_results_cumulativeRankPass_' suffix]);
-                outputPathCsv = fullfile(basePath, ['csv_' suffix]);
-                csv_populate(matData, masterPathCsv);
-                plotting_individual(matData, outputPathFig1, outputPathCsv, masterPathCsv);
-                plotting_cumulative(matData, outputPathFig2, outputPathFig3, outputPathCsv, masterPathCsv);
+%                 fprintf('%s\n', suffix);
+%                 outputPathFig1 = fullfile(basePath, ['fig_results_individual_' suffix]);
+%                 outputPathFig2 = fullfile(basePath, ['fig_results_cumulativeAllPass_' suffix]);
+%                 outputPathFig3 = fullfile(basePath, ['fig_results_cumulativeRankPass_' suffix]);
+%                 outputPathCsv = fullfile(basePath, ['csv_' suffix]);
+%                 csv_populate(matData, masterPathCsv);
+%                 plotting_individual(matData, outputPathFig1, outputPathCsv, masterPathCsv);
+%                 plotting_cumulative(matData, outputPathFig2, outputPathFig3, outputPathCsv, masterPathCsv);
                 
                 % load data and perturb
-%                 outputPathFig1 = fullfile(basePath, ['fig_perturb_single_' suffix]);
-%                 outputPathFig2 = fullfile(basePath, ['fig_perturb_combined_' suffix]);
-% %                 peturbWeights_single(matData, outputPathFig1, perturbAmount, residualThreshold);
-%                 peturbWeights_combined(matData, outputPathFig2, perturbAmount, residualThreshold);
+                outputPathFig1 = fullfile(basePath, ['fig_perturb_single_' suffix]);
+                outputPathFig2 = fullfile(basePath, ['fig_perturb_combined_' suffix]);
+                peturbWeights_single(matData, outputPathFig1, perturbAmount, residualThreshold);
+                peturbWeights_combined(matData, outputPathFig2, perturbAmount, residualThreshold);
                 
 %             catch err
 %                 err

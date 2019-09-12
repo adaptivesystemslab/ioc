@@ -23,14 +23,7 @@ classdef rlFeatureSet_ioc < rlFeatureSet % < rlModel
         x_frame_name = ''; % if empty, then x/dx/ddx will be populated with the last 'body' Cart pos
         splineModel = [];
         modelStruct = [];
-        
-        inds_pos = [];
-        inds_vel = [];
-        inds_fb_pos = [];
-        inds_model_pos = [];
-        inds_fb_vel = [];
-        inds_model_vel = [];
-        
+
         ekfParams = [];
         
         joint_labels = [];
@@ -83,38 +76,23 @@ classdef rlFeatureSet_ioc < rlFeatureSet % < rlModel
 %         end
         
         % assuming EKF IK has already been done, parse the data into q
-        function calcQfromEkfStates(obj, inds_fb_pos, inds_model_pos, inds_fb_vel, inds_model_vel, filter)
+        function calcQfromEkfStates(obj, filter)
             if ~exist('filter', 'var')
                 filter = 1;
             end
-            
-            if exist('inds_fb_pos', 'var')
-                obj.inds_pos = [inds_fb_pos inds_model_pos];
-                obj.inds_vel = [inds_fb_vel inds_model_vel];
 
-                obj.inds_fb_pos = inds_fb_pos;
-                obj.inds_model_pos = inds_model_pos;
-                obj.inds_fb_vel = inds_fb_vel;
-                obj.inds_model_vel = inds_model_vel;
-            else
-                obj.inds_pos = 1:length(obj.joint_labels);
-            end
-            
+            inds_pos = 1:length(obj.joint_labels);
             if filter == 1
-                q_noFilt = obj.ekf_states(:, obj.inds_pos);
+                q_noFilt = obj.ekf_states(:, inds_pos);
                 q_filt = filter_dualpassBW(q_noFilt);
                 obj.q = q_filt;
             else
-                obj.q = obj.ekf_states(:, obj.inds_pos);
+                obj.q = obj.ekf_states(:, inds_pos);
             end
 
 %             obj.dq = obj.ekf_states(:, obj.inds_vel);
             obj.dq = calcDerivVert(obj.q, obj.dt);
             obj.ddq = calcDerivVert(obj.dq, obj.dt);
-            
-%             for i = 1:length(obj.inds_pos)
-%                 obj.joint_labels{i} = obj.model.joints(obj.inds_pos(i)).name;
-%             end
         end
         
         % calculate all features from q
@@ -480,13 +458,6 @@ classdef rlFeatureSet_ioc < rlFeatureSet % < rlModel
             saveVar.frameData = obj.frameData;
             saveVar.segmentData = obj.segments;
            
-            saveVar.inds_pos = obj.inds_pos;
-            saveVar.inds_vel = obj.inds_vel;
-            saveVar.inds_fb_pos = obj.inds_fb_pos;
-            saveVar.inds_model_pos = obj.inds_model_pos;
-            saveVar.inds_fb_vel = obj.inds_model_vel;
-            saveVar.inds_model_vel = obj.inds_model_vel;
-    
             saveVar.ekf_match = obj.ekf_match;
             saveVar.ekf_matchLabels = obj.ekf_matchLabels;
             saveVar.ekfParams = ekfTuningParam;
@@ -583,13 +554,6 @@ classdef rlFeatureSet_ioc < rlFeatureSet % < rlModel
             saveVar.baseFrameT = baseFrameTransform;
 %             saveVar.frameData = obj.frameData;
 %             saveVar.segmentData = obj.segments;
-           
-            saveVar.inds_pos = obj.inds_pos;
-            saveVar.inds_vel = obj.inds_vel;
-            saveVar.inds_fb_pos = obj.inds_fb_pos;
-            saveVar.inds_model_pos = obj.inds_model_pos;
-            saveVar.inds_fb_vel = obj.inds_model_vel;
-            saveVar.inds_model_vel = obj.inds_model_vel;
     
 %             saveVar.ekf_match = obj.ekf_match;
 %             saveVar.ekf_matchLabels = obj.ekf_matchLabels;
@@ -623,14 +587,7 @@ classdef rlFeatureSet_ioc < rlFeatureSet % < rlModel
 %             obj.baseFrame = saveVar.baseFrame;
 %             obj.frameData = saveVar.frameData;
 %             obj.segments = saveVar.segmentData;
-            
-            obj.inds_pos = saveVar.inds_pos;
-            obj.inds_vel = saveVar.inds_vel;
-            obj.inds_fb_pos = saveVar.inds_fb_pos;
-            obj.inds_model_pos = saveVar.inds_model_pos;
-            obj.inds_fb_vel = saveVar.inds_model_vel;
-            obj.inds_model_vel = saveVar.inds_model_vel;
-            
+
 %             obj.ekf_match = saveVar.ekf_match;
 %             obj.ekf_matchLabels = saveVar.ekf_matchLabels;
             obj.ekfParams = saveVar.ekfParams;
@@ -664,13 +621,6 @@ classdef rlFeatureSet_ioc < rlFeatureSet % < rlModel
             obj.baseFrame = saveVar.baseFrame;
             obj.frameData = saveVar.frameData;
             obj.segments = saveVar.segmentData;
-            
-            obj.inds_pos = saveVar.inds_pos;
-            obj.inds_vel = saveVar.inds_vel;
-            obj.inds_fb_pos = saveVar.inds_fb_pos;
-            obj.inds_model_pos = saveVar.inds_model_pos;
-            obj.inds_fb_vel = saveVar.inds_model_vel;
-            obj.inds_model_vel = saveVar.inds_model_vel;
             
             obj.ekf_match = saveVar.ekf_match;
             obj.ekf_matchLabels = saveVar.ekf_matchLabels;

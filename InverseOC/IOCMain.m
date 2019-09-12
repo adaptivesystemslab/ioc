@@ -10,8 +10,9 @@ setPaths();
 
 %% Define internal settings
 overwriteFiles = 1;
-% configFilePath = '../Data/IOC_gitupload_test.json';
-configFilePath = '../Data/IOC_IITFatigue_test.json';
+% confi gFilePath = '../Data/IOC_gitupload_test.json';
+configFilePath = '../Data/IOC_gitupload_jumping2D.json';
+% configFilePath = '../Data/IOC_IITFatigue_test.json';
 % if ~exist('configFilePath', 'var')
 %         configFilePath = '../Data/IOC_IITFatigue_Full.json';
 % %        configFilePath = '../Data/IOC_IITFatigue_Sharcnet_subj05.json';
@@ -21,7 +22,7 @@ configFilePath = '../Data/IOC_IITFatigue_test.json';
 
 %% Create and/or look for folder where solutions are going to be saved
 % currentDate = datestr(datetime("now"),"yyyy_mm_dd_HH_MM_SS");
-currentDate = 'result02';
+currentDate = 'result03';
 savePath = sprintf('../Data/IOC/%s/', currentDate);
 
 %% Load json file with list of all trials on which IOC will be run
