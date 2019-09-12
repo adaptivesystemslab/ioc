@@ -2,7 +2,7 @@ classdef ArmModelRL < handle
 
     properties
         model;
-        model_old;
+%         model_old;
         modelJointNameRemap;
 %         modelBaseFolder = '../../kalmanfilter/ik_framework';
         modelBaseFolder = '../Libraries/rl/ik_framework';
@@ -109,8 +109,8 @@ classdef ArmModelRL < handle
                 case 'Jumping2D'
                     % load Kevin's modified form
                     filepathModelInitPose = [obj.modelBaseFolder '/instance_jumping/model/JumpModel_Eul_inertia_2D.xml'];
-                    obj.model_old = createJumpModel_ioc_2D_modForIOC(trialInfo.path, trialInfo.targNum, trialInfo.jumpNum, filepathModelInitPose);
-                    obj.modelJointNameRemap = {obj.model_old.joints.name};
+                    model_old = createJumpModel_ioc_2D_modForIOC(trialInfo.path, trialInfo.targNum, trialInfo.jumpNum, filepathModelInitPose);
+                    obj.modelJointNameRemap = {model_old.joints.name};
                     
                     filepathModelInitPose = [obj.modelBaseFolder '/instance_jumping/model/JumpModel_Eul_inertia_2D_rightHalfBody.xml'];
                     obj.model = createJumpModel_ioc_2D_modHalfBody(trialInfo.path, trialInfo.targNum, trialInfo.jumpNum, filepathModelInitPose);

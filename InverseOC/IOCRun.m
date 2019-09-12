@@ -425,17 +425,17 @@ function [q, dq, ddq, tau, states, control, trajT, trajU, trajX, frameInds] = lo
 %         mdl.base = 'rtoe0';
         
 %         q(:, 1:3) = zeros(size(q(:, 1:3)));
-        qFull = filter_dualpassBW(fullDataAngles, 0.04, 0, 5);
-        qFull(:, 1) = qFull(:, 1) + 0.4;
-        mdl_old = model.model_old;
-        vis.addModel(mdl_old);
+%         qFull = filter_dualpassBW(fullDataAngles, 0.04, 0, 5);
+%         qFull(:, 1) = qFull(:, 1) + 0.4;
+%         mdl_old = model.model_old;
+%         vis.addModel(mdl_old);
         
         for i = 1:length(trajT)
             mdl.position = q(i, :);
             mdl.forwardPosition();
             
-            mdl_old.position = qFull(i, :);
-            mdl_old.forwardPosition();
+%             mdl_old.position = qFull(i, :);
+%             mdl_old.forwardPosition();
             
             vis.update();
             pause(0.01);
