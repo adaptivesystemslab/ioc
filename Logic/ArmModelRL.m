@@ -112,10 +112,12 @@ classdef ArmModelRL < handle
                     model_old = createJumpModel_ioc_2D_modForIOC(trialInfo.path, trialInfo.targNum, trialInfo.jumpNum, filepathModelInitPose);
                     obj.modelJointNameRemap = {model_old.joints.name};
                     
-                    filepathModelInitPose = [obj.modelBaseFolder '/instance_jumping/model/JumpModel_Eul_inertia_2D_rightHalfBody.xml'];
-                    obj.model = createJumpModel_ioc_2D_modHalfBody(trialInfo.path, trialInfo.targNum, trialInfo.jumpNum, filepathModelInitPose);
-                    obj.model.forwardPosition();
-                    obj.model.base = 'rtoe0';
+                    obj.model = model_old;
+                    
+%                     filepathModelInitPose = [obj.modelBaseFolder '/instance_jumping/model/JumpModel_Eul_inertia_2D_rightHalfBody.xml'];
+%                     obj.model = createJumpModel_ioc_2D_modHalfBody(trialInfo.path, trialInfo.targNum, trialInfo.jumpNum, filepathModelInitPose);
+%                     obj.model.forwardPosition();
+%                     obj.model.base = 'rtoe0';
 %                     obj.model.base = 'rframe1';
                     obj.model.forwardPosition();
             end

@@ -276,9 +276,13 @@ function [q, dq, ddq, tau, states, control, trajT, trajU, trajX, frameInds] = lo
                     param.jump.bad2d = JA.bad2D(jumpNum,targNum);
                     
                     % Crop out initial and final calibration motions
-                    takeoffFrames = 200; % 1 second before takeoff frame ...
-                    landFrames = 300; % ... to 1.5 seconds after takeoff frame (~ 1 second after landing)
-                    framesToUse = (param.jump.takeoffFrame-takeoffFrames):(param.jump.takeoffFrame+landFrames);
+%                     takeoffFrames = 200; % 1 second before takeoff frame ...
+%                     landFrames = 300; % ... to 1.5 seconds after takeoff frame (~ 1 second after landing)
+%                     framesToUse = (param.jump.takeoffFrame-takeoffFrames):(param.jump.takeoffFrame+landFrames);
+                    
+                    takeoffFrames = 0; % 1 second before takeoff frame ...
+                    landFrames = 0; % ... to 1.5 seconds after takeoff frame (~ 1 second after landing)
+                    framesToUse = (param.jump.takeoffFrame-takeoffFrames):(param.jump.landFrame+landFrames);
                     
                     if(numel(framesToUse) < size(JA.targ(targNum).jump(jumpNum).data,1))
                         fullDataAngles = JA.targ(targNum).jump(jumpNum).data(framesToUse,:);
@@ -297,12 +301,12 @@ function [q, dq, ddq, tau, states, control, trajT, trajU, trajX, frameInds] = lo
                     % also, negate the following joints since they're past
                     % the flip
                     qFlip = fullDataAngles;
-                    jointsToFlip = {'rankle_jDorsiflexion', 'rknee_jExtension', 'rhip_jFlexion'};
-%                     jointsToFlip = {'rankle_jDorsiflexion', 'rknee_jExtension', 'rhip_jFlexion', 'back_jFB', 'rjoint1'};
-                    for indQ = 1:length(jointsToFlip)
-                        qIndsFlip(indQ) = find(ismember(model.modelJointNameRemap, jointsToFlip{indQ}));
-                        qFlip(:, qIndsFlip(indQ)) = -fullDataAngles(:, qIndsFlip(indQ));
-                    end
+%                     jointsToFlip = {'rankle_jDorsiflexion', 'rknee_jExtension', 'rhip_jFlexion'};
+% %                     jointsToFlip = {'rankle_jDorsiflexion', 'rknee_jExtension', 'rhip_jFlexion', 'back_jFB', 'rjoint1'};
+%                     for indQ = 1:length(jointsToFlip)
+%                         qIndsFlip(indQ) = find(ismember(model.modelJointNameRemap, jointsToFlip{indQ}));
+%                         qFlip(:, qIndsFlip(indQ)) = -fullDataAngles(:, qIndsFlip(indQ));
+%                     end
                     
                     dt = 0.005;
                     time = dt*(0:(size(qFlip, 1)-1));
