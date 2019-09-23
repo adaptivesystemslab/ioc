@@ -411,7 +411,7 @@ function [q, dq, ddq, tau, states, control, trajT, trajU, trajX, frameInds] = lo
         frameInds = frameInds(1):length(trajT);
     end
     
-    if 0
+    if 1
         mdl = model.model;
         vis = rlVisualizer('vis',640,480);
         mdl.forwardPosition();
@@ -442,7 +442,7 @@ function [q, dq, ddq, tau, states, control, trajT, trajU, trajX, frameInds] = lo
 %             mdl_old.forwardPosition();
             
             vis.update();
-            pause(0.01);
+            pause(0.05);
         end
     end
 end

@@ -13,16 +13,19 @@ traj= loadData(trialInfo, model);
 dt = traj.trajT(2) - traj.trajT(1);
 
 %-----------------cut the orginal trajectory manually----------------
-% set the savefule for the trimed trajectory
+% % set the savefule for the trimed trajectory
 cutSavePath=fullfile('..\Data\IOC\CuttedData\',trialInfo.runName);
-%----------this section can also be commented if not needed----------
-checkMkdir(cutSavePath) %check the folder exists
-clearFlag=false; %clear or not the existing files
-VisualizerCutter(model,traj,cutSavePath,clearFlag)
+% %----------this section can also be commented if not needed----------
+% checkMkdir(cutSavePath) %check the folder exists
+% clearFlag=true; %clear or not the existing files
+% VisualizerCutter(model,traj,cutSavePath,clearFlag)
+
+
 
 %-----------------read the cropped trajectory------------------------
 % read the cropped trajectory.
-files=dir(fullfile(cutSavePath,'*.mat'));
+% files=dir(fullfile(cutSavePath,'\down\*.mat'));
+files=dir(fullfile(cutSavePath,'\down\*.mat'));
 for k=1:length(files)
     dataPath=fullfile(files(k).folder,files(k).name);
     trajSet(k)=load(dataPath);
@@ -36,14 +39,19 @@ ioc.init(trialInfo);
 % initialize the result vector
 
 for k=1:length(trajSet)
-    traj=trajSet(k).segTraj;
+    traj=trajSet(k).segTraj;   
+    % visualize the trajectory first
+%     VisualizerCutter(model,traj)
+    
+    
     % Initialize the recovery matrix [H1, H2];
     H1=[];
     H2=[];
     % IOC using the beginning segment of the trajectory
     rankIndVec=[];
     weightsVec=[];
-    for i=20:traj.frameInds(end)
+    for i=1:traj.frameInds(end)
+        
         currX=traj.trajX(i,:);
         currU=traj.trajU(i,:);
         
@@ -86,14 +94,33 @@ for k=1:length(trajSet)
     for ii=1:length(ioc.features)
         iocResults(k).featureLabels{ii}=char(ioc.features(ii).feature);
     end
+    
+    % plot the results
+    figure(1)
+    clf
+    for r=1:length(iocResults(end).featureLabels)
+        subplot(length(iocResults(end).featureLabels),1,r)
+        plot(iocResults(end).weightsVec(:,r));
+        ylabel(iocResults(end).featureLabels{r})
+        ylim([0 1])
+    end
+    drawnow
+    
+%     figure(2)
+%     clf
+%     plot(iocResults(end).rankIndVec);
+%     drawnow
+
+pause;
 
 end
 
 
 
 
+
 %----------------------------save the results-----------------------------
-save('iocResults.mat','iocResults')
+% save('iocResults.mat','iocResults')
 
 
 end
@@ -242,6 +269,7 @@ for i = 1:length(traj.trajT)
     mdl.inverseDynamics();
     vis.update();
     
+    %% if cut needed
     if cut
         %get the key response: rightarrow key means crop starting point;
         %leftarrow key means crop ending point. In between, the corresponding
@@ -263,12 +291,16 @@ for i = 1:length(traj.trajT)
             indEnd=[];
         end
     end
+    
+    
     pause(0.01)
 end
 
 
 %save the segment
 if cut && ~isempty(indMat)
+    checkMkdir(cutSavePath) 
+    
     if clearFlag
        delete(fullfile(cutSavePath,'*.mat')) %delete all the mat files under the folder
     end
@@ -276,45 +308,46 @@ if cut && ~isempty(indMat)
         %save
         t=indMat(k,1):indMat(k,2);
         
-        % animate it again for confirmation
-        clc
-        prompt = 'Please confirm this segment. Do you want save (Y/N) or replay (R)?: ';
-        str=[];
-        while ~strcmpi(str,'y') && ~strcmpi(str,'n')
-            for i=t
-                %visualizer
-                mdl.position = traj.q(i, :);
-                mdl.forwardPosition();
-                mdl.forwardVelocity();
-                mdl.forwardAcceleration();
-                mdl.inverseDynamics();
-                vis.update();
-                pause(0.01);
+        if t(end)<traj.frameInds(end)
+            
+            % animate it again for confirmation
+            clc
+            prompt = 'Please confirm this segment. Do you want save (Y/N) or replay (R)?: ';
+            str=[];
+            while ~strcmpi(str,'y') && ~strcmpi(str,'n')
+                for i=t
+                    %visualizer
+                    mdl.position = traj.q(i, :);
+                    mdl.forwardPosition();
+                    mdl.forwardVelocity();
+                    mdl.forwardAcceleration();
+                    mdl.inverseDynamics();
+                    vis.update();
+                    pause(0.01);
+                end
+                str = input(prompt,'s');
             end
-            str = input(prompt,'s');
+            if (strcmpi(str,'y')&&t(2))
+                segTraj.q=traj.q(t,:);
+                segTraj.dq=traj.dq(t,:);
+                segTraj.ddq=traj.ddq(t,:);
+                segTraj.tau=traj.tau(t,:);
+                segTraj.states=traj.states(t,:);
+                segTraj.control=traj.control(t,:);
+                segTraj.time=traj.time(t);
+                segTraj.trajT=traj.trajT(t,:);
+                segTraj.trajU=traj.trajU(t,:);
+                segTraj.trajX=traj.trajX(t,:);
+                segTraj.frameInds=traj.frameInds(t)-traj.frameInds(t(1))+1;
+                segTraj.qLabels=traj.qLabels;
+                savefile=strcat(cutSavePath,'\Segment_',num2str(traj.trajT(t(1))),'_',num2str(traj.trajT(t(end))),'.mat');
+                save(savefile,'segTraj')
+                disp('Saved!')
+            else
+                continue;
+            end
         end
         
-        
-        if (strcmpi(str,'y'))
-            segTraj.q=traj.q(t,:);
-            segTraj.dq=traj.dq(t,:);
-            segTraj.ddq=traj.ddq(t,:);
-            segTraj.tau=traj.tau(t,:);
-            segTraj.states=traj.states(t,:);
-            segTraj.control=traj.control(t,:);
-            segTraj.time=traj.time(t);
-            segTraj.trajT=traj.trajT(t,:);
-            segTraj.trajU=traj.trajU(t,:);
-            segTraj.trajX=traj.trajX(t,:);
-            segTraj.frameInds=traj.frameInds(t)-traj.frameInds(t(1))+1;
-            segTraj.qLabels=traj.qLabels;
-            savefile=strcat(cutSavePath,'\Segment_',num2str(traj.trajT(t(1))),'_',num2str(traj.trajT(t(end))),'.mat');
-            save(savefile,'segTraj')
-            disp('Saved!')
-        else
-            continue;
-        end
-
     end
 end
 

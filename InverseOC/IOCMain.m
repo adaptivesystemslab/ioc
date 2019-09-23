@@ -12,17 +12,17 @@ setPaths();
 overwriteFiles = 1;
 % confi gFilePath = '../Data/IOC_gitupload_test.json';
 % configFilePath = '../Data/IOC_gitupload_jumping2D.json';
-configFilePath = '../Data/IOC_IITFatigue_test.json';
+configFilePath = '../Data/JinConfig/IOC_IITFatigue_Test_Sub3.json';
 % if ~exist('configFilePath', 'var')
 %         configFilePath = '../Data/IOC_IITFatigue_Full.json';
-% %        configFilePath = '../Data/IOC_IITFatigue_Sharcnet_subj05.json';
+%         configFilePath = '../Data/IOC_IITFatigue_Sharcnet_subj05.json';
 % %        configFilePath = '../Data/IOC_IITFatigue_Sharcnet_subj09.json';
 %        configFilePath = '../Data/IOC_IITFatigue_Sharcnet_subj10.json';
-% end
+% % end
 
 %% Create and/or look for folder where solutions are going to be saved
 % currentDate = datestr(datetime("now"),"yyyy_mm_dd_HH_MM_SS");
-currentDate = 'result03';
+currentDate = 'results';
 savePath = sprintf('../Data/IOC/%s/', currentDate);
 
 %% Load json file with list of all trials on which IOC will be run
@@ -31,7 +31,8 @@ configFile = jsondecode(fileread(configFilePath));
 %% Load json with information about each trial
 n = length(configFile.Files);
 
-for i=1:1
+
+for i=1
     runParam = [];
     trialInfo = configFile.Files(i);
     
