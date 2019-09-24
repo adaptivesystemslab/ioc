@@ -10,15 +10,8 @@ setPaths();
 
 %% Define internal settings
 overwriteFiles = 1;
-% confi gFilePath = '../Data/IOC_gitupload_test.json';
-% configFilePath = '../Data/IOC_gitupload_jumping2D.json';
-configFilePath = '../Data/JinConfig/IOC_IITFatigue_Test_Sub3.json';
-% if ~exist('configFilePath', 'var')
-%         configFilePath = '../Data/IOC_IITFatigue_Full.json';
-%         configFilePath = '../Data/IOC_IITFatigue_Sharcnet_subj05.json';
-% %        configFilePath = '../Data/IOC_IITFatigue_Sharcnet_subj09.json';
-%        configFilePath = '../Data/IOC_IITFatigue_Sharcnet_subj10.json';
-% % end
+% Wanxin's Configration Path
+configFilePath = '../Data/JinConfig/IOC_IITFatigue_Test_Sub8.json';
 
 %% Create and/or look for folder where solutions are going to be saved
 % currentDate = datestr(datetime("now"),"yyyy_mm_dd_HH_MM_SS");
@@ -31,8 +24,7 @@ configFile = jsondecode(fileread(configFilePath));
 %% Load json with information about each trial
 n = length(configFile.Files);
 
-
-for i=1
+for i=3
     runParam = [];
     trialInfo = configFile.Files(i);
     
@@ -78,7 +70,7 @@ for i=1
     [status, alreadyExist] = checkMkdir(subsavePath);
     if ~alreadyExist || overwriteFiles
 %         IOCRun(trialInfo, subsavePath);
-        IOCIncomplete(trialInfo,savePath)
+      IOCIncomplete(trialInfo,savePath)
     end
 end
 

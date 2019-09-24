@@ -14,18 +14,16 @@ dt = traj.trajT(2) - traj.trajT(1);
 
 %-----------------cut the orginal trajectory manually----------------
 % % set the savefule for the trimed trajectory
-cutSavePath=fullfile('..\Data\IOC\CuttedData\',trialInfo.runName);
+cutSavePath=fullfile('..\Data\IOC\CuttedData\',trialInfo.runName(1:11));
 % %----------this section can also be commented if not needed----------
 % checkMkdir(cutSavePath) %check the folder exists
 % clearFlag=true; %clear or not the existing files
 % VisualizerCutter(model,traj,cutSavePath,clearFlag)
 
-
-
 %-----------------read the cropped trajectory------------------------
 % read the cropped trajectory.
 % files=dir(fullfile(cutSavePath,'\down\*.mat'));
-files=dir(fullfile(cutSavePath,'\down\*.mat'));
+files=dir(fullfile(cutSavePath,'down\*.mat'));
 for k=1:length(files)
     dataPath=fullfile(files(k).folder,files(k).name);
     trajSet(k)=load(dataPath);
@@ -51,27 +49,25 @@ for k=1:length(trajSet)
     rankIndVec=[];
     weightsVec=[];
     for i=1:traj.frameInds(end)
-        
+        % print
+        clc
+        sprintf('Prcentage: %.1f%%', i/traj.frameInds(end)*100)
         currX=traj.trajX(i,:);
         currU=traj.trajU(i,:);
-        
         %compute the deriviatives(jacobian matrix) for the system
         Jx=ioc.getDynamicsStateDerivatives(currX,currU);
         Ju=ioc.getDynamicsControlDerivatives(currX,currU);
         %compute the deriviatives(jacobina matrix) for the features
         Px=ioc.getFeaturesStateDerivatives(currX,currU);
         Pu=ioc.getFeaturesControlDerivatives(currX,currU);
-        
         %take transpose for all derivatives
         Jx=Jx';
         Ju=Ju';
         Px=Px';
         Pu=Pu';
-        
         % assemble the recovery matrix
         [H1,H2]=assembleH1H2(Jx, Ju, Px, Pu, H1,H2);
         H=[H1, H2];
-        
         % check the status of the recovery matrix
         Hhat = H;
         % solve for the weights from the current recvoery matirx
@@ -81,7 +77,6 @@ for k=1:length(trajSet)
             trialInfo.gamma=4;
         end
         [rankInd, completed, errorCode] = validateCompletion(Hhat,trialInfo.gamma, trialInfo.delta, trialInfo.dimWeights);
-        
         % storage for each step
         weightsVec(end+1,:)=weights;
         rankIndVec(end+1,:)=rankInd;
@@ -111,10 +106,10 @@ for k=1:length(trajSet)
 %     plot(iocResults(end).rankIndVec);
 %     drawnow
 
+disp('pause')
 pause;
 
 end
-
 
 
 
@@ -245,7 +240,7 @@ end
 
 
 mdl = model.model;
-vis = rlVisualizer('vis',640,480);
+vis = rlVisualizer('vis',960,640);
 mdl.forwardPosition();
 vis.addModel(mdl);
 vis.addMarker('x-axis', [1 0 0], [0.2 0.2 0.2 1]);

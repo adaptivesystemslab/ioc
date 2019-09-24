@@ -1,0 +1,363 @@
+{
+	"runParamGlobal":
+	[
+        {
+            "templateName":"",  
+			"baseModel":"",   
+            "modelType":"rl",
+			"model":"",			
+			"gamma": [],
+			"dimWeights": [5],
+			"maxWinLen": [400],
+            "hWinAdvFlag": "forward",
+			"runInds": [1, 7005],
+            "displayInfo":"final",
+            "saveIntermediate": [300],
+            "weights":[]         
+		}
+	],
+	
+	"runTemplates":
+	[		{
+			"templateName":"3DOF_3CF_Forward",  
+			"baseModel":"IIT",            
+			"model":"IIT_3DOF",		
+            "candidateFeatures": 
+			[
+				{
+					"feature":"angAccelSumSqu", 
+					"jointNames": ["joint_rhip_0", "joint_rknee_0", "joint_rankle_0"],
+                    "normCoeff": [1]
+				}, 
+				{
+					"feature":"angJerkSumSqu", 
+					"jointNames": ["joint_rhip_0", "joint_rknee_0", "joint_rankle_0"],
+                    "normCoeff": [1]
+				}, 
+				{
+					"feature":"angPowerSumSqu", 
+					"jointNames": ["joint_rhip_0", "joint_rknee_0", "joint_rankle_0"],
+                    "normCoeff": [1]
+				}
+			]
+		},
+		{
+			"templateName":"3DOF_4CF_Forward",  
+			"baseModel":"IIT",            
+			"model":"IIT_3DOF",			
+            "candidateFeatures": 
+			[
+				{
+					"feature":"angAccelSumSqu", 
+					"jointNames": ["joint_rhip_0", "joint_rknee_0", "joint_rankle_0"],
+                    "normCoeff": [1]
+				}, 
+				{
+					"feature":"angJerkSumSqu", 
+					"jointNames": ["joint_rhip_0", "joint_rknee_0", "joint_rankle_0"],
+                    "normCoeff": [1]
+				}, 
+				{
+					"feature":"torqueSumSqu", 
+					"jointNames": ["joint_rhip_0", "joint_rknee_0", "joint_rankle_0"],
+                    "normCoeff": [1]
+				},
+				{
+					"feature":"angPowerSumSqu", 
+					"jointNames": ["joint_rhip_0", "joint_rknee_0", "joint_rankle_0"],
+                    "normCoeff": [1]
+				}
+			]
+		},
+        
+		{
+        	"templateName":"3DOF_8CF_Forward",  
+			"baseModel":"IIT",            
+			"model":"IIT_3DOF",	
+            "candidateFeatures": 
+			[
+				{
+					"feature":"cartJerkSumSqu", 
+					"frameNames": ["frame_rhip_0"],
+                    "normCoeff": [1]
+				}, 
+				{
+					"feature":"angAccelSumSqu", 
+					"jointNames": ["joint_rhip_0", "joint_rknee_0", "joint_rankle_0"],
+                    "normCoeff": [1]
+				},
+				{
+					"feature":"angJerkSumSqu", 
+					"jointNames": ["joint_rhip_0", "joint_rknee_0", "joint_rankle_0"],
+                    "normCoeff": [1]
+				}, 
+				{
+					"feature":"torqueSumSqu", 
+					"jointNames": ["joint_rhip_0", "joint_rknee_0", "joint_rankle_0"],
+                    "normCoeff": [1]
+				},
+				{
+					"feature":"torqueVeloSumSqu", 
+					"jointNames": ["joint_rhip_0", "joint_rknee_0", "joint_rankle_0"],
+                    "normCoeff": [1]
+				}, 
+				{
+					"feature":"torqueAccelSumSqu", 
+					"jointNames": ["joint_rhip_0", "joint_rknee_0", "joint_rankle_0"],
+                    "normCoeff": [1]
+				}, 
+				{
+					"feature":"kineticEnergySumSqu",
+                    "normCoeff": [1]
+				}, 		
+				{
+					"feature":"angPowerSumSqu", 
+					"jointNames": ["joint_rhip_0", "joint_rknee_0", "joint_rankle_0"],
+                    "normCoeff": [1]
+				}
+			]
+		},
+        
+        
+		{
+        	"templateName":"7DOF_3CF_Forward",  
+			"baseModel":"IIT",            
+			"model":"IIT_7DOF",	
+            "candidateFeatures": 
+			[
+				{
+					"feature":"angAccelSumSqu", 
+					"jointNames": ["joint_rhip_0", "joint_rknee_0", "joint_rankle_0", "joint_l5s1_0", "joint_rshoulder_0", "joint_relbow_0", "joint_rwrist_0"],
+                    "normCoeff": [1]
+				}, 
+				{
+					"feature":"angJerkSumSqu", 
+					"jointNames": ["joint_rhip_0", "joint_rknee_0", "joint_rankle_0", "joint_l5s1_0", "joint_rshoulder_0", "joint_relbow_0", "joint_rwrist_0"],
+                    "normCoeff": [1]
+				}, 
+				{
+					"feature":"angPowerSumSqu", 
+					"jointNames": ["joint_rhip_0", "joint_rknee_0", "joint_rankle_0", "joint_l5s1_0", "joint_rshoulder_0", "joint_relbow_0", "joint_rwrist_0"],
+                    "normCoeff": [1]
+				}
+			]
+		},
+		{
+        	"templateName":"7DOF_4CF_Forward",  
+			"baseModel":"IIT",            
+			"model":"IIT_7DOF",	
+            "candidateFeatures": 
+			[
+				{
+					"feature":"angAccelSumSqu", 
+					"jointNames": ["joint_rhip_0", "joint_rknee_0", "joint_rankle_0", "joint_l5s1_0", "joint_rshoulder_0", "joint_relbow_0", "joint_rwrist_0"],
+                    "normCoeff": [1]
+				}, 
+				{
+					"feature":"angJerkSumSqu", 
+					"jointNames": ["joint_rhip_0", "joint_rknee_0", "joint_rankle_0", "joint_l5s1_0", "joint_rshoulder_0", "joint_relbow_0", "joint_rwrist_0"],
+                    "normCoeff": [1]
+				}, 
+				{
+					"feature":"torqueSumSqu", 
+					"jointNames": ["joint_rhip_0", "joint_rknee_0", "joint_rankle_0", "joint_l5s1_0", "joint_rshoulder_0", "joint_relbow_0", "joint_rwrist_0"],
+                    "normCoeff": [1]
+				},
+				{
+					"feature":"angPowerSumSqu", 
+					"jointNames": ["joint_rhip_0", "joint_rknee_0", "joint_rankle_0", "joint_l5s1_0", "joint_rshoulder_0", "joint_relbow_0", "joint_rwrist_0"],
+                    "normCoeff": [1]
+				}
+			]
+		},
+		{
+            "templateName":"7DOF_8CF_Forward",  
+			"baseModel":"IIT",            
+			"model":"IIT_7DOF",	
+            "candidateFeatures": 
+			[
+				{
+					"feature":"cartJerkSumSqu", 
+					"frameNames": ["frame_rhand_end"],
+                    "normCoeff": [1]
+				}, 
+				{
+					"feature":"angAccelSumSqu", 
+					"jointNames": ["joint_rhip_0", "joint_rknee_0", "joint_rankle_0", "joint_l5s1_0", "joint_rshoulder_0", "joint_relbow_0", "joint_rwrist_0"],
+                    "normCoeff": [1]
+				},
+				{
+					"feature":"angJerkSumSqu", 
+					"jointNames": ["joint_rhip_0", "joint_rknee_0", "joint_rankle_0", "joint_l5s1_0", "joint_rshoulder_0", "joint_relbow_0", "joint_rwrist_0"],
+                    "normCoeff": [1]
+				}, 
+				{
+					"feature":"torqueSumSqu", 
+					"jointNames": ["joint_rhip_0", "joint_rknee_0", "joint_rankle_0", "joint_l5s1_0", "joint_rshoulder_0", "joint_relbow_0", "joint_rwrist_0"],
+                    "normCoeff": [1]
+				},
+				{
+					"feature":"torqueVeloSumSqu", 
+					"jointNames": ["joint_rhip_0", "joint_rknee_0", "joint_rankle_0", "joint_l5s1_0", "joint_rshoulder_0", "joint_relbow_0", "joint_rwrist_0"],
+                    "normCoeff": [1]
+				}, 
+				{
+					"feature":"torqueAccelSumSqu", 
+					"jointNames": ["joint_rhip_0", "joint_rknee_0", "joint_rankle_0", "joint_l5s1_0", "joint_rshoulder_0", "joint_relbow_0", "joint_rwrist_0"],
+                    "normCoeff": [1]
+				}, 
+				{
+					"feature":"kineticEnergySumSqu",
+                    "normCoeff": [1]
+				}, 		
+				{
+					"feature":"angPowerSumSqu", 
+					"jointNames": ["joint_rhip_0", "joint_rknee_0", "joint_rankle_0", "joint_l5s1_0", "joint_rshoulder_0", "joint_relbow_0", "joint_rwrist_0"],
+                    "normCoeff": [1]
+				}
+			]
+		},
+    
+    
+		{
+            "templateName":"17DOF_3CF_Forward",  
+			"baseModel":"IIT",            
+			"model":"IIT_17DOF",
+            "candidateFeatures": 
+			[
+				{
+					"feature":"angAccelSumSqu", 
+					"jointNames": ["joint_rhip_0", "joint_rhip_1", "joint_rhip_2", "joint_rknee_0", "joint_rankle_0", "joint_rankle_1", "joint_rankle_2", "joint_l5s1_0", "joint_l5s1_1", "joint_c7rshoulder_0", "joint_rshoulder_0", "joint_rshoulder_1", "joint_rshoulder_2", "joint_relbow_0", "joint_relbow_1", "joint_rwrist_0", "joint_rwrist_1"],
+                    "normCoeff": [1]
+				}, 
+				{
+					"feature":"angJerkSumSqu", 
+					"jointNames": ["joint_rhip_0", "joint_rhip_1", "joint_rhip_2", "joint_rknee_0", "joint_rankle_0", "joint_rankle_1", "joint_rankle_2", "joint_l5s1_0", "joint_l5s1_1", "joint_c7rshoulder_0", "joint_rshoulder_0", "joint_rshoulder_1", "joint_rshoulder_2", "joint_relbow_0", "joint_relbow_1", "joint_rwrist_0", "joint_rwrist_1"],
+                    "normCoeff": [1]
+				}, 
+				{
+					"feature":"angPowerSumSqu", 
+					"jointNames": ["joint_rhip_0", "joint_rhip_1", "joint_rhip_2", "joint_rknee_0", "joint_rankle_0", "joint_rankle_1", "joint_rankle_2", "joint_l5s1_0", "joint_l5s1_1", "joint_c7rshoulder_0", "joint_rshoulder_0", "joint_rshoulder_1", "joint_rshoulder_2", "joint_relbow_0", "joint_relbow_1", "joint_rwrist_0", "joint_rwrist_1"],
+                    "normCoeff": [1]
+				}
+			]
+		},
+		{
+            "templateName":"17DOF_4CF_Forward",  
+			"baseModel":"IIT",            
+			"model":"IIT_17DOF",
+            "candidateFeatures": 
+			[
+				{
+					"feature":"angAccelSumSqu", 
+					"jointNames": ["joint_rhip_0", "joint_rhip_1", "joint_rhip_2", "joint_rknee_0", "joint_rankle_0", "joint_rankle_1", "joint_rankle_2", "joint_l5s1_0", "joint_l5s1_1", "joint_c7rshoulder_0", "joint_rshoulder_0", "joint_rshoulder_1", "joint_rshoulder_2", "joint_relbow_0", "joint_relbow_1", "joint_rwrist_0", "joint_rwrist_1"],
+                    "normCoeff": [1]
+				}, 
+				{
+					"feature":"angJerkSumSqu", 
+					"jointNames": ["joint_rhip_0", "joint_rhip_1", "joint_rhip_2", "joint_rknee_0", "joint_rankle_0", "joint_rankle_1", "joint_rankle_2", "joint_l5s1_0", "joint_l5s1_1", "joint_c7rshoulder_0", "joint_rshoulder_0", "joint_rshoulder_1", "joint_rshoulder_2", "joint_relbow_0", "joint_relbow_1", "joint_rwrist_0", "joint_rwrist_1"],
+                    "normCoeff": [1]
+				}, 
+				{
+					"feature":"torqueSumSqu", 
+					"jointNames": ["joint_rhip_0", "joint_rhip_1", "joint_rhip_2", "joint_rknee_0", "joint_rankle_0", "joint_rankle_1", "joint_rankle_2", "joint_l5s1_0", "joint_l5s1_1", "joint_c7rshoulder_0", "joint_rshoulder_0", "joint_rshoulder_1", "joint_rshoulder_2", "joint_relbow_0", "joint_relbow_1", "joint_rwrist_0", "joint_rwrist_1"],
+                    "normCoeff": [1]
+				},
+				{
+					"feature":"angPowerSumSqu", 
+					"jointNames": ["joint_rhip_0", "joint_rhip_1", "joint_rhip_2", "joint_rknee_0", "joint_rankle_0", "joint_rankle_1", "joint_rankle_2", "joint_l5s1_0", "joint_l5s1_1", "joint_c7rshoulder_0", "joint_rshoulder_0", "joint_rshoulder_1", "joint_rshoulder_2", "joint_relbow_0", "joint_relbow_1", "joint_rwrist_0", "joint_rwrist_1"],
+                    "normCoeff": [1]
+				}
+			]
+		},
+        
+		{
+			"templateName":"17DOF_8CF_Forward",  
+			"baseModel":"IIT",            
+			"model":"IIT_17DOF",
+            "candidateFeatures": 
+			[
+				{
+					"feature":"cartJerkSumSqu", 
+					"frameNames": ["frame_rhand_end"],
+                    "normCoeff": [1]
+				}, 
+				{
+					"feature":"angAccelSumSqu", 
+					"jointNames": ["joint_rhip_0", "joint_rhip_1", "joint_rhip_2", "joint_rknee_0", "joint_rankle_0", "joint_rankle_1", "joint_rankle_2", "joint_l5s1_0", "joint_l5s1_1", "joint_c7rshoulder_0", "joint_rshoulder_0", "joint_rshoulder_1", "joint_rshoulder_2", "joint_relbow_0", "joint_relbow_1", "joint_rwrist_0", "joint_rwrist_1"],
+                    "normCoeff": [1]
+				},
+				{
+					"feature":"angJerkSumSqu", 
+					"jointNames": ["joint_rhip_0", "joint_rhip_1", "joint_rhip_2", "joint_rknee_0", "joint_rankle_0", "joint_rankle_1", "joint_rankle_2", "joint_l5s1_0", "joint_l5s1_1", "joint_c7rshoulder_0", "joint_rshoulder_0", "joint_rshoulder_1", "joint_rshoulder_2", "joint_relbow_0", "joint_relbow_1", "joint_rwrist_0", "joint_rwrist_1"],
+                    "normCoeff": [1]
+				}, 
+				{
+					"feature":"torqueSumSqu", 
+					"jointNames": ["joint_rhip_0", "joint_rhip_1", "joint_rhip_2", "joint_rknee_0", "joint_rankle_0", "joint_rankle_1", "joint_rankle_2", "joint_l5s1_0", "joint_l5s1_1", "joint_c7rshoulder_0", "joint_rshoulder_0", "joint_rshoulder_1", "joint_rshoulder_2", "joint_relbow_0", "joint_relbow_1", "joint_rwrist_0", "joint_rwrist_1"],
+                    "normCoeff": [1]
+				},
+				{
+					"feature":"torqueVeloSumSqu", 
+					"jointNames": ["joint_rhip_0", "joint_rhip_1", "joint_rhip_2", "joint_rknee_0", "joint_rankle_0", "joint_rankle_1", "joint_rankle_2", "joint_l5s1_0", "joint_l5s1_1", "joint_c7rshoulder_0", "joint_rshoulder_0", "joint_rshoulder_1", "joint_rshoulder_2", "joint_relbow_0", "joint_relbow_1", "joint_rwrist_0", "joint_rwrist_1"],
+                    "normCoeff": [1]
+				}, 
+				{
+					"feature":"torqueAccelSumSqu", 
+					"jointNames": ["joint_rhip_0", "joint_rhip_1", "joint_rhip_2", "joint_rknee_0", "joint_rankle_0", "joint_rankle_1", "joint_rankle_2", "joint_l5s1_0", "joint_l5s1_1", "joint_c7rshoulder_0", "joint_rshoulder_0", "joint_rshoulder_1", "joint_rshoulder_2", "joint_relbow_0", "joint_relbow_1", "joint_rwrist_0", "joint_rwrist_1"],
+                    "normCoeff": [1]
+				}, 
+				{
+					"feature":"kineticEnergySumSqu",
+                    "normCoeff": [1]
+				}, 		
+				{
+					"feature":"angPowerSumSqu", 
+					"jointNames": ["joint_rhip_0", "joint_rhip_1", "joint_rhip_2", "joint_rknee_0", "joint_rankle_0", "joint_rankle_1", "joint_rankle_2", "joint_l5s1_0", "joint_l5s1_1", "joint_c7rshoulder_0", "joint_rshoulder_0", "joint_rshoulder_1", "joint_rshoulder_2", "joint_relbow_0", "joint_relbow_1", "joint_rwrist_0", "joint_rwrist_1"],
+                    "normCoeff": [1]
+				}
+			]
+		}
+	],
+	
+	"Files":
+	[
+        {
+            "runName":"Subj07_3DOF_3CF",
+            "basepath":"D:/aslab/data_IK",
+            "subpath":"FullBody_IIT_2017/2019_04_10_squat02/matEkfIk/SQUA_STD_FAT_Subject07_mocap_mocap_X00_floating_ekfId1_ekfIk.mat",
+			"runTemplate": "3DOF_3CF_Forward"
+        },
+		{
+            "runName":"Subj07_3DOF_4CF",
+            "basepath":"D:/aslab/data_IK",
+            "subpath":"FullBody_IIT_2017/2019_04_10_squat02/matEkfIk/SQUA_STD_FAT_Subject07_mocap_mocap_X00_floating_ekfId1_ekfIk.mat",
+			"runTemplate": "3DOF_4CF_Forward"
+        },
+        {
+            "runName":"Subj07_3DOF_8CF",
+            "basepath":"D:/aslab/data_IK",
+            "subpath":"FullBody_IIT_2017/2019_04_10_squat02/matEkfIk/SQUA_STD_FAT_Subject07_mocap_mocap_X00_floating_ekfId1_ekfIk.mat",
+			"runTemplate": "3DOF_8CF_Forward"
+        },
+        
+    	{
+            "runName":"Subj07_7DOF_3CF",
+            "basepath":"D:/aslab/data_IK",
+            "subpath":"FullBody_IIT_2017/2019_04_10_squat02/matEkfIk/SQUA_STD_FAT_Subject07_mocap_mocap_X00_floating_ekfId1_ekfIk.mat",
+			"runTemplate": "7DOF_3CF_Forward"
+        },
+		{
+            "runName":"Subj07_7DOF_4CF",
+            "basepath":"D:/aslab/data_IK",
+            "subpath":"FullBody_IIT_2017/2019_04_10_squat02/matEkfIk/SQUA_STD_FAT_Subject07_mocap_mocap_X00_floating_ekfId1_ekfIk.mat",
+			"runTemplate": "7DOF_4CF_Forward"
+        },
+        {
+            "runName":"Subj07_7DOF_8CF",
+            "basepath":"D:/aslab/data_IK",
+            "subpath":"FullBody_IIT_2017/2019_04_10_squat02/matEkfIk/SQUA_STD_FAT_Subject07_mocap_mocap_X00_floating_ekfId1_ekfIk.mat",
+			"runTemplate": "7DOF_8CF_Forward"
+        }
+	]
+}
