@@ -11,7 +11,7 @@ setPaths();
 %% Define internal settings
 overwriteFiles = 1;
 % Wanxin's Configration Path
-configFilePath = '../Data/JinConfig/IOC_IITFatigue_Test_Sub8.json';
+configFilePath = '../Data/JinConfig/IOC_IITFatigue_Test_Sub1.json';
 
 %% Create and/or look for folder where solutions are going to be saved
 % currentDate = datestr(datetime("now"),"yyyy_mm_dd_HH_MM_SS");
@@ -24,7 +24,7 @@ configFile = jsondecode(fileread(configFilePath));
 %% Load json with information about each trial
 n = length(configFile.Files);
 
-for i=3
+for i=6
     runParam = [];
     trialInfo = configFile.Files(i);
     

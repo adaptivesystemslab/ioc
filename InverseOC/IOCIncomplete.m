@@ -19,11 +19,12 @@ cutSavePath=fullfile('..\Data\IOC\CuttedData\',trialInfo.runName(1:11));
 % checkMkdir(cutSavePath) %check the folder exists
 % clearFlag=true; %clear or not the existing files
 % VisualizerCutter(model,traj,cutSavePath,clearFlag)
+% return 
 
 %-----------------read the cropped trajectory------------------------
 % read the cropped trajectory.
 % files=dir(fullfile(cutSavePath,'\down\*.mat'));
-files=dir(fullfile(cutSavePath,'down\*.mat'));
+files=dir(fullfile(cutSavePath,'\*.mat'));
 for k=1:length(files)
     dataPath=fullfile(files(k).folder,files(k).name);
     trajSet(k)=load(dataPath);
