@@ -12,23 +12,41 @@ function IOCRun(trialInfo, savePath)
     end
     
     % Load to memory model and information needed for running IOC
-    if 0 % wanxin modification trial
-        model = ArmModelRL();
-        model.loadModelOnly();
-        [q, dq, ddq, tau, states, control, trajT, trajU, trajX, model] = modifyModelWX(model);
+    model = getModel(trialInfo);
+    [q, dq, ddq, tau, trajT, trajU, trajX] = model.loadData(trialInfo);
+    
+    if 0
+        mdl = model.model;
+        vis = rlVisualizer('vis',640,480);
+        mdl.forwardPosition();
+        vis.addModel(mdl);
+        vis.addMarker('x-axis', [1 0 0], [0.2 0.2 0.2 1]);
+        vis.addMarker('y-axis', [0 1 0], [0.2 0.2 0.2 1]);
+        vis.addMarker('z-axis', [0 0 1], [0.2 0.2 0.2 1]);
+        vis.update();
+        
+        for i = 1:length(trajT)
+            mdl.position = q(i, :);
+            mdl.forwardPosition();
+            vis.update();
+            pause(0.01);
+        end
+    end
+    
+    if ~isempty(trialInfo.runInds)
+        frameInds = trialInfo.runInds(1):trialInfo.runInds(2);
     else
-%         model = ArmModelRL();
-%         model.loadAndSetupIIT(trialInfo.path, trialInfo);
-%         model.initModel();  
-        model = getModel(trialInfo);
-        [q, dq, ddq, tau, states, control, trajT, trajU, trajX, frameInds] = loadData(trialInfo, model);
+        frameInds = 1:length(trajT);
+    end
+    
+    if max(frameInds) > length(trajT)
+        frameInds = frameInds(1):length(trajT);
     end
     
     trialInfo.frameInds = frameInds;
     trialInfo.numWeights = length(trialInfo.candidateFeatures);
-    trialInfo.numDofs = model.totalActuatedJoints;
+    trialInfo.numDofs = model.getModelDof;
     
-
     % generate default trialInfo if missing
     % weights
     if isempty(trialInfo.weights)
@@ -97,7 +115,14 @@ function IOCRun(trialInfo, savePath)
     
     % assemble and assess H
     for indFrame = frameInds
-        [progressVar(indFrame), processSecondaryVar(indFrame), precalcGradient] = calcWinLenAndH(trajT, trajX, trajU, dt, ioc, indFrame - 1, precalcGradient, trialInfo);
+        [progressVarTemp, processSecondaryVarTemp, precalcGradient] = calcWinLenAndH(trajT, trajX, trajU, dt, ioc, indFrame - 1, precalcGradient, trialInfo);
+        
+        if ~isempty(progressVarTemp)
+            progressVar(indFrame) = progressVarTemp;
+            processSecondaryVar(indFrame) = processSecondaryVarTemp;
+        else
+            lala = 1;
+        end
         
         % save either on the regular intervals, or at the last frame
         checkSave = find(indFrame == saveInds(:, 2));
@@ -167,288 +192,11 @@ function IOCRun(trialInfo, savePath)
     end
 end
 
-function [q, dq, ddq, tau, states, control, trajT, trajU, trajX, model] = modifyModelWX(model)
-    load('D:\aslab\projects\jf2lin\TROcopy\sub5.mat');
-%     bodyPara = Para;
-
-    bodyPara.lankle = 0.3700;
-    bodyPara.lknee = 0.4000;
-    bodyPara.lhip = 0.4500;
-    bodyPara.mass = 65.7000;
-
-    %legnth settings;
-    l1=bodyPara.lankle;
-    l2=bodyPara.lknee;
-    l3=bodyPara.lhip;
-    %mass settings
-    m1=0.045*bodyPara.mass;      %0.09
-    m2=0.146*bodyPara.mass;       %0.29
-    m3=0.2985*bodyPara.mass;      %0.62
-    %CoM position settings
-    r1=(0.404)*l1;
-    r2=(0.377)*l2;
-    r3=(0.436)*l3;
-    %moments of inertia settings
-    I1=(0.28*l1)^2*m1;
-    I2=(0.32*l2)^2*m2;             %0.35
-    I3=(0.29*l3)^2*m3;             %0.30
-    
-    kinematicTransform(1).frameName = 'length_rknee_rankle';
-    dynamicTransform(1).frameName = 'body_rknee_rankle';
-    kinematicTransform(2).frameName = 'length_rhip_rknee';
-    dynamicTransform(2).frameName = 'body_rhip_rknee';
-    kinematicTransform(3).frameName = 'length_torso_rhip';
-    dynamicTransform(3).frameName = 'body_torso_rhip';
-    
-%     kinematicTransform(4).frameName = 'length_rankle_rballfoot';
-    
-    kinematicTransform(1).t = eye(4);
-    kinematicTransform(2).t = eye(4);
-    kinematicTransform(3).t = eye(4);
-%     kinematicTransform(4).t = eye(4);
-    
-    % determine which joint parameters use for defining upper-arm length
-    % and second link inertia information
-            kinematicTransform(1).t(2, 4) = l1; % apply link length to the upper arm
-            kinematicTransform(2).t(2, 4) = l2;
-            kinematicTransform(3).t(2, 4) = l3;
-%             
-            dynamicTransform(1).m = m1;
-            dynamicTransform(1).com = [0 r1 0]';
-            dynamicTransform(1).I(1, 1) = I1;
-            dynamicTransform(1).I(2, 2) = I1;
-            dynamicTransform(1).I(3, 3) = 0;
-            
-            dynamicTransform(2).m = m2;
-            dynamicTransform(2).com = [0 r2 0]';
-            dynamicTransform(2).I(1, 1) = I2;
-            dynamicTransform(2).I(2, 2) = I2;
-            dynamicTransform(2).I(3, 3) = 0;
-            
-            dynamicTransform(3).m = m3;
-            dynamicTransform(3).com = [0 r3 0]';
-            dynamicTransform(3).I(1, 1) = I3;
-            dynamicTransform(3).I(2, 2) = I3;
-            dynamicTransform(3).I(3, 3) = 0;
-        
-    
-    model.addKinDynTransformToModel(kinematicTransform, dynamicTransform);
-    
-    qOrig = q;
-    dqOrig = dq;
-    ddqOrig = ddq;
-    
-    q = [qOrig.ankle, qOrig.knee, qOrig.hip];
-    dq = [dqOrig.ankle, dqOrig.knee, dqOrig.hip];
-    ddq = [ddqOrig.ankle, ddqOrig.knee, ddqOrig.hip];
-    
-    tau = zeros(size(q));
-    for indTime = 1:length(time.time) % recalc torque given redistributed masses
-        %                 model.updateState(q(indTime, :), dq(indTime, :));
-        tau(indTime, :) = model.inverseDynamicsQDqDdq(q(indTime, :), dq(indTime, :), ddq(indTime, :));
-    end
-    
-    trajT = time.time';
-    trajX = encodeState(q, dq);
-    trajU = tau;
-    
-    states = trajX;
-    control = trajU;
-end
-
-function [q, dq, ddq, tau, states, control, trajT, trajU, trajX, frameInds] = loadData(trialInfo, model)
-    % Load state, control and time trajectories to be analyzed.
-    switch trialInfo.baseModel
-        case {'IIT','Jumping'}
-            switch trialInfo.model
-                case 'Jumping2D'
-                    load(trialInfo.path);
-                    
-                    targNum = trialInfo.targNum;
-                    jumpNum = trialInfo.jumpNum;
-                            
-                    param.jump.takeoffFrame = JA.TOFrame(jumpNum,targNum);
-                    param.jump.landFrame = JA.LandFrame(jumpNum,targNum);
-                    param.jump.locationLand = JA.locationLand(12*(targNum-1) + jumpNum);
-                    param.jump.grade = JA.jumpGrades(12*(targNum-1) + jumpNum);
-                    param.jump.modelLinks = JA.modelLinks;
-                    param.jump.world2base = squeeze(JA.world2base((12*(targNum-1) + jumpNum),:,:));
-                    param.jump.bad2d = JA.bad2D(jumpNum,targNum);
-                    
-                    % Crop out initial and final calibration motions
-%                     takeoffFrames = 200; % 1 second before takeoff frame ...
-%                     landFrames = 300; % ... to 1.5 seconds after takeoff frame (~ 1 second after landing)
-%                     framesToUse = (param.jump.takeoffFrame-takeoffFrames):(param.jump.takeoffFrame+landFrames);
-                    
-                    takeoffFrames = 0; % 1 second before takeoff frame ...
-                    landFrames = 0; % ... to 1.5 seconds after takeoff frame (~ 1 second after landing)
-                    framesToUse = (param.jump.takeoffFrame-takeoffFrames):(param.jump.landFrame+landFrames);
-                    
-                    if(numel(framesToUse) < size(JA.targ(targNum).jump(jumpNum).data,1))
-                        fullDataAngles = JA.targ(targNum).jump(jumpNum).data(framesToUse,:);
-                    else % jump recording stops sooner than "landFrames" after TOFrame
-                        fullDataAngles = JA.targ(targNum).jump(jumpNum).data( framesToUse(1):end ,:);
-                        fullDataAngles = [fullDataAngles; repmat(fullDataAngles(end,:),(numel(framesToUse) - size(fullDataAngles,1)),1)]; % repeat last joint angle measurement for remainder of frames
-                    end
-                    
-                    % keep only a subset of the joint angles
-                    qInds = [];
-                    allJointStr = {model.model.joints.name}';
-                    for indQ = 1:length(allJointStr)
-                        qInds(indQ) = find(ismember(model.modelJointNameRemap, allJointStr{indQ}));
-                    end
-                    
-                    % also, negate the following joints since they're past
-                    % the flip
-                    qFlip = fullDataAngles;
-%                     jointsToFlip = {'rankle_jDorsiflexion', 'rknee_jExtension', 'rhip_jFlexion'};
-% %                     jointsToFlip = {'rankle_jDorsiflexion', 'rknee_jExtension', 'rhip_jFlexion', 'back_jFB', 'rjoint1'};
-%                     for indQ = 1:length(jointsToFlip)
-%                         qIndsFlip(indQ) = find(ismember(model.modelJointNameRemap, jointsToFlip{indQ}));
-%                         qFlip(:, qIndsFlip(indQ)) = -fullDataAngles(:, qIndsFlip(indQ));
-%                     end
-                    
-                    dt = 0.005;
-                    time = dt*(0:(size(qFlip, 1)-1));
-                    qRaw = qFlip(:, qInds);
-                    q = filter_dualpassBW(qRaw, 0.04, 0, 5);
-                    
-                    dqRaw = calcDerivVert(q, dt);
-                    dq = filter_dualpassBW(dqRaw, 0.04, 0, 5);
-                    %             dq = dqRaw;
-                    
-                    % don't filter ddq and tau to keep
-                    ddqRaw = calcDerivVert(dq, dt);
-                    %             ddq = filter_dualpassBW(ddqRaw, 0.04, 0, 5);
-                    ddq = ddqRaw;
-                    
-                    tauRaw = zeros(size(q));
-                    for indTime = 1:length(time) % recalc torque given redistributed masses
-                        %                 model.updateState(q(indTime, :), dq(indTime, :));
-                        tauRaw(indTime, :) = model.inverseDynamicsQDqDdq(q(indTime, :), dq(indTime, :), ddq(indTime, :));
-                    end
-                    
-                    %             tau = filter_dualpassBW(tauRaw, 0.04, 0, 5);
-                    tau = tauRaw;
-                    
-                    %             states = [q dq];
-                    states = encodeState(q, dq);
-                    control = tau;
-                    
-                    trajT = time';
-                    trajU = control;
-                    trajX = states;
-                    
-                otherwise
-                    load(trialInfo.path);
-                    
-                    % keep only the joint angles corresponding
-                    qInds = [];
-                    allJointStr = {model.model.joints.name}';
-                    
-                    for indQ = 1:length(allJointStr)
-                        qInds(indQ) = find(ismember(saveVar.jointLabels, allJointStr{indQ}));
-                    end
-                    
-                    time = saveVar.time;
-                    qRaw = saveVar.jointAngle.array(:, qInds);
-                    q = filter_dualpassBW(qRaw, 0.04, 0, 5);
-                    
-                    dqRaw = calcDerivVert(q, saveVar.dt);
-                    dq = filter_dualpassBW(dqRaw, 0.04, 0, 5);
-                    %             dq = dqRaw;
-                    
-                    % don't filter ddq and tau to keep
-                    ddqRaw = calcDerivVert(dq, saveVar.dt);
-                    %             ddq = filter_dualpassBW(ddqRaw, 0.04, 0, 5);
-                    ddq = ddqRaw;
-                    
-                    tauRaw = zeros(size(q));
-                    for indTime = 1:length(time) % recalc torque given redistributed masses
-                        %                 model.updateState(q(indTime, :), dq(indTime, :));
-                        tauRaw(indTime, :) = model.inverseDynamicsQDqDdq(q(indTime, :), dq(indTime, :), ddq(indTime, :));
-                    end
-                    
-                    %             tau = filter_dualpassBW(tauRaw, 0.04, 0, 5);
-                    tau = tauRaw;
-                    
-                    %             states = [q dq];
-                    states = encodeState(q, dq);
-                    control = tau;
-                    
-                    trajT = time';
-                    trajU = control;
-                    trajX = states;
-            end
-            
-         otherwise
-             inputPath = char(trialInfo.path);
-             %inputPath = char(sprintf('%s%s', trialInfo.path, trialInfo.name));
-             
-            data = cell2mat(struct2cell(load(inputPath)));
-            time = data(:,1);
-            tau = data(:,2:numDofs+1);
-            statesRaw = data(:, numDofs+2:end);
-            
-            q = statesRaw(:, 1:numDofs);
-            dq = statesRaw(:, (numDofs+1):end);
-            states = encodeState(q, dq);
-            control = tau;
-             
-            % Approximate trajectories using splines
-            trajT = linspace(0,1,1001);
-            trajU = interp1(time, control, trajT,'spline');
-            trajX = interp1(time, states, trajT,'spline');
-    end    
-    
-    if ~isempty(trialInfo.runInds)
-        frameInds = trialInfo.runInds(1):trialInfo.runInds(2);
-    else
-        frameInds = 1:length(trajT);
-    end
-    
-    if max(frameInds) > length(trajT)
-        frameInds = frameInds(1):length(trajT);
-    end
-    
-    if 1
-        mdl = model.model;
-        vis = rlVisualizer('vis',640,480);
-        mdl.forwardPosition();
-        vis.addModel(mdl);
-        vis.addMarker('x-axis', [1 0 0], [0.2 0.2 0.2 1]);
-        vis.addMarker('y-axis', [0 1 0], [0.2 0.2 0.2 1]);
-        vis.addMarker('z-axis', [0 0 1], [0.2 0.2 0.2 1]);
-        vis.update();
-        
-%         mdl.base = 'world'; % ok
-%         mdl.base = 'pframe0'; % ok
-%         mdl.base = 'rframe0'; % ok
-%         mdl.base = 'mid_asis';
-%         mdl.base = 'rhip0';
-%         mdl.base = 'rtoe0';
-        
-%         q(:, 1:3) = zeros(size(q(:, 1:3)));
-%         qFull = filter_dualpassBW(fullDataAngles, 0.04, 0, 5);
-%         qFull(:, 1) = qFull(:, 1) + 0.4;
-%         mdl_old = model.model_old;
-%         vis.addModel(mdl_old);
-        
-        for i = 1:length(trajT)
-            mdl.position = q(i, :);
-            mdl.forwardPosition();
-            
-%             mdl_old.position = qFull(i, :);
-%             mdl_old.forwardPosition();
-            
-            vis.update();
-            pause(0.05);
-        end
-    end
-end
-
 function [progressVar, processSecondaryVar, precalcGradient] = calcWinLenAndH(trajT, trajX, trajU, dt, ioc, startInd, precalcGradient, trialInfo)
     lenTraj = size(trajX, 1);
+    
+    progressVar = [];
+    processSecondaryVar = [];
     
     H1 = [];
     H2 = [];
@@ -459,6 +207,7 @@ function [progressVar, processSecondaryVar, precalcGradient] = calcWinLenAndH(tr
     frameIndsFullRange = (startInd-trialInfo.maxWinLen):(startInd+trialInfo.maxWinLen);
     frameIndsFullRange = frameIndsFullRange(frameIndsFullRange > 0);
     frameIndsFullRange = frameIndsFullRange(frameIndsFullRange <= trialInfo.frameInds(end)+trialInfo.maxWinLen);
+    frameIndsFullRange = frameIndsFullRange(frameIndsFullRange <= length(trajT));
     
     precalcGradient = precalculateGradient_pushpop(trajX, trajU, ioc, precalcGradient, frameIndsFullRange);
     
@@ -686,10 +435,12 @@ function precalcGradient = precalculateGradient_pushpop(trajX, trajU, ioc, preca
     % generate the new frame
     newFrameInd = frameInds(end)+1;
    
-    [tempGrad.df_dx, tempGrad.df_du, tempGrad.dp_dx, tempGrad.dp_du] = ...
-        getGradient(trajX, trajU, newFrameInd, ioc);
-    
-    precalcGradient(newFrameInd) = tempGrad;
-
-    fprintf('Removed %uth H1/H2 and adding %uth H1/H2... ', priorInd, newFrameInd);
+    if newFrameInd <= length(trajX)
+        [tempGrad.df_dx, tempGrad.df_du, tempGrad.dp_dx, tempGrad.dp_du] = ...
+            getGradient(trajX, trajU, newFrameInd, ioc);
+        
+        precalcGradient(newFrameInd) = tempGrad;
+        
+        fprintf('Removed %uth H1/H2 and adding %uth H1/H2... ', priorInd, newFrameInd);
+    end
 end
