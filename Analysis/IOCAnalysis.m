@@ -1,8 +1,12 @@
 function IOCAnalysis()
     setPaths();
     
-    perturbAmount = 1e-3;
-    residualThreshold = 1e-2; % 0.1%
+    perturbAmount = [1e-1 1e-2 1e-3 1e-4];
+    residualThreshold = [1e1 1e0 1e-1 1e-2 1e-3 1e-4 1e-5]; % 0.1
+%         perturbAmount = [1e-1];
+%     residualThreshold = [1e-5 1e-3]; % 0.1
+    % residual_percent = abs(residual_peturb - residual_baseline)/residual_baseline;
+    % residual_percent < residualThreshold
 
     
     nowstr = datestr(now, 'yyyymmdd_HHMMSS');
@@ -42,7 +46,7 @@ function IOCAnalysis()
             
             matData = assembleData(currSubPath);
             
-            suffix = [dirPath(i).name '_' matData.trialInfo.runName '_' matData.trialInfo.templateName];
+            suffix = [dirPath(i).name '_' matData.trialInfo.runName '_' matData.trialInfo.templateName]
 
 %             try
                 % plot results
@@ -55,11 +59,79 @@ function IOCAnalysis()
 %                 plotting_individual(matData, outputPathFig1, outputPathCsv, masterPathCsv);
 %                 plotting_cumulative(matData, outputPathFig2, outputPathFig3, outputPathCsv, masterPathCsv);
                 
+                overallInds = 0;
+                faceColours = brewermap(8, 'paired');
+                
                 % load data and perturb
-                outputPathFig1 = fullfile(basePath, ['fig_perturb_single_' suffix]);
-                outputPathFig2 = fullfile(basePath, ['fig_perturb_combined_' suffix]);
-                peturbWeights_single(matData, outputPathFig1, perturbAmount, residualThreshold);
-                peturbWeights_combined(matData, outputPathFig2, perturbAmount, residualThreshold);
+                for ind_perturbAmount = 1:length(perturbAmount)
+                    for ind_residual = 1:length(residualThreshold)
+                        overallInds = overallInds + 1;
+                        currPerturb(overallInds) = perturbAmount(ind_perturbAmount);
+                        currResidual(overallInds) = residualThreshold(ind_residual);
+                        
+                        suffix2 = [suffix '_' num2str(ind_perturbAmount) '_' num2str(ind_residual)];
+                        outputPathFig1 = fullfile(basePath, ['fig_perturb_single_' suffix2]);
+                        outputPathFig2 = fullfile(basePath, ['fig_perturb_combined_' suffix2]);
+                        %                        peturbWeights_single(matData, outputPathFig1, currPerturb, currResidual);
+                        [t{overallInds}, weights_cum_cum{overallInds}, weights_blocks{overallInds}, weight_labels{overallInds}] = ...
+                            peturbWeights_combined(matData, outputPathFig2, currPerturb(overallInds), currResidual(overallInds), faceColours);
+                    end
+                end
+                
+                outputPathFig = fullfile(basePath, ['fig_perturb_combinedGridWeight_' suffix]);
+                h1 = figure;
+                for ind_overallInds = 1:overallInds
+                    ax(ind_overallInds) = subplot(length(perturbAmount), length(residualThreshold), ind_overallInds);
+                    
+                    area_ax = area(t{ind_overallInds}, weights_cum_cum{ind_overallInds});
+                    ylim([0 1]);
+                    title(['P' num2str(currPerturb(ind_overallInds)) ' T' num2str(currResidual(ind_overallInds))]);
+                    for ind_face = 1:length(area_ax)
+                        area_ax(ind_face).FaceColor = faceColours(ind_face, :);
+                    end
+                end
+                linkaxes(ax);
+                xlim([0 t{1}(end)]);
+                legend(weight_labels{end},'AutoUpdate','off');
+                
+                saveas(h1, outputPathFig, 'fig');
+                saveas(h1, outputPathFig, 'png');
+                close(h1);
+                
+                outputPathFig = fullfile(basePath, ['fig_perturb_combinedGridRemoval_' suffix]);
+                h1 = figure;
+                for ind_overallInds = 1:overallInds
+                    ax(ind_overallInds) = subplot(length(perturbAmount), length(residualThreshold), ind_overallInds);
+                    
+                    for ind1 = 1:size(weights_blocks{ind_overallInds}, 3)
+                        ack = weights_blocks{ind_overallInds}(:, :, ind1);
+                        v = [];
+                        f = [];
+                        for ind2 = 1:size(ack, 1)
+                            hold on;
+                            currF = size(f, 1)*4;
+                            if ack(ind2, 1) == 0
+                                continue
+                            end
+                            x1 = t{ind_overallInds}(ack(ind2, 1));
+                            x2 = t{ind_overallInds}(ack(ind2, 2));
+                            y1 = ind1-1;
+                            y2 = ind1;
+                            v = [v; x1 y1; x1 y2; x2 y2; x2 y1];
+                            f = [f; [1:4]+currF];
+                        end
+                        
+                        patch('Faces', f, 'Vertices', v, 'FaceColor', faceColours(ind1, :));
+                    end
+                  title(['P' num2str(currPerturb(ind_overallInds)) ' T' num2str(currResidual(ind_overallInds))]);
+                  end
+                linkaxes(ax);
+                xlim([0 t{1}(end)]);
+                legend(weight_labels{end},'AutoUpdate','off');
+                
+                saveas(h1, outputPathFig, 'fig');
+                saveas(h1, outputPathFig, 'png');
+                close(h1);
                 
 %             catch err
 %                 err
@@ -166,7 +238,7 @@ function peturbWeights_single(matData, outputPathFig1, perturbAmount, residualTh
     close(h1);
 end 
 
-function peturbWeights_combined(matData, outputPathFig2, perturbAmount, residualThreshold)
+function [t, weights_cum_cum, weights_blocks, featureLabels] = peturbWeights_combined(matData, outputPathFig2, perturbAmount, residualThreshold, faceColours)
     progressVar = matData.progress;
     progressVarSecondary = matData.processSecondaryVar;
     featureLabels = matData.featureLabels;
@@ -215,6 +287,28 @@ function peturbWeights_combined(matData, outputPathFig2, perturbAmount, residual
         weights_modified_cumulative(i, :) = x(1:lenWeights) / sum(x(1:lenWeights));
     end
     
+     for i = 1:size(residual_keep_cumulative, 2)
+        finds = find(residual_keep_cumulative(:, i) == 1);
+        
+        currVal = finds(1);
+        weightBlockInds = 1;
+        weights_blocks(weightBlockInds, 1, i) = currVal;
+         
+        for j = 2:length(finds)
+            if finds(j) == currVal+1
+                currVal = finds(j);
+            else
+                weights_blocks(weightBlockInds, 2, i) = currVal;
+                
+                weightBlockInds = weightBlockInds + 1;
+                currVal = finds(j);
+                weights_blocks(weightBlockInds, 1, i) = currVal;
+            end
+        end
+        
+        weights_blocks(weightBlockInds, 2, i) = finds(end);
+     end
+    
     % reassemble into progress var
     [weights_cum_orig, winCount_orig] = cumWeights(t, progressVar, featureLabels);
     
@@ -236,51 +330,66 @@ function peturbWeights_combined(matData, outputPathFig2, perturbAmount, residual
     area_ax = area(t, weights);
     ylim([0 1]);
     title('Individual original weights');
+    for i = 1:length(area_ax)
+        area_ax(i).FaceColor = faceColours(i, :);
+    end
     
     ax(2) = subplot(4,2,2);
-    area(t, weights_cum_orig);
+    area_ax = area(t, weights_cum_orig);
     ylim([0 1]);
     title('Cumulative original weights');
+    for i = 1:length(area_ax)
+        area_ax(i).FaceColor = faceColours(i, :);
+    end
     
     ax(3) = subplot(4,2,3);
-    area(t, weights_modified_cumulative); hold on;
+    area_ax = area(t, weights_modified_cumulative); hold on;
     plot(t(entriesZeros), -0.1*ones(size(entriesZeros)), 'LineStyle', 'none', 'Marker', '.', 'Color', 'k');
     ylim([-0.2 1]);
     title(['Individual multiple-reduced weights, ' num2str(length(entriesZeros)) ' of ' num2str(numel(t)) ' all below thres']);
+    for i = 1:length(area_ax)
+        area_ax(i).FaceColor = faceColours(i, :);
+    end
     
     ax(4) = subplot(4,2,4);
-    area(t, weights_cum_cum);
+    area_ax = area(t, weights_cum_cum);
     ylim([0 1]);
     title('Cumulative multiple-reduced weights');
+    for i = 1:length(area_ax)
+        area_ax(i).FaceColor = faceColours(i, :);
+    end
     
-    ax(5) = subplot(4,2,5);
-%     hold on;
-%     for i = 1:lenWeights
-%         keptInds = find(residual_keep_cumulative(:, i) == 1);
-%         plot_ax = plot(t(keptInds), i*ones(size(keptInds)), 'LineStyle', 'none', 'Marker', '.', 'Color', area_ax(i).FaceColor);
-%     end
-    area(t, residual_keep_cumulative);
-    ylim([0 lenWeights+1]);
-    title('Entries Kept');
-    
-    ax(6) = subplot(4,2,6);
+    ax(5) = subplot(4,2,6);
     plot(t, q);
     
-    ax(7) =  subplot(4,2,7); hold on
-    for i = 1:lenWeights
-        keptInds = find(residual_keep_cumulative(:, i) == 1);
-        plot_ax = plot(t(keptInds), i*ones(size(keptInds)), 'LineStyle', 'none', 'Marker', '.', 'Color', area_ax(i).FaceColor);
-    end
-%     area(t, residual_keep_cumulative);
-    ylim([0 lenWeights+1]);
-    title('Entries Kept');
-     
-    ax(8) = subplot(4,2,8); hold on
+    ax(6) = subplot(4,2,5); hold on
 %     c = categorical(featureLabels);
     for i = 1:length(featureLabels)
         barh(categorical(featureLabels(i)), totalCf(i)*dt, 'FaceColor', area_ax(i).FaceColor);
     end
-%     line([numel(t) numel(t)], [0 length(featureLabels)]);
+
+    ax(7) = subplot(4, 2, [7 8]);
+    for i = 1:size(residual_keep_cumulative, 2)  
+        ack = weights_blocks(:, :, i);
+        v = [];
+        f = [];
+        for j = 1:size(ack, 1)
+            hold on;
+            currF = size(f, 1)*4;
+            if ack(j, 1) == 0
+                continue
+            end
+            x1 = t(ack(j, 1));
+            x2 = t(ack(j, 2));
+            y1 = i-1;
+            y2 = i;
+            v = [v; x1 y1; x1 y2; x2 y2; x2 y1];
+            f = [f; [1:4]+currF];
+        end
+        
+        patch('Faces', f, 'Vertices', v, 'FaceColor', area_ax(i).FaceColor);
+    end
+    title(['Entries Kept, perturb by ' num2str(perturbAmount) ', remove threshold on ' num2str(residualThreshold)]);
 
     linkaxes(ax, 'x');
     xlim([0 t(end)]);
@@ -443,8 +552,13 @@ function [weights_all, winCount_all] = cumWeights(t, progressVar, featureLabels)
             end
         end
         
-        weights_all(i, :) = mean(weightAtI, 1);
-        winCount_all(i, :) = size(weightAtI, 1);
+        if ~isempty(weightAtI)
+            weights_all(i, :) = mean(weightAtI, 1);
+            winCount_all(i, :) = size(weightAtI, 1);
+        else
+            weights_all(i, :) = zeros(size(progressVar(1).weights));
+            winCount_all(i, :) = 0;
+        end
     end
 end
 
