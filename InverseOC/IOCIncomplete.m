@@ -14,17 +14,24 @@ dt = traj.trajT(2) - traj.trajT(1);
 
 %-----------------cut the orginal trajectory manually----------------
 % % set the savefule for the trimed trajectory
-cutSavePath=fullfile('..\Data\IOC\CuttedData\',trialInfo.runName(1:11));
+% cutSavePath=fullfile('..\Data\IOC\CuttedData\SquatMotion\',trialInfo.runName(1:11));   % for squatting motion
+cutSavePath=fullfile('..\Data\IOC\CuttedData\Jumping',trialInfo.runName(1:26));   % for the jumping motion
 % %----------this section can also be commented if not needed----------
 % checkMkdir(cutSavePath) %check the folder exists
 % clearFlag=true; %clear or not the existing files
 % VisualizerCutter(model,traj,cutSavePath,clearFlag)
+% VisualizerCutter(model,traj)
 % return 
 
 %-----------------read the cropped trajectory------------------------
 % read the cropped trajectory.
+% if the squating motion
 % files=dir(fullfile(cutSavePath,'\down\*.mat'));
+% files=dir(fullfile(cutSavePath,'\down\*.mat'));
+
+% if the jumping motion
 files=dir(fullfile(cutSavePath,'\*.mat'));
+
 for k=1:length(files)
     dataPath=fullfile(files(k).folder,files(k).name);
     trajSet(k)=load(dataPath);
@@ -52,6 +59,7 @@ for k=1:length(trajSet)
     for i=1:traj.frameInds(end)
         % print
         clc
+        sprintf('Data: %s', trialInfo.runName)
         sprintf('Prcentage: %.1f%%', i/traj.frameInds(end)*100)
         currX=traj.trajX(i,:);
         currU=traj.trajU(i,:);
@@ -70,7 +78,8 @@ for k=1:length(trajSet)
         [H1,H2]=assembleH1H2(Jx, Ju, Px, Pu, H1,H2);
         H=[H1, H2];
         % check the status of the recovery matrix
-        Hhat = H;
+%         Hhat = H;
+        Hhat = H/norm(H,'fro');
         % solve for the weights from the current recvoery matirx
         [weights, ~] = computeWeights(Hhat, trialInfo.numWeights);
         % solve for the rank index from the current recovery matrix
@@ -122,112 +131,169 @@ end
 end
 
 function traj = loadData(trialInfo, model)
-% Load state, control and time trajectories to be analyzed.
-load(trialInfo.path);
 
-% keep only the joint angles corresponding
-qInds = [];
-allJointStr = {model.model.joints.name}';
-
-for indQ = 1:length(allJointStr)
-    qInds(indQ) = find(ismember(saveVar.jointLabels, allJointStr{indQ}));
+switch trialInfo.baseModel
+    case {'IIT','Jumping'}
+        switch trialInfo.model
+            case 'Jumping2D'
+                load(trialInfo.path);   
+                targNum = trialInfo.targNum;
+                jumpNum = trialInfo.jumpNum;
+                % Lin's code
+%                 param.jump.takeoffFrame = JA.TOFrame(jumpNum,targNum);
+%                 param.jump.landFrame = JA.LandFrame(jumpNum,targNum);
+%                 param.jump.locationLand = JA.locationLand(12*(targNum-1) + jumpNum);
+%                 param.jump.grade = JA.jumpGrades(12*(targNum-1) + jumpNum);
+%                 param.jump.modelLinks = JA.modelLinks;
+%                 param.jump.world2base = squeeze(JA.world2base((12*(targNum-1) + jumpNum),:,:));
+%                 param.jump.bad2d = JA.bad2D(jumpNum,targNum);
+%                 
+%                 % Crop out initial and final calibration motions
+%                 %                     takeoffFrames = 200; % 1 second before takeoff frame ...
+%                 %                     landFrames = 300; % ... to 1.5 seconds after takeoff frame (~ 1 second after landing)
+%                 %                     framesToUse = (param.jump.takeoffFrame-takeoffFrames):(param.jump.takeoffFrame+landFrames);
+%                 
+%                 takeoffFrames = 0; % 1 second before takeoff frame ...
+%                 landFrames = 0; % ... to 1.5 seconds after takeoff frame (~ 1 second after landing)
+%                 framesToUse = (param.jump.takeoffFrame-takeoffFrames):(param.jump.landFrame+landFrames);
+%                 
+%                 if(numel(framesToUse) < size(JA.targ(targNum).jump(jumpNum).data,1))
+%                     fullDataAngles = JA.targ(targNum).jump(jumpNum).data(framesToUse,:);
+%                 else % jump recording stops sooner than "landFrames" after TOFrame
+%                     fullDataAngles = JA.targ(targNum).jump(jumpNum).data( framesToUse(1):end ,:);
+%                     fullDataAngles = [fullDataAngles; repmat(fullDataAngles(end,:),(numel(framesToUse) - size(fullDataAngles,1)),1)]; % repeat last joint angle measurement for remainder of frames
+%                 end
+%                
+                % Wanxin's modification
+                fullDataAngles = JA.targ(targNum).jump(jumpNum).data;
+                
+                % keep only a subset of the joint angles
+                qInds = [];
+                allJointStr = {model.model.joints.name}';
+                for indQ = 1:length(allJointStr)
+                    qInds(indQ) = find(ismember(model.modelJointNameRemap, allJointStr{indQ}));
+                end
+                
+                % also, negate the following joints since they're past
+                % the flip
+                qFlip = fullDataAngles;
+                %                     jointsToFlip = {'rankle_jDorsiflexion', 'rknee_jExtension', 'rhip_jFlexion'};
+                % %                     jointsToFlip = {'rankle_jDorsiflexion', 'rknee_jExtension', 'rhip_jFlexion', 'back_jFB', 'rjoint1'};
+                %                     for indQ = 1:length(jointsToFlip)
+                %                         qIndsFlip(indQ) = find(ismember(model.modelJointNameRemap, jointsToFlip{indQ}));
+                %                         qFlip(:, qIndsFlip(indQ)) = -fullDataAngles(:, qIndsFlip(indQ));
+                %                     end
+                
+                dt = 0.005;
+                time = dt*(0:(size(qFlip, 1)-1));
+                qRaw = qFlip(:, qInds);
+                q = filter_dualpassBW(qRaw, 0.04, 0, 5);
+                
+                dqRaw = calcDerivVert(q, dt);
+                dq = filter_dualpassBW(dqRaw, 0.04, 0, 5);
+                %             dq = dqRaw;
+                
+                % don't filter ddq and tau to keep
+                ddqRaw = calcDerivVert(dq, dt);
+                %             ddq = filter_dualpassBW(ddqRaw, 0.04, 0, 5);
+                ddq = ddqRaw;
+                
+                tauRaw = zeros(size(q));
+                for indTime = 1:length(time) % recalc torque given redistributed masses
+                    %                 model.updateState(q(indTime, :), dq(indTime, :));
+                    tauRaw(indTime, :) = model.inverseDynamicsQDqDdq(q(indTime, :), dq(indTime, :), ddq(indTime, :));
+                end
+                
+                %             tau = filter_dualpassBW(tauRaw, 0.04, 0, 5);
+                tau = tauRaw;
+                
+                %             states = [q dq];
+                states = encodeState(q, dq);
+                control = tau;
+                
+                trajT = time';
+                trajU = control;
+                trajX = states;
+                
+                %output
+                traj.q=q;
+                traj.dq=dq;
+                traj.ddq=ddq;
+                traj.tau=tau;
+                traj.states=states;
+                traj.control=control;
+                traj.time=time';
+                traj.trajT=trajT;
+                traj.trajU=trajU;
+                traj.trajX=trajX;
+                traj.frameInds=1:length(time);
+                
+                
+            otherwise %case of "IIT"
+                 % Load state, control and time trajectories to be analyzed.
+                load(trialInfo.path);
+                
+                % keep only the joint angles corresponding
+                qInds = [];
+                allJointStr = {model.model.joints.name}';
+                
+                for indQ = 1:length(allJointStr)
+                    qInds(indQ) = find(ismember(saveVar.jointLabels, allJointStr{indQ}));
+                end
+                
+                
+                if ~isempty(trialInfo.runInds)
+                    frameInds = trialInfo.runInds(1):trialInfo.runInds(2);
+                else
+                    frameInds = 1:length(saveVar.time);
+                end
+                
+                if max(frameInds) > length(saveVar.time)
+                    frameInds = frameInds(1):length(saveVar.time);
+                end
+                
+                time = saveVar.time;
+                qRaw = saveVar.jointAngle.array(:, qInds);
+                q = filter_dualpassBW(qRaw, 0.04, 0, 5);
+                
+                dqRaw = calcDerivVert(q, saveVar.dt);
+                dq = filter_dualpassBW(dqRaw, 0.04, 0, 5);
+                
+                % don't filter ddq and tau to keep
+                ddqRaw = calcDerivVert(dq, saveVar.dt);
+                ddq = ddqRaw;
+                
+                tauRaw = zeros(size(q));
+                for indTime = 1:length(time) % recalc torque given redistributed masses
+                    tauRaw(indTime, :) = model.inverseDynamicsQDqDdq(q(indTime, :), dq(indTime, :), ddq(indTime, :));
+                end
+                
+                tau = tauRaw;
+                states = encodeState(q, dq);
+                control = tau;
+                trajT = time;
+                trajU = control;
+                trajX = states;
+                
+                % outputs
+                traj.q=q;
+                traj.dq=dq;
+                traj.ddq=ddq;
+                traj.tau=tau;
+                traj.states=states;
+                traj.control=control;
+                traj.time=time';
+                traj.trajT=trajT;
+                traj.trajU=trajU;
+                traj.trajX=trajX;
+                traj.frameInds=frameInds;
+                traj.qLabels={'joint_hip', 'joint_knee', 'joint_ankle'};
+        end
+end
+        
 end
 
 
-if ~isempty(trialInfo.runInds)
-    frameInds = trialInfo.runInds(1):trialInfo.runInds(2);
-else
-    frameInds = 1:length(saveVar.time);
-end
-
-if max(frameInds) > length(saveVar.time)
-    frameInds = frameInds(1):length(saveVar.time);
-end
-
-time = saveVar.time;
-qRaw = saveVar.jointAngle.array(:, qInds);
-%this should be noted because the raw q data is in the order of  'joint_hip', 'joint_knee', 'joint_ankle'
-%also the joint_ankle is compesated by an offset pi/2 to make the data into
-%vertical.
-% qRaw=flip(qRaw,2)+[pi/2*ones(size(qRaw,1),1), zeros(size(qRaw,1),1), zeros(size(qRaw,1),1) ];
-% qRaw=flip(qRaw,2);
-q = filter_dualpassBW(qRaw, 0.04, 0, 5);
-
-dqRaw = calcDerivVert(q, saveVar.dt);
-dq = filter_dualpassBW(dqRaw, 0.04, 0, 5);
-
-% don't filter ddq and tau to keep
-ddqRaw = calcDerivVert(dq, saveVar.dt);
-ddq = ddqRaw;
-
-tauRaw = zeros(size(q));
-for indTime = 1:length(time) % recalc torque given redistributed masses
-    tauRaw(indTime, :) = model.inverseDynamicsQDqDdq(q(indTime, :), dq(indTime, :), ddq(indTime, :));
-end
-
-tau = tauRaw;
-states = encodeState(q, dq);
-control = tau;
-trajT = time;
-trajU = control;
-trajX = states;
-
-% outputs
-traj.q=q;
-traj.dq=dq;
-traj.ddq=ddq;
-traj.tau=tau;
-traj.states=states;
-traj.control=control;
-traj.time=time';
-traj.trajT=trajT;
-traj.trajU=trajU;
-traj.trajX=trajX;
-traj.frameInds=frameInds;
-traj.qLabels={'joint_hip', 'joint_knee', 'joint_ankle'};
-
-
-
-end
-
-function Subvisualizer(traj)
-
-if(isempty(traj))
-    return
-end
-trajq=traj.q;
-
-% define the link for the ankle, knee, and hip.
-Lankle=1;
-Lknee=1;
-Lhip=1;
-
-% drawing
-figure(1)
-for i=traj.frameInds
-    q_hip=trajq(i,1);
-    q_knee=trajq(i,2);
-    q_ankle=trajq(i,3)+pi/2;
-    Pankle=[0, 0];
-    Pknee=Pankle+[Lankle*cos(q_ankle), Lankle*sin(q_ankle)];
-    Phip=Pknee+[Lknee*cos(q_ankle+q_knee), Lknee*sin(q_ankle+q_knee)];
-    Phead=Phip+[Lhip*cos(q_hip+q_knee+q_ankle), Lhip*sin(q_hip+q_knee+q_ankle)];
-    %plot
-    clf
-    axis([-5, 5, 0, 5]);
-    hold on
-    plot([Pankle(1), Pknee(1)],[Pankle(2), Pknee(2)]);
-    text(Pankle(1),Pankle(2),'ankle')
-    plot([Pknee(1),Phip(1)],[Pknee(2),Phip(2)]);
-    text(Pknee(1),Pknee(2),'knee')
-    plot([Phip(1),Phead(1)],[Phip(2),Phead(2)]);
-    text(Phip(1),Phip(2),'hip')
-    text(Phead(1),Phead(2),'head')
-    hold off 
-    pause(0.001)
-end
-
-end
 
 function VisualizerCutter(model,traj,cutSavePath,clearFlag)
 
@@ -335,7 +401,7 @@ if cut && ~isempty(indMat)
                 segTraj.trajU=traj.trajU(t,:);
                 segTraj.trajX=traj.trajX(t,:);
                 segTraj.frameInds=traj.frameInds(t)-traj.frameInds(t(1))+1;
-                segTraj.qLabels=traj.qLabels;
+%                 segTraj.qLabels=traj.qLabels;
                 savefile=strcat(cutSavePath,'\Segment_',num2str(traj.trajT(t(1))),'_',num2str(traj.trajT(t(end))),'.mat');
                 save(savefile,'segTraj')
                 disp('Saved!')

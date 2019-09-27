@@ -1,0 +1,146 @@
+{
+	"runParamGlobal":
+	[
+        {
+            "templateName":"",  
+			"baseModel":"",   
+            "modelType":"rl",
+			"model":"",			
+			"gamma": [],
+			"dimWeights": [5],
+			"maxWinLen": [400],
+            "hWinAdvFlag": "forward",
+			"runInds": [1, 5005],
+            "displayInfo":"final",
+            "saveIntermediate": [300],
+            "weights":[]         
+		}
+	],
+	
+	"runTemplates":
+	[		
+        {
+			"templateName":"3DOF_3CF_Forward",  
+			"baseModel":"Jumping",            
+			"model":"Jumping2D",		
+            "candidateFeatures": 
+			[
+				{
+					"feature":"angAccelSumSqu", 
+					"jointNames": ["rhip_jFlexion", "rknee_jExtension", "rankle_jDorsiflexion"],
+                    "normCoeff": [1]
+				}, 
+				{
+					"feature":"angJerkSumSqu", 
+					"jointNames": ["rhip_jFlexion", "rknee_jExtension", "rankle_jDorsiflexion"],
+                    "normCoeff": [1]
+				}, 
+				{
+					"feature":"angPowerSumSqu", 
+					"jointNames": ["rhip_jFlexion", "rknee_jExtension", "rankle_jDorsiflexion"],
+                    "normCoeff": [1]
+				}
+			]
+		},
+		
+		{
+			"templateName":"3DOF_4CF_Forward",  
+			"baseModel":"Jumping",            
+			"model":"Jumping2D",			
+            "candidateFeatures": 
+			[
+				{
+					"feature":"angAccelSumSqu", 
+					"jointNames": ["rhip_jFlexion", "rknee_jExtension", "rankle_jDorsiflexion"],
+                    "normCoeff": [1]
+				}, 
+				{
+					"feature":"angJerkSumSqu", 
+					"jointNames": ["rhip_jFlexion", "rknee_jExtension", "rankle_jDorsiflexion"],
+                    "normCoeff": [1]
+				}, 
+				{
+					"feature":"torqueSumSqu", 
+					"jointNames": ["rhip_jFlexion", "rknee_jExtension", "rankle_jDorsiflexion"],
+                    "normCoeff": [1]
+				},
+				{
+					"feature":"angPowerSumSqu", 
+					"jointNames": ["rhip_jFlexion", "rknee_jExtension", "rankle_jDorsiflexion"],
+                    "normCoeff": [1]
+				}
+			]
+		},
+		
+		
+		{
+        	"templateName":"3DOF_6CF_Forward",  
+			"baseModel":"Jumping",            
+			"model":"Jumping2D",
+            "candidateFeatures": 
+			[
+				{
+					"feature":"angAccelSumSqu", 
+					"jointNames": ["rhip_jFlexion", "rknee_jExtension", "rankle_jDorsiflexion"],
+                    "normCoeff": [1]
+				},
+				{
+					"feature":"angJerkSumSqu", 
+					"jointNames": ["rhip_jFlexion", "rknee_jExtension", "rankle_jDorsiflexion"],
+                    "normCoeff": [1]
+				}, 
+				{
+					"feature":"torqueSumSqu", 
+					"jointNames": ["rhip_jFlexion", "rknee_jExtension", "rankle_jDorsiflexion"],
+                    "normCoeff": [1]
+				},
+				{
+					"feature":"torqueVeloSumSqu", 
+					"jointNames": ["rhip_jFlexion", "rknee_jExtension", "rankle_jDorsiflexion"],
+                    "normCoeff": [1]
+				}, 
+				{
+					"feature":"kineticEnergySumSqu",
+                    "normCoeff": [1]
+				}, 		
+				{
+					"feature":"angPowerSumSqu", 
+					"jointNames": ["rhip_jFlexion", "rknee_jExtension", "rankle_jDorsiflexion"],
+                    "normCoeff": [1]
+				}
+			]
+		}
+		
+		
+	],
+	
+	"Files":
+	[
+        {
+            "runName":"Subj02_Targ01_Jump01_03DOF_03CF",
+            "basepath":"D:/aslab/data_IK",
+            "subpath":"Jumping_To_Target_Data_Collection_2018/data_2D/JA_P02_2D.mat",
+			"runTemplate": "3DOF_3CF_Forward",
+			"targNum": [1],
+			"jumpNum": [1]
+        },
+		
+		{
+            "runName":"Subj02_Targ01_Jump01_03DOF_04CF",
+            "basepath":"D:/aslab/data_IK",
+            "subpath":"Jumping_To_Target_Data_Collection_2018/data_2D/JA_P02_2D.mat",
+			"runTemplate": "3DOF_4CF_Forward",
+            "targNum": [1],
+			"jumpNum": [1]
+        },
+		
+		{
+            "runName":"Subj02_Targ01_Jump01_03DOF_06CF",
+            "basepath":"D:/aslab/data_IK",
+            "subpath":"Jumping_To_Target_Data_Collection_2018/data_2D/JA_P02_2D.mat",
+			"runTemplate": "3DOF_6CF_Forward",
+            "targNum": [1],
+			"jumpNum": [1]
+        }
+	]
+}
