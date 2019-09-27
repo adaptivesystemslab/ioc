@@ -1,0 +1,80 @@
+{
+	"runParamGlobal":
+	[
+        {
+            "templateName":"",  
+			"baseModel":"",   
+            "modelType":"rl",
+			"model":"",			
+			"gamma": [],
+			"dimWeights": [5],
+			"maxWinLen": [400],
+            "hWinAdvFlag": "forward",
+			"runInds": [1, 5005],
+            "displayInfo":"final",
+            "saveIntermediate": [300],
+            "weights":[]         
+		}
+	],
+	
+	"runTemplates":
+	[		
+		{
+        	"templateName":"Template1",  
+			"baseModel":"Jumping",            
+			"model":"Jumping",	
+            "candidateFeatures": 
+			[
+				{
+					"feature":"cartJerkSumSqu", 
+					"frameNames": ["frame_rhip_0"],
+                    "normCoeff": [1]
+				}, 
+				{
+					"feature":"angAccelSumSqu", 
+					"jointNames": ["joint_rhip_0", "joint_rknee_0", "joint_rankle_0"],
+                    "normCoeff": [1]
+				},
+				{
+					"feature":"angJerkSumSqu", 
+					"jointNames": ["joint_rhip_0", "joint_rknee_0", "joint_rankle_0"],
+                    "normCoeff": [1]
+				}, 
+				{
+					"feature":"torqueSumSqu", 
+					"jointNames": ["joint_rhip_0", "joint_rknee_0", "joint_rankle_0"],
+                    "normCoeff": [1]
+				},
+				{
+					"feature":"torqueVeloSumSqu", 
+					"jointNames": ["joint_rhip_0", "joint_rknee_0", "joint_rankle_0"],
+                    "normCoeff": [1]
+				}, 
+				{
+					"feature":"torqueAccelSumSqu", 
+					"jointNames": ["joint_rhip_0", "joint_rknee_0", "joint_rankle_0"],
+                    "normCoeff": [1]
+				}, 
+				{
+					"feature":"kineticEnergySumSqu",
+                    "normCoeff": [1]
+				}, 		
+				{
+					"feature":"angPowerSumSqu", 
+					"jointNames": ["joint_rhip_0", "joint_rknee_0", "joint_rankle_0"],
+                    "normCoeff": [1]
+				}
+			]
+		}
+	],
+	
+	"Files":
+	[
+        {
+            "runName":"Subj1_3DOF_8CF",
+            "basepath":"D:/aslab/data_IK",
+            "subpath":"Jumping_To_Target_Data_Collection_2018/2018_08_22/matEkfIk/target_70_1_3_P03_mocap_mocap_X00_floating_matchall_clean_ekfIk.mat",
+			"runTemplate": "Template1"
+        }
+	]
+}
