@@ -5,10 +5,10 @@ function IOCIncomplete(trialInfo,savePath)
 model = getModel(trialInfo);
 % get basic information for IOC
 trialInfo.numWeights = length(trialInfo.candidateFeatures);
-trialInfo.numDofs = model.totalActuatedJoints;
+trialInfo.numDofs = model.getModelDof();
 %-----------------load the original trajectory data------------------
 % load and generate the trajectory for the whole horizon
-traj= loadData(trialInfo, model);
+[q, dq, ddq, tau, trajT, trajU, trajX, traj] = model.loadData(trialInfo);
 % Initialization of threshold and condition variables
 dt = traj.trajT(2) - traj.trajT(1);
 
