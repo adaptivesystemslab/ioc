@@ -17,7 +17,7 @@ classdef ModelRL < handle
             numDof = length(obj.model.joints);
         end
         
-        function [q, dq, ddq, tau, trajT, trajU, trajX] = loadData(obj, trialInfo)
+        function [q, dq, ddq, tau, trajT, trajU, trajX, traj] = loadData(obj, trialInfo)
             load(trialInfo.path);
             
             % keep only the joint angles corresponding
@@ -55,6 +55,18 @@ classdef ModelRL < handle
             trajT = time';
             trajU = control;
             trajX = states;
+            
+            traj.q=q;
+            traj.dq=dq;
+            traj.ddq=ddq;
+            traj.tau=tau;
+            traj.states=states;
+            traj.control=control;
+            traj.time=time';
+            traj.trajT=trajT;
+            traj.trajU=trajU;
+            traj.trajX=trajX;
+            traj.frameInds=1:length(time);            
         end
         
         function addEndEffectors(obj, frameStr)

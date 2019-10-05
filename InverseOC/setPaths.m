@@ -3,10 +3,12 @@ addpath(genpath('../InverseOC/'));
 
 addpath(genpath('../Utils/')); 
 addpath(genpath('../Logic/'));
-addpath(genpath('../Libraries/colours/'));
 addpath(genpath('../Libraries/Robotics_Corke/'));
 % addpath(genpath('../Libraries/rvctools'));
 addpath(genpath('../Libraries/rl'));
+
+addpath(genpath('../Libraries/brewermap/'));
+addpath(genpath('../Libraries/kakearney-boundedline-pkg-50f7e4b/'));
 
 % addpath(genpath('../../kalmanfilter/General_FKEKF/DynamicsModelMatlab/MatlabWrapper'));
 % addpath(genpath('../../kalmanfilter/ik_framework/instance_iit'));

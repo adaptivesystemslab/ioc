@@ -98,6 +98,8 @@ function IOCRun(trialInfo, savePath)
         saveInds(1, 2) = frameInds(end);
     end
     
+    trialInfo
+    
     % precalc singular H1 and H2 matrix
     precalcGradient = precalculateGradient_initialize(trajX, trajU, ioc, 1:trialInfo.maxWinLen, trialInfo);
     
@@ -370,9 +372,12 @@ function [progressVar] = checkHMatrix(H, fullWinInds, trialInfo, hitMaxWinLen)
     switch trialInfo.displayInfo
         case 'verbose'
             % Display information
-            fprintf('Obs frames %i:%i of max %u/%u, rank: %0.2f/%0.2f, error: %0.3f, code: %u,%u,%u ', ...
-                fullWinInds(1), fullWinInds(end), length(fullWinInds), trialInfo.maxWinLen, rank, trialInfo.gamma, error(1), ...
-                rankPassCode(1), rankPassCode(2), rankPassCode(3) );
+% % %             fprintf('Obs frames %i:%i of max %u/%u, rank: %0.2f/%0.2f, error: %0.3f, code: %u,%u,%u ', ...
+% % %                 fullWinInds(1), fullWinInds(end), length(fullWinInds), trialInfo.maxWinLen, rank, trialInfo.gamma, error(1), ...
+% % %                 rankPassCode(1), rankPassCode(2), rankPassCode(3) );
+
+           fprintf('[%] Obs frames %i:%i of max %u/%u, rank: %0.2f/%0.2f, ', ...
+                datestr(now), fullWinInds(1), fullWinInds(end), length(fullWinInds), trialInfo.maxWinLen, rank, trialInfo.gamma);
 
             fprintf('Weights: ');
             for j = 1:trialInfo.numWeights
@@ -441,6 +446,6 @@ function precalcGradient = precalculateGradient_pushpop(trajX, trajU, ioc, preca
         
         precalcGradient(newFrameInd) = tempGrad;
         
-        fprintf('Removed %uth H1/H2 and adding %uth H1/H2... ', priorInd, newFrameInd);
+% % %         fprintf('Removed %uth H1/H2 and adding %uth H1/H2... ', priorInd, newFrameInd);
     end
 end
