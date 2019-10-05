@@ -10,19 +10,19 @@ setPaths();
 
 %% Define internal settings
 overwriteFiles = 1;
-% confi gFilePath = '../Data/IOC_gitupload_test.json';
-configFilePath = '../Data/IOC_gitupload_jumping2D.json';
-% configFilePath = '../Data/IOC_IITFatigue_test.json';
+configFilePath = '../Data_json/IOC_Healthy1.json';
+% configFilePath = '../Data_json/IOC_gitupload_jumping2D.json';
+% configFilePath = '../Data_json/IOC_IITFatigue_test.json';
 % if ~exist('configFilePath', 'var')
-%         configFilePath = '../Data/IOC_IITFatigue_Full.json';
-% %        configFilePath = '../Data/IOC_IITFatigue_Sharcnet_subj05.json';
-% %        configFilePath = '../Data/IOC_IITFatigue_Sharcnet_subj09.json';
-%        configFilePath = '../Data/IOC_IITFatigue_Sharcnet_subj10.json';
+%         configFilePath = '../Data_json/IOC_IITFatigue_Full.json';
+% %        configFilePath = '../Data_json/IOC_IITFatigue_Sharcnet_subj05.json';
+% %        configFilePath = '../Data_json/IOC_IITFatigue_Sharcnet_subj09.json';
+%        configFilePath = '../Data_json/IOC_IITFatigue_Sharcnet_subj10.json';
 % end
 
 %% Create and/or look for folder where solutions are going to be saved
 % currentDate = datestr(datetime("now"),"yyyy_mm_dd_HH_MM_SS");
-currentDate = 'result07';
+currentDate = 'result09_healthy1';
 savePath = sprintf('../Data/IOC/%s/', currentDate);
 
 %% Load json file with list of all trials on which IOC will be run
@@ -71,8 +71,6 @@ for i=n
     trialInfo.windowWidth = IOCInstanceNew.winSize;
     trialInfo.delta = IOCInstanceNew.delta;
     trialInfo.path = targetPath;
-    
-    trialInfo
     
     subsavePath = fullfile(savePath, trialInfo.runName);
     [status, alreadyExist] = checkMkdir(subsavePath);

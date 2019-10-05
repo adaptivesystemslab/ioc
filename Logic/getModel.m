@@ -29,6 +29,14 @@ function model = getModel(trialInfo)
                     model = ModelRL_Jumping_KW(); 
                     model.loadModel(xmlPath, trialInfo);
              end
+             
+        case 'Healthy1'
+            switch trialInfo.model
+                case '4DOF'
+                    xmlPath = '../Libraries/rl/ik_framework/instance_healthy1/model/healthy1_v3_rev1_sag.xml';
+                    model = ModelRL_Healthy1();
+                    model.loadModel(xmlPath, trialInfo.path);
+            end
     end
 end
 

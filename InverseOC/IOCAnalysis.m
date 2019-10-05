@@ -1,17 +1,26 @@
 function IOCAnalysis()
     setPaths();
     
-    perturbAmount = [1e-1 1e-2 1e-3 1e-4];
-    residualThreshold = [1e1 1e0 1e-1 1e-2 1e-3 1e-4 1e-5]; % 0.1
-%         perturbAmount = [1e-1];
-%     residualThreshold = [1e-5 1e-3]; % 0.1
-    % residual_percent = abs(residual_peturb - residual_baseline)/residual_baseline;
-    % residual_percent < residualThreshold
+%     perturbAmount = [1e-1 1e-2 1e-3 1e-4];
+%     perturbAmount = [1e-1 1e-2 1e-3 1e-4]*1e4;
+%     residualThreshold = [1e1 1e0 1e-1 1e-2 1e-3 1e-4 1e-5]; % 0.1
+%     residualThreshold = [1e1 1e0 1e-1 1e-2 1e-3 1e-4 1e-5]/1e7; 
 
+%     perturbAmount = 10.^[-6:6];
+%     residualThreshold = 10.^[-10:10];
+    perturbAmount = [1e-1 1e-2];
+    residualThreshold = [1e-1];
+
+    maxAcross = 4;
+    maxDown = 7;
     
-    nowstr = datestr(now, 'yyyymmdd_HHMMSS');
+    faceColours = brewermap(8, 'paired');
+    
+    nowstr = datestr(now, 'yyyymmddHHMMSS');
     basePath = 'D:\aslab_gitlab\expressive-ioc\Data\IOC\';
-    masterPathCsv = ['D:\aslab_gitlab\expressive-ioc\Data\IOC\a_summary_' nowstr '.csv'];
+    outputPath = ['D:\aslab_gitlab\expressive-ioc\Data\IOC\plot_' nowstr];
+    masterPathCsv = [outputPath '\a_summary.csv'];
+    checkMkdir(outputPath);
     
     % iterate through all the folders in bathpath to produce figures and
     % table summary of the results
@@ -40,7 +49,7 @@ function IOCAnalysis()
                 continue;
             end
             
-%             if ~strcmpi(dirCurrSubPath(j).name, 'Subj1_3DOF_8CF')
+%             if ~strcmpi(dirCurrSubPath(j).name, 'Subj1_7DOF_8CF')
 %                 continue;
 %             end
             
@@ -52,93 +61,214 @@ function IOCAnalysis()
                 % plot results
 %                 fprintf('%s\n', suffix);
 %                 outputPathFig1 = fullfile(basePath, ['fig_results_individual_' suffix]);
-%                 outputPathFig2 = fullfile(basePath, ['fig_results_cumulativeAllPass_' suffix]);
-%                 outputPathFig3 = fullfile(basePath, ['fig_results_cumulativeRankPass_' suffix]);
-%                 outputPathCsv = fullfile(basePath, ['csv_' suffix]);
+                outputPathFig2 = fullfile(outputPath, ['fig_results_cumulativeAllPass_' suffix]);
+                outputPathFig3 = fullfile(outputPath, ['fig_results_cumulativeRankPass_' suffix]);
+                outputPathCsv = fullfile(outputPath, ['csv_' suffix]);
 %                 csv_populate(matData, masterPathCsv);
 %                 plotting_individual(matData, outputPathFig1, outputPathCsv, masterPathCsv);
-%                 plotting_cumulative(matData, outputPathFig2, outputPathFig3, outputPathCsv, masterPathCsv);
-                
-                overallInds = 0;
-                faceColours = brewermap(8, 'paired');
+                plotting_cumulative(matData, outputPathFig2, outputPathFig3, outputPathCsv, masterPathCsv, faceColours);
                 
                 % load data and perturb
                 for ind_perturbAmount = 1:length(perturbAmount)
                     for ind_residual = 1:length(residualThreshold)
-                        overallInds = overallInds + 1;
-                        currPerturb(overallInds) = perturbAmount(ind_perturbAmount);
-                        currResidual(overallInds) = residualThreshold(ind_residual);
-                        
-                        suffix2 = [suffix '_' num2str(ind_perturbAmount) '_' num2str(ind_residual)];
+                        suffix_suffix = [num2str(ind_perturbAmount) '_' num2str(ind_residual)];
+                        suffix2 = [suffix '_' suffix_suffix];
+                        outputPathFig1 = fullfile(outputPath, ['fig_perturb_single_' suffix2]);
+                        outputPathFig2 = fullfile(outputPath, ['fig_perturb_combined_' suffix2]);
+                        suffix2 = [suffix '_' num2str(ind_perturbAmount) '_' num2str(ind_residual)]
                         outputPathFig1 = fullfile(basePath, ['fig_perturb_single_' suffix2]);
                         outputPathFig2 = fullfile(basePath, ['fig_perturb_combined_' suffix2]);
                         %                        peturbWeights_single(matData, outputPathFig1, currPerturb, currResidual);
-                        [t{overallInds}, weights_cum_cum{overallInds}, weights_blocks{overallInds}, weight_labels{overallInds}] = ...
-                            peturbWeights_combined(matData, outputPathFig2, currPerturb(overallInds), currResidual(overallInds), faceColours);
-                    end
-                end
-                
-                outputPathFig = fullfile(basePath, ['fig_perturb_combinedGridWeight_' suffix]);
-                h1 = figure;
-                for ind_overallInds = 1:overallInds
-                    ax(ind_overallInds) = subplot(length(perturbAmount), length(residualThreshold), ind_overallInds);
-                    
-                    area_ax = area(t{ind_overallInds}, weights_cum_cum{ind_overallInds});
-                    ylim([0 1]);
-                    title(['P' num2str(currPerturb(ind_overallInds)) ' T' num2str(currResidual(ind_overallInds))]);
-                    for ind_face = 1:length(area_ax)
-                        area_ax(ind_face).FaceColor = faceColours(ind_face, :);
-                    end
-                end
-                linkaxes(ax);
-                xlim([0 t{1}(end)]);
-                legend(weight_labels{end},'AutoUpdate','off');
-                
-                saveas(h1, outputPathFig, 'fig');
-                saveas(h1, outputPathFig, 'png');
-                close(h1);
-                
-                outputPathFig = fullfile(basePath, ['fig_perturb_combinedGridRemoval_' suffix]);
-                h1 = figure;
-                for ind_overallInds = 1:overallInds
-                    ax(ind_overallInds) = subplot(length(perturbAmount), length(residualThreshold), ind_overallInds);
-                    
-                    for ind1 = 1:size(weights_blocks{ind_overallInds}, 3)
-                        ack = weights_blocks{ind_overallInds}(:, :, ind1);
-                        v = [];
-                        f = [];
-                        for ind2 = 1:size(ack, 1)
-                            hold on;
-                            currF = size(f, 1)*4;
-                            if ack(ind2, 1) == 0
-                                continue
-                            end
-                            x1 = t{ind_overallInds}(ack(ind2, 1));
-                            x2 = t{ind_overallInds}(ack(ind2, 2));
-                            y1 = ind1-1;
-                            y2 = ind1;
-                            v = [v; x1 y1; x1 y2; x2 y2; x2 y1];
-                            f = [f; [1:4]+currF];
-                        end
                         
-                        patch('Faces', f, 'Vertices', v, 'FaceColor', faceColours(ind1, :));
+                        [t{ind_perturbAmount, ind_residual}, weights_cum_cum{ind_perturbAmount, ind_residual}, weights_blocks{ind_perturbAmount, ind_residual}, ...
+                            weight_labels{ind_perturbAmount, ind_residual}, residual_keep_cumulative{ind_perturbAmount, ind_residual}] = ...
+                            peturbWeights_combined(matData, outputPathFig2, perturbAmount(ind_perturbAmount), residualThreshold(ind_residual), faceColours, suffix_suffix);
                     end
-                  title(['P' num2str(currPerturb(ind_overallInds)) ' T' num2str(currResidual(ind_overallInds))]);
-                  end
-                linkaxes(ax);
-                xlim([0 t{1}(end)]);
-                legend(weight_labels{end},'AutoUpdate','off');
+                end
                 
-                saveas(h1, outputPathFig, 'fig');
-                saveas(h1, outputPathFig, 'png');
-                close(h1);
+                figFileName = fullfile(outputPath, ['a_fig_perturb_combinedGridWeight_' suffix]);
+                plotWeights_Grid(figFileName, perturbAmount, residualThreshold, maxAcross, maxDown, faceColours,  ...
+                    t, weights_cum_cum, residual_keep_cumulative, [], weight_labels);
                 
+                figFileName = fullfile(outputPath, ['a_fig_perturb_combinedGridRemoval_' suffix]);
+                plotWeights_Grid(figFileName, perturbAmount, residualThreshold, maxAcross, maxDown, faceColours,  ...
+                    t, [], residual_keep_cumulative, weights_blocks, weight_labels);
+                       
 %             catch err
 %                 err
 %                 close all;
 %             end
         end
     end
+end
+
+function plotWeights_Grid(figFileName, perturbAmount, residualThreshold, maxAcross, maxDown, faceColours,  ...
+    t, weights_cum_cum, residual_keep_cumulative, weights_blocks, weight_labels)
+
+    numRecsAcross = length(perturbAmount);
+    numRecsDown = length(residualThreshold);
+    winSepAcross = ceil(numRecsAcross/maxAcross);
+    winSepDown = ceil(numRecsDown/maxDown);
+    numFigs = (winSepAcross)*(winSepDown);
+    
+    % cue up the figures
+    for ind_figNum = 1:numFigs
+        h_grid(ind_figNum) = figure('Position', [22.6000 52.2000 1.8608e+03 924]);
+    end
+    
+    % then assign the grid
+    figMat = zeros(numRecsAcross, numRecsDown);
+    currFigInd = 0;
+    for ind_x = 1:winSepAcross
+        for ind_y = 1:winSepDown
+            currFigInd = currFigInd + 1;
+            matInd_x = (ind_x-1)*maxAcross + [1:maxAcross];
+            matInd_y = (ind_y-1)*maxDown + [1:maxDown];
+
+            matInd_x = matInd_x(matInd_x <= numRecsAcross);
+            matInd_y = matInd_y(matInd_y <= numRecsDown);
+            figMat(matInd_x, matInd_y) = currFigInd;
+        end
+    end
+    
+    ind_overallInds = 0;
+%     masterout = [];
+    ax = [];
+    for ind_perturbAmount = 1:numRecsAcross
+        for ind_residual = 1:numRecsDown
+            ind_overallInds = ind_overallInds + 1;
+            ind_x = mod(ind_perturbAmount, maxAcross);
+            if ind_x == 0
+                ind_x = maxAcross;
+            end
+            ind_y = mod(ind_residual, maxDown);
+            if ind_y == 0
+                ind_y = maxDown;
+            end
+            currFig = figMat(ind_perturbAmount, ind_residual);
+            currH = h_grid(currFig);
+            figure(currH);
+            
+            left = (ind_x-1)*1/maxAcross;
+            bottom = (maxDown-ind_y)*1/maxDown;
+            width = (1/maxAcross) - 0.01;
+            height = (1/maxDown) - 0.03;
+            area_ax_pos = [left bottom width height];
+%             masterout = [masterout; currFig ind_x ind_y area_ax_pos]
+            ax(currFig, ind_overallInds) = subplot('Position', area_ax_pos);
+            
+            % insert plot
+            if ~isempty(weights_cum_cum) 
+                area_ax = area(t{ind_perturbAmount, ind_residual}, weights_cum_cum{ind_perturbAmount, ind_residual});
+                ylim([0 1]);
+                
+                for ind_face = 1:length(area_ax)
+                    area_ax(ind_face).FaceColor = faceColours(ind_face, :);
+                end
+            else
+                for ind1 = 1:size(weights_blocks{ind_perturbAmount, ind_residual}, 3)
+                    ack = weights_blocks{ind_perturbAmount, ind_residual}(:, :, ind1);
+                    v = [];
+                    f = [];
+                    for ind2 = 1:size(ack, 1)
+                        hold on;
+                        currF = size(f, 1)*4;
+                        if ack(ind2, 1) == 0
+                            continue
+                        end
+                        x1 = t{ind_perturbAmount, ind_residual}(ack(ind2, 1));
+                        x2 = t{ind_perturbAmount, ind_residual}(ack(ind2, 2));
+                        y1 = ind1-1;
+                        y2 = ind1;
+                        v = [v; x1 y1; x1 y2; x2 y2; x2 y1];
+                        f = [f; [1:4]+currF];
+                    end
+                    
+                    patch('Faces', f, 'Vertices', v, 'FaceColor', faceColours(ind1, :));
+                end
+            end
+            
+            xlim([0 t{1}(end)]);
+            
+            totalKeep = sum(residual_keep_cumulative{ind_perturbAmount, ind_residual}, 2);
+            entriesZeros = find(totalKeep == 0);
+            title(['P ' num2str(perturbAmount(ind_perturbAmount)) ' | T ' num2str(residualThreshold(ind_residual)) ...
+                ' | ABT ' num2str(length(entriesZeros)) '/' num2str(numel(t{1}))]);
+            
+            if ind_x == 1 && ind_y == 1
+                legend(weight_labels{end},'AutoUpdate','off', 'Location','northwest');
+            end
+        end
+    end
+                
+    for ind_figNum = 1:numFigs
+%         linkaxes(ax(ind_figNum, :));
+%         legend(weight_labels{end},'AutoUpdate','off');
+        
+        outputPathFig = [figFileName '_' num2str(ind_figNum)];
+        saveas(h_grid(ind_figNum), outputPathFig, 'fig');
+        saveas(h_grid(ind_figNum), outputPathFig, 'png');
+        close(h_grid(ind_figNum));
+    end
+    
+    % then make a master version of the plot
+    h = figure('Position', [22.6000 52.2000 1.8608e+03 924]);
+    ind_overallInds = 0;
+     for ind_perturbAmount = 1:numRecsAcross
+        for ind_residual = 1:numRecsDown
+            ind_overallInds = ind_overallInds + 1;
+            left = (ind_perturbAmount-1)*1/numRecsAcross;
+            bottom = (numRecsDown-ind_residual)*1/numRecsDown;
+            width = (1/numRecsAcross) - 0.01;
+            height = (1/numRecsDown) - 0.03;
+            area_ax_pos = [left bottom width height]
+            
+            ax(currFig, ind_overallInds) = subplot('Position', area_ax_pos);
+            
+             % insert plot
+            if ~isempty(weights_cum_cum) 
+                area_ax = area(t{ind_perturbAmount, ind_residual}, weights_cum_cum{ind_perturbAmount, ind_residual});
+                ylim([0 1]);
+                
+                for ind_face = 1:length(area_ax)
+                    area_ax(ind_face).FaceColor = faceColours(ind_face, :);
+                end
+            else
+                for ind1 = 1:size(weights_blocks{ind_perturbAmount, ind_residual}, 3)
+                    ack = weights_blocks{ind_perturbAmount, ind_residual}(:, :, ind1);
+                    v = [];
+                    f = [];
+                    for ind2 = 1:size(ack, 1)
+                        hold on;
+                        currF = size(f, 1)*4;
+                        if ack(ind2, 1) == 0
+                            continue
+                        end
+                        x1 = t{ind_perturbAmount, ind_residual}(ack(ind2, 1));
+                        x2 = t{ind_perturbAmount, ind_residual}(ack(ind2, 2));
+                        y1 = ind1-1;
+                        y2 = ind1;
+                        v = [v; x1 y1; x1 y2; x2 y2; x2 y1];
+                        f = [f; [1:4]+currF];
+                    end
+                    
+                    patch('Faces', f, 'Vertices', v, 'FaceColor', faceColours(ind1, :));
+                end
+            end
+            
+            xlim([0 t{1}(end)]);
+            
+            totalKeep = sum(residual_keep_cumulative{ind_perturbAmount, ind_residual}, 2);
+            entriesZeros = find(totalKeep == 0);
+            title(['P ' num2str(perturbAmount(ind_perturbAmount)) ' | T ' num2str(residualThreshold(ind_residual)) ...
+                ' | ABT ' num2str(length(entriesZeros)) '/' num2str(numel(t{1}))]);
+        end
+     end
+     
+     outputPathFig = [figFileName '_0'];
+     saveas(h_grid(ind_figNum), outputPathFig, 'fig');
+     saveas(h_grid(ind_figNum), outputPathFig, 'png');
+     close(h_grid(ind_figNum));
 end
 
 function peturbWeights_single(matData, outputPathFig1, perturbAmount, residualThreshold)
@@ -186,7 +316,7 @@ function peturbWeights_single(matData, outputPathFig1, perturbAmount, residualTh
     end
     
     % reassemble into progress var
-    [weights_cum_orig, winCount_orig] = cumWeights(t, progressVar, featureLabels);
+    [weights_cum_orig, weights_cum_orig_var, winCount_orig] = cumWeights(t, progressVar, featureLabels);
      
     for j = 1:lenWeights
         progressVarModified = progressVar;
@@ -238,7 +368,7 @@ function peturbWeights_single(matData, outputPathFig1, perturbAmount, residualTh
     close(h1);
 end 
 
-function [t, weights_cum_cum, weights_blocks, featureLabels] = peturbWeights_combined(matData, outputPathFig2, perturbAmount, residualThreshold, faceColours)
+function [t, weights_cum_cum, weights_blocks, featureLabels, residual_keep_cumulative] = peturbWeights_combined(matData, outputPathFig2, perturbAmount, residualThreshold, faceColours, suffix_suffix)
     progressVar = matData.progress;
     progressVarSecondary = matData.processSecondaryVar;
     featureLabels = matData.featureLabels;
@@ -246,6 +376,7 @@ function [t, weights_cum_cum, weights_blocks, featureLabels] = peturbWeights_com
     t = matData.t;
     q = matData.q;
     dt = matData.dt;
+    weightLabels = matData.featureLabels;
     
     % now remove all the weights, starting from the smallest magnitude one
     for i = 1:length(progressVar)
@@ -287,8 +418,13 @@ function [t, weights_cum_cum, weights_blocks, featureLabels] = peturbWeights_com
         weights_modified_cumulative(i, :) = x(1:lenWeights) / sum(x(1:lenWeights));
     end
     
-     for i = 1:size(residual_keep_cumulative, 2)
+    weights_blocks(1, 2, size(residual_keep_cumulative, 2)) = 0;
+    for i = 1:size(residual_keep_cumulative, 2)
         finds = find(residual_keep_cumulative(:, i) == 1);
+        
+        if isempty(finds)
+            continue
+        end
         
         currVal = finds(1);
         weightBlockInds = 1;
@@ -310,7 +446,7 @@ function [t, weights_cum_cum, weights_blocks, featureLabels] = peturbWeights_com
      end
     
     % reassemble into progress var
-    [weights_cum_orig, winCount_orig] = cumWeights(t, progressVar, featureLabels);
+    [weights_cum_orig, weights_cum_var_orig, winCount_orig] = cumWeights(t, progressVar, featureLabels);
     
     progressVarModified = progressVar;
     for i = 1:length(progressVarModified)
@@ -319,7 +455,7 @@ function [t, weights_cum_cum, weights_blocks, featureLabels] = peturbWeights_com
         progressVarModified(i).rankPass = [];
         progressVarModified(i).error = [];
     end
-    [weights_cum_cum, winCount_cum] = cumWeights(t, progressVarModified, featureLabels);
+    [weights_cum_cum, weights_cum_cum_var, winCount_cum] = cumWeights(t, progressVarModified, featureLabels);
     
     totalCf = sum(residual_keep_cumulative, 1);
     totalKeep = sum(residual_keep_cumulative, 2);
@@ -397,6 +533,42 @@ function [t, weights_cum_cum, weights_blocks, featureLabels] = peturbWeights_com
     saveas(h2, outputPathFig2, 'fig');
     saveas(h2, outputPathFig2, 'png');
     close(h2);
+
+    outputPathFig_all_variance = [outputPathFig2 '_var'];
+    plot_weightVar(weights_cum_cum, weights_cum_cum_var, t,q,faceColours, outputPathFig_all_variance, weightLabels);
+end
+
+function plot_weightVar(weights_all, weights_all_var, t,q,faceColours, outputPathFig_all_variance, weightLabels)
+ h = figure('Position', [488 342 560*2 420*2]);
+    for i = 1:size(weights_all, 2)+1
+        switch size(weights_all, 2)
+            case 3
+                ax(i) = subplot(2,2,i);
+            case 4
+                ax(i) = subplot(2,3,i);
+            case 8
+                ax(i) = subplot(3,3,i);
+        end
+        
+        switch i
+            case 1
+                plot(t, q);
+                title('q');
+            otherwise
+                ind_weight = i-1;
+%                 boundedline(t,weights_all(:,ind_weight), weights_all_var(:,ind_weight), 'cmap', faceColours(ind_weight, :));
+                boundedline(t,weights_all(:,ind_weight), weights_all_var(:,ind_weight), '-b');
+                title(weightLabels{ind_weight});
+                ylim([-0.25 1.25]);
+        end
+    end
+    
+    linkaxes(ax, 'x');
+    xlabel('Time [s]');
+    
+    saveas(h, outputPathFig_all_variance, 'fig');
+    saveas(h, outputPathFig_all_variance, 'png');
+    close(h);
 end
 
 function matData = assembleData(currSubPath)
@@ -467,7 +639,10 @@ function csv_populate(matData, masterPathCsv)
     fclose(fileID);
 end
 
-function h = plotting_cumulative(matData, outputPathFig_all, outputPathFig_rank, outputPathCsv, masterPathCsv)
+function h = plotting_cumulative(matData, outputPathFig_all, outputPathFig_rank, outputPathCsv, masterPathCsv, faceColours)
+    outputPathFig_all_overall = [outputPathFig_all '_overall'];
+    outputPathFig_all_variance = [outputPathFig_all '_variance'];
+    
     % load and process data
     progressVar = matData.progress;
 %     dataIndsRan = matData.frameInds;
@@ -482,8 +657,8 @@ function h = plotting_cumulative(matData, outputPathFig_all, outputPathFig_rank,
     q = matData.q(dataIndsRan, :);
     
     % the weight at each timestep is the sum of every window that overlaps with iterate
-    [weights_all, winCount_all] = cumWeights(t, progressVar, featureLabels);
-    [weights_rank, winCount_rank] = cumWeights_rankFilt(t, progressVar, featureLabels, rankThres);
+    [weights_all, weights_all_var, winCount_all] = cumWeights(t, progressVar, featureLabels);
+    [weights_rank, weights_rank_var, winCount_rank] = cumWeights_rankFilt(t, progressVar, featureLabels, rankThres);
     
     weightLabels = matData.featureLabels;
     
@@ -507,38 +682,41 @@ function h = plotting_cumulative(matData, outputPathFig_all, outputPathFig_rank,
     linkaxes(ax, 'x');
     xlabel('Time [s]');
     
-    saveas(h, outputPathFig_all, 'fig');
-    saveas(h, outputPathFig_all, 'png');
+    saveas(h, outputPathFig_all_overall, 'fig');
+    saveas(h, outputPathFig_all_overall, 'png');
     close(h);
     
-    
-        % make fig
-    h = figure('Position', [488 342 560*2 420*2]); 
-    ax(1) = subplot(311);
-    plot(t, q);
-    ylabel('Joint Angle [rad]');
-    title('Averaged weight windows (Rank threshold)');
-    
-    ax(2) = subplot(312);
-    area(t, weights_rank);
-    lgd = legend(weightLabels,'AutoUpdate','off');
-    lgd.NumColumns = 1;
-    ylabel('Weights [0:1]');
-    
-    ax(3) = subplot(313);
-    area(t, winCount_rank);
-    ylabel('WinCountUsed');
-    
-    linkaxes(ax, 'x');
-    xlabel('Time [s]');
-    
-    saveas(h, outputPathFig_rank, 'fig');
-    saveas(h, outputPathFig_rank, 'png');
-    close(h);
+    % make fig
+    plot_weightVar(weights_all, weights_all_var, t,q,faceColours, outputPathFig_all_variance, weightLabels);
+     
+    %         % make fig
+    %     h = figure('Position', [488 342 560*2 420*2]);
+    %     ax(1) = subplot(311);
+    %     plot(t, q);
+    %     ylabel('Joint Angle [rad]');
+    %     title('Averaged weight windows (Rank threshold)');
+    %
+    %     ax(2) = subplot(312);
+    %     area(t, weights_rank);
+    %     lgd = legend(weightLabels,'AutoUpdate','off');
+    %     lgd.NumColumns = 1;
+    %     ylabel('Weights [0:1]');
+    %
+    %     ax(3) = subplot(313);
+    %     area(t, winCount_rank);
+    %     ylabel('WinCountUsed');
+    %
+%     linkaxes(ax, 'x');
+%     xlabel('Time [s]');
+%     
+%     saveas(h, outputPathFig_rank, 'fig');
+%     saveas(h, outputPathFig_rank, 'png');
+%     close(h);
 end
 
-function [weights_all, winCount_all] = cumWeights(t, progressVar, featureLabels)
-    weights_all = zeros(length(t), length(featureLabels));
+function [weights_mean_all, weights_var_all, winCount_all] = cumWeights(t, progressVar, featureLabels)
+    weights_mean_all = zeros(length(t), length(featureLabels));
+    weights_var_all = zeros(length(t), length(featureLabels));
     winCount_all = zeros(length(t), 1);
     
     % the weight at each timestep is the sum of every window that overlaps with iterate
@@ -553,17 +731,20 @@ function [weights_all, winCount_all] = cumWeights(t, progressVar, featureLabels)
         end
         
         if ~isempty(weightAtI)
-            weights_all(i, :) = mean(weightAtI, 1);
+            weights_mean_all(i, :) = mean(weightAtI, 1);
+            weights_var_all(i, :) = std(weightAtI, 0, 1);
             winCount_all(i, :) = size(weightAtI, 1);
         else
-            weights_all(i, :) = zeros(size(progressVar(1).weights));
+            weights_mean_all(i, :) = zeros(size(progressVar(1).weights));
+            weights_var_all(i, :) = zeros(size(progressVar(1).weights));
             winCount_all(i, :) = 0;
         end
     end
 end
 
-function [weights_rank, winCount_rank] = cumWeights_rankFilt(t, progressVar, featureLabels, rankThres)
-    weights_rank = zeros(length(t), length(featureLabels));
+function [weights_mean_rank, weights_var_rank, winCount_rank] = cumWeights_rankFilt(t, progressVar, featureLabels, rankThres)
+    weights_mean_rank = zeros(length(t), length(featureLabels));
+    weights_var_rank = zeros(length(t), length(featureLabels));
     winCount_rank = zeros(length(t), 1);
     
     for i = 1:length(t)
@@ -575,10 +756,11 @@ function [weights_rank, winCount_rank] = cumWeights_rankFilt(t, progressVar, fea
         end
         
         if size(weightAtI, 1) > 0
-            weights_rank(i, :) = mean(weightAtI, 1);
+            weights_mean_rank(i, :) = mean(weightAtI, 1);
+            weights_var_rank(i, :) = std(weightAtI, 1);
             winCount_rank(i, :) = size(weightAtI, 1);
         else
-            weights_rank(i, :) = zeros(1, length(matData.featureLabels));
+            weights_mean_rank(i, :) = zeros(1, length(matData.featureLabels));
             winCount_rank(i, :) = 0;
         end
     end
