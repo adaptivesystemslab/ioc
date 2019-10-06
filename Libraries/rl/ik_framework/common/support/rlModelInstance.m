@@ -520,7 +520,7 @@ classdef rlModelInstance < handle % < rlModel
             obj.loadModelFromModelStruct(obj.model, modelStruct, sensorList);
         end
         
-        function loadModelFromModelSpecsNoSensor(obj, filepathModel, filepathModelParam, updateDynamicModel)
+        function saveVar = loadModelFromModelSpecsNoSensor(obj, filepathModel, filepathModelParam, updateDynamicModel)
             load(filepathModelParam);
             
             if ~exist('updateDynamicModel', 'var')
