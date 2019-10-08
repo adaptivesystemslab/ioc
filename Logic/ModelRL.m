@@ -100,6 +100,10 @@ classdef ModelRL < handle
             x = obj.model.sensors(i).transform(1:3, 4);
         end
         
+        function R = getEndEffectorOrientation(obj, i)
+            R = obj.model.sensors(i).transform(1:3, 1:3);
+        end
+        
         function dx = getEndEffectorVelocity(obj, i)
             obj.forwardKinematics();
             obj.model.calculateSensorJacobians();

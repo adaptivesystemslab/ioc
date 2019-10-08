@@ -22,6 +22,7 @@ classdef featuresCalc < handle
         frameInds
         referenceInds
         referenceVals
+        referenceTimes
         windowLength
         
         normCoeff
@@ -66,6 +67,7 @@ classdef featuresCalc < handle
             addOptional(externalParamParser, 'refFrameNames', []);            
             addOptional(externalParamParser, 'windowLength', []);
             addOptional(externalParamParser, 'normCoeff', 1);
+            addOptional(externalParamParser, 'refTimes', []);
 
             parse(externalParamParser, jsonBlob);
             jsonParsed = externalParamParser.Results;
@@ -75,6 +77,7 @@ classdef featuresCalc < handle
             obj.frameNames = jsonParsed.frameNames(:);
             obj.bodyNames = jsonParsed.bodyNames(:);
             obj.refFrameNames = jsonParsed.refFrameNames;
+            obj.referenceTimes = jsonParsed.refTimes(:);
             
             obj.weights = jsonParsed.weights;
             obj.windowLength = jsonParsed.windowLength;
@@ -317,11 +320,85 @@ classdef featuresCalc < handle
                     obj.bf(1) = basisFeaturesEnums.x;
                     obj.cf = @(basisFeatures) ...
                         maxAbs(obj.calcCfSpaceDirectional(basisFeatures));
+                    
+                case featuresEnums.cartDistToTarget
+                    obj.bf(1) = basisFeaturesEnums.x;
+                    obj.cf = @(basisFeatures)...
+                        sumSqu(obj.calcCfCartDistToTarget(basisFeatures));
+                    if numel(obj.refFrameNames) ~= numel(obj.frameNames) 
+                        % as in, there's many framenames but only one ref
+                        for i = 2:length(obj.frameNames)
+                            obj.refFrameNames{i} = obj.refFrameNames{1}; % TO REVIEW
+                        end
+                    end
+                    obj.referenceInds = featuresCalc.setFrameInds(fullFrameNames, obj.refFrameNames);
+                    
+                case featuresEnums.rotDistToTarget
+                    obj.bf(1) = basisFeaturesEnums.R;
+                    obj.cf = @(basisFeatures)...
+                        sumSqu(obj.calcCfRotDistToTarget(basisFeatures));
+                    if numel(obj.refFrameNames) ~= numel(obj.frameNames) 
+                        % as in, there's many framenames but only one ref
+                        for i = 2:length(obj.frameNames)
+                            obj.refFrameNames{i} = obj.refFrameNames{1}; % TO REVIEW
+                        end
+                    end
+                    obj.referenceInds = featuresCalc.setFrameInds(fullFrameNames, obj.refFrameNames);
                               
                 otherwise
                     error('featuresCalc not defined');
             end
         end
+        
+        function specialize(obj, fullJointNames, fullFrameNames, dynamicModel, trajU, trajX)
+            switch obj.feature
+                case featuresEnums.cartDistToTarget
+                    % Get cartesian position of reference frame at given timeframe
+                    lenDofs = lenght(obj.refFrameNames);
+                    lenTimes = lenght(obj.referenceTimes);
+                    obj.referenceVals = zeros(lenTimes, lenDofs * 3);
+                    default_state = dynamicModel.getState();
+                    
+                    for i = 1:lenTimes
+                        time = obj.referenceTimes(i);
+                        targetState = trajX(time,:);
+                        dynamicModel.updateState(targetState(1:size(targetState,1)/2),targetState(size(targetState,1)/2+1:end));
+                        dynamicModel.forwardKinematics();
+                            for j=1:lenDofs
+                                inds = obj.referenceInds((1:3)+(j-1)*3);
+                                targetInd = find(ismember(fullFrameNames, obj.refFrameNames(j)));
+                                obj.referenceVals(i,inds) = dynamicModel.getEndEffectorPosition(targetInd);
+                            end
+                    end
+                    % Set dynamic model state to default
+                    dynamicModel.updateState(default_state(1:length(default_state)/2),default_state(length(default_state)/2+1:end)); 
+                    
+               case featuresEnums.rotDistToTarget
+                    % Get cartesian position of reference frame at given timeframe
+                    lenDofs = lenght(obj.refFrameNames);
+                    lenTimes = lenght(obj.referenceTimes);
+                    obj.referenceVals = zeros(3, lenDofs * 3, lenTimes);
+                    default_state = dynamicModel.getState();
+                    
+                    for i = 1:lenTimes
+                        time = obj.referenceTimes(i);
+                        targetState = trajX(time,:);
+                        dynamicModel.updateState(targetState(1:size(targetState,1)/2),targetState(size(targetState,1)/2+1:end));
+                        dynamicModel.forwardKinematics();
+                            for j=1:lenDofs
+                                inds = obj.referenceInds((1:3)+(j-1)*3);
+                                targetInd = find(ismember(fullFrameNames, obj.refFrameNames(j)));
+                                obj.referenceVals(:,inds, i) = dynamicModel.getEndEffectorPosition(targetInd);
+                            end
+                    end
+                    % Set dynamic model state to default
+                    dynamicModel.updateState(default_state(1:length(default_state)/2),default_state(length(default_state)/2+1:end)); 
+                
+                otherwise
+                    error('featuresCalc not defined');
+            end
+        end
+        
         
         function cf = calcFeature(obj, features)
             % use the features calculated from the
@@ -687,6 +764,53 @@ classdef featuresCalc < handle
                 cf(i, :) = (features.dq(i, :) * features.M(:, :, i) * features.dq(i, :)')';
             end
         end
+        
+        function cf = calcCfCartDisToTarget(obj, features)
+            lenTime = size(features.x, 1);
+            lenRefTimes = length(obj.referenceTimes); % We assume refFrameNames and frameNames have same lenght and share same order
+            lenDofs = length(obj.refFrameNames);
+            cf = zeros(lenTime, 1);
+            
+            for i = 1:lenTime
+                cfVal = 0;
+                for j = 1:lenRefTimes
+                    for k= 1:lenDofs
+                        inds = obj.frameInds((1:3)+(k-1)*3);
+                        rInds = obj.referenceInds((1:3)+(k-1)*3);
+                        curPose = features.x(i,inds);
+                        refPose = obj.refVals(j,rInds);
+                        % Here we consider that distances are computed by
+                        % tuples (i.e., 1st frame in frameInds with 1st frame
+                        % in refFrames). In case of several target poses, we
+                        % add all distances (this definition needs to be
+                        % reviewed)
+                        cfVal = cfVal + norm(refPose - curPose); 
+                    end
+                end
+                cf(i,:) = cfVal;
+            end
+        end
+        
+        function cf = calcCfRotDisToTarget(obj, features)
+            lenTime = size(features.x, 1);
+            lenRefTimes = length(obj.referenceTimes); % We assume refFrameNames and frameNames have same lenght and share same order
+            lenDofs = length(obj.refFrameNames);
+            cf = zeros(lenTime, 1);
+            
+            for i = 1:lenTime
+                cfVal = 0;
+                for j = 1:lenRefTimes
+                    for k= 1:lenDofs
+                        inds = obj.frameInds((1:3)+(k-1)*3);
+                        rInds = obj.referenceInds((1:3)+(k-1)*3);
+                        curPose = features.R(:,inds,i);
+                        refPose = obj.refVals(:,rInds,j);
+                        cfVal = cfVal + acos((trace(curPose*refPose') -1)/2); 
+                    end
+                end
+                cf(i,:) = cfVal;
+            end
+        end
     end
     
     methods(Static=true)
@@ -725,7 +849,7 @@ classdef featuresCalc < handle
                 x(inds) = dynamicModel.getEndEffectorPosition(sourceInds);
             end
         end
-        
+                
 %         function frameInds = parseReferenceXYZ(referenceCell)
 %             frameInds = [];
 %             if ismember(referenceCell, "x")

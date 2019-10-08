@@ -29,7 +29,18 @@ function model = getModel(trialInfo)
                     model = ModelRL_Jumping_KW(); 
                     model.loadModel(xmlPath, trialInfo);
              end
-             
+
+        case 'Expressive'
+            switch trialInfo.model
+                case 'ArmOnly'
+                    xmlPath = '../Libraries/rl/ik_framework/instance_expressive/model/ioc_v4_rightarm_fixedbase.xml';
+                    model = ModelRL_Expressive(trialInfo.model);
+                    model.loadModel(xmlPath, trailInfo.path);
+                    
+                case 'BothArms'
+                    xmlPath = '../Libraries/rl/ik_framework/instance_expressive/model/ioc_v4_upperbody.xml';
+                    model = ModelRL_Expressive(trialInfo.model);
+                    model.loadModel(xmlPath, trailInfo.path);
         case 'Healthy1'
             switch trialInfo.model
                 case '4DOF'

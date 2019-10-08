@@ -117,6 +117,10 @@ classdef IOCInstanceNew < handle
             if obj.basisFeatureFlags.M
                 M = zeros(lenFullJoint, lenFullJoint, lenTime);
             end
+            
+            if obj.basisFeatureFlags.R
+                R = zeros(3, lenFullFrame * 3, lenTime); % 3 rows x 3*numFrames x timesteps
+            end
 
             for i = 1:lenTime
                 currQ = q(i, :);
@@ -132,6 +136,13 @@ classdef IOCInstanceNew < handle
                     for j = 1:length(obj.fullFrameNames)
                         inds = (1:3)+(j-1)*3;
                         x(i, inds) = obj.dynamicModel.getEndEffectorPosition(j);
+                    end
+                end
+                
+                if obj.basisFeatureFlags.R
+                    for j = 1:length(obj.fullFrameNames)
+                        inds = (1:3)+(j-1)*3;
+                        R(:, inds, i) = obj.dynamicModel.getEndEffectorPosition(j);
                     end
                 end
                 

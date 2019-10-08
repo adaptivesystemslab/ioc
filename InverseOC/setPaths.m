@@ -4,7 +4,6 @@ addpath(genpath('../InverseOC/'));
 addpath(genpath('../Utils/')); 
 addpath(genpath('../Logic/'));
 addpath(genpath('../Libraries/Robotics_Corke/'));
-% addpath(genpath('../Libraries/rvctools'));
 addpath(genpath('../Libraries/rl'));
 
 addpath(genpath('../Libraries/brewermap/'));

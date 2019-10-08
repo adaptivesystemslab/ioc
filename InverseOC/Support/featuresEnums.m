@@ -43,5 +43,8 @@ classdef featuresEnums
         extensivenessSumSumSqu 
         
         shapeDirectionSumSqu 
+        
+        cartDistToTarget
+        rotDistToTarget
     end
 end
