@@ -13,11 +13,16 @@ overwriteFiles = 1;
 
 % Wanxin's Configration Path
 % configFilePath = '../Data_json/JinConfig/SquatMotion/IOC_IITFatigue_Test_Sub1.json';
-configFilePath = '../Data_json/JinConfig/Jumping/IOC_Github_Jumping2D_Sub2.json';
+% configFilePath = '../Data_json/JinConfig/Jumping/IOC_Github_Jumping2D_Sub2.json';
 % configFilePath = '../Data_json/LinConfig/IOC_Healthy1.json';
 
+% New data
+% configFilePath='../Data_json/JinConfig/HipFlexion/IOC_HipFlexion_Sub1.json';
+% configFilePath='../Data_json/JinConfig/KneeHipFlexion/IOC_KneeHipFlexion_Sub1.json';
+% % configFilePath='../Data_json/JinConfig/SitToStand/IOC_SitToStand_Sub1.json';
+configFilePath='../Data_json/JinConfig/Squat/IOC_Squat_Sub1.json';
+
 %% Create and/or look for folder where solutions are going to be saved
-% currentDate = datestr(datetime("now"),"yyyy_mm_dd_HH_MM_SS");
 currentDate = 'results';
 savePath = sprintf('../Data/IOC/%s/', currentDate);
 

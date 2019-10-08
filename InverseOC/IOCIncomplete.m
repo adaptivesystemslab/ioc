@@ -15,19 +15,20 @@ dt = traj.trajT(2) - traj.trajT(1);
 %-----------------cut the orginal trajectory manually----------------
 % % set the savefule for the trimed trajectory
 % cutSavePath=fullfile('..\Data\IOC\CuttedData\SquatMotion\',trialInfo.runName(1:11));   % for squatting motion
-cutSavePath=fullfile('..\Data\IOC\CuttedData\Jumping',trialInfo.runName(1:26));   % for the jumping motion
+% cutSavePath=fullfile('..\Data\IOC\CuttedData\Jumping',trialInfo.runName(1:26));   % for the jumping motion
 % %----------this section can also be commented if not needed----------
 % checkMkdir(cutSavePath) %check the folder exists
 % clearFlag=true; %clear or not the existing files
 % VisualizerCutter(model,traj,cutSavePath,clearFlag)
-% VisualizerCutter(model,traj)
-% return 
+VisualizerCutter(model,traj)
+return 
 
 %-----------------read the cropped trajectory------------------------
 % read the cropped trajectory.
 % if the squating motion
 % files=dir(fullfile(cutSavePath,'\down\*.mat'));
 % files=dir(fullfile(cutSavePath,'\down\*.mat'));
+
 
 % if the jumping motion
 files=dir(fullfile(cutSavePath,'\*.mat'));

@@ -47,27 +47,9 @@
 	"Files":
 	[
         {
-            "runName":"Subj02_HFEO_03CF",
+            "runName":"Subj01_KHEF_03CF",
             "basepath":"D:/aslab/data_IK", 
-            "subpath":"Lowerbody_healthy1_2011_IK/20190104/matEkfIk/mocap_mocap_X00_hip/HFEO_STD_PPB1/HFEO_STD_PPB1_Subject2_mocap_mocap_X00_hip_ekfId1_ekfIk.mat",
-			"runTemplate": "3DOF_3CF_Forward"
-        },
-        {
-            "runName":"Subj02_KHEF_03CF",
-            "basepath":"D:/aslab/data_IK", 
-            "subpath":"Lowerbody_healthy1_2011_IK/20190104/matEkfIk/mocap_mocap_X00_hip/KHEF_STD_PPB1/KHEF_STD_PPB1_Subject2_mocap_mocap_X00_hip_ekfId1_ekfIk.mat",
-			"runTemplate": "3DOF_3CF_Forward"
-        },
-        {
-            "runName":"Subj02_SQUA_03CF",
-            "basepath":"D:/aslab/data_IK/", 
-            "subpath":"Lowerbody_healthy1_2011_IK/20190104/matEkfIk/mocap_mocap_X00_ankle/SQUA_STD_SLO1/SQUA_STD_SLO1_Subject2_mocap_mocap_X00_ankle_ekfId1_ekfIk.mat",
-			"runTemplate": "3DOF_3CF_Forward"
-        },
-        {
-            "runName":"Subj02_STSO_03CF",
-            "basepath":"D:/aslab/data_IK", 
-            "subpath":"Lowerbody_healthy1_2011_IK/20190104/matEkfIk/mocap_mocap_X00_ankle/STSO_SIT_SLO1/STSO_SIT_SLO1_Subject2_mocap_mocap_X00_ankle_ekfId1_ekfIk.mat",
+            "subpath":"Lowerbody_healthy1_2011_IK/20190104/matEkfIk/mocap_mocap_X00_hip/KHEF_STD_PPB1/KHEF_STD_PPB1_Subject1_mocap_mocap_X00_hip_ekfId1_ekfIk.mat",
 			"runTemplate": "3DOF_3CF_Forward"
         }
 	]
