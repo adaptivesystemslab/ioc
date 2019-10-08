@@ -14,8 +14,7 @@ classdef ModelRL_Expressive < ModelRL
                 obj.modelType = type;
             end
         end
-        
-        
+
         function loadModel(obj, xmlPath, matPath)
             if strcmp(obj.modelType, "ArmOnly")
                 modelInstance = rlModelInstance_expressive_armOnly(0);

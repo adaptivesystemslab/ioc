@@ -4,7 +4,7 @@ function IOCRun(trialInfo, savePath)
     % Load to memory model and information needed for running IOC
     model = getModel(trialInfo);
     [q, dq, tau, trajT, trajU, trajX] = model.loadData(trialInfo);
-    frameInds = getFrameInds(trialInfo, trajT);
+    frameInds = model.getFrameInds(trialInfo, trajT);
     
     if 0 % visualize the data if want to check the q generated
         model.plotTrajectory(q);
@@ -52,7 +52,7 @@ function IOCRun(trialInfo, savePath)
     iocFeatures = ioc.calcFeatures(trajX(precalcAllFrames, :), trajU(precalcAllFrames, :));
     iocDynamics = ioc.calcDynamics(trajX(precalcAllFrames, :), trajU(precalcAllFrames, :));
  
-    if trialInfo.saveIntermediate > 0 % save a mat file based on the value here, to limit the size of the overall mat file
+    if trialInfo.saveIntermediate > 0 
         saveInds = [];
         for i = 1:ceil(frameInds(end)/trialInfo.saveIntermediate)
             saveInds = [saveInds; (i-1)*trialInfo.saveIntermediate i*trialInfo.saveIntermediate-1];
@@ -65,7 +65,6 @@ function IOCRun(trialInfo, savePath)
         saveInds(1, 2) = frameInds(end);
     end
     
-    % print to console so it will be saved in output logs
     trialInfo
     
     % precalc singular H1 and H2 matrix
@@ -90,6 +89,8 @@ function IOCRun(trialInfo, savePath)
         if ~isempty(progressVarTemp)
             progressVar(indFrame) = progressVarTemp;
             processSecondaryVar(indFrame) = processSecondaryVarTemp;
+        else
+            lala = 1;
         end
         
         % save either on the regular intervals, or at the last frame
@@ -413,17 +414,5 @@ function precalcGradient = precalculateGradient_pushpop(trajX, trajU, ioc, preca
         precalcGradient(newFrameInd) = tempGrad;
         
 % % %         fprintf('Removed %uth H1/H2 and adding %uth H1/H2... ', priorInd, newFrameInd);
-    end
-end
-
-function frameInds = getFrameInds(trialInfo, trajT)
-    if ~isempty(trialInfo.runInds)
-        frameInds = trialInfo.runInds(1):trialInfo.runInds(2);
-    else
-        frameInds = 1:length(trajT);
-    end
-
-    if max(frameInds) > length(trajT)
-        frameInds = frameInds(1):length(trajT);
     end
 end

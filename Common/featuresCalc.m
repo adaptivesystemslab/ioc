@@ -87,7 +87,7 @@ classdef featuresCalc < handle
         
         function initialize(obj, fullJointNames, fullFrameNames, dynamicModel)
             sumSqu = @(x) sum(x.^2, 2);
-            sumAbs = @(x) sum(abs(x), 2);
+%             sumAbs = @(x) sum(abs(x), 2);
 %             maxAbs = @(x) max(abs(x), [], 2);
             
             obj.bf = basisFeaturesEnums.dddx;  % initializing to something temp for now
@@ -364,14 +364,15 @@ classdef featuresCalc < handle
                         targetState = trajX(time,:);
                         dynamicModel.updateState(targetState(1:size(targetState,1)/2),targetState(size(targetState,1)/2+1:end));
                         dynamicModel.forwardKinematics();
-                            for j=1:lenDofs
-                                inds = obj.referenceInds((1:3)+(j-1)*3);
-                                targetInd = find(ismember(fullFrameNames, obj.refFrameNames(j)));
-                                obj.referenceVals(i,inds) = dynamicModel.getEndEffectorPosition(targetInd);
-                            end
+                        
+                        for j=1:lenDofs
+                            inds = obj.referenceInds((1:3)+(j-1)*3);
+                            targetInd = find(ismember(fullFrameNames, obj.refFrameNames(j)));
+                            obj.referenceVals(i,inds) = dynamicModel.getEndEffectorPosition(targetInd);
+                        end
                     end
                     % Set dynamic model state to default
-                    dynamicModel.updateState(default_state(1:length(default_state)/2),default_state(length(default_state)/2+1:end)); 
+                    dynamicModel.updateState(default_state(1:length(default_state)/2),default_state(length(default_state)/2+1:end));
                     
                case featuresEnums.rotDistToTarget
                     % Get cartesian position of reference frame at given timeframe

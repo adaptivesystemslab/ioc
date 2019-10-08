@@ -17,7 +17,7 @@ classdef ModelRL_Jumping_KW < ModelRL
                     obj.model.forwardPosition();
         end
         
-        function [q, dq, ddq, tau, trajT, trajU, trajX] = loadData(obj, trialInfo)
+        function [q, dq, tau, trajT, trajU, trajX] = loadData(obj, trialInfo)
             load(trialInfo.path);
             
             targNum = trialInfo.targNum;

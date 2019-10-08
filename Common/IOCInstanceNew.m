@@ -97,31 +97,32 @@ classdef IOCInstanceNew < handle
             [q, dq] = decodeState(state);
             tau = control;
             
-            % initializing the basis features variables 
+            % initializing the basis features variables and preallocate 
             if obj.basisFeatureFlags.ddq
-                ddq = zeros(lenTime, lenFullJoint);
+                basisFeatureVals.ddq = zeros(lenTime, lenFullJoint);
             end
 
             if obj.basisFeatureFlags.x
-                x = zeros(lenTime, lenFullFrame);
+                basisFeatureVals.x = zeros(lenTime, lenFullFrame);
             end
             
             if obj.basisFeatureFlags.dx
-                dx = zeros(lenTime, lenFullFrame);
+                basisFeatureVals.dx = zeros(lenTime, lenFullFrame);
             end
             
             if obj.basisFeatureFlags.ddx
-                ddx = zeros(lenTime, lenFullFrame);
+                basisFeatureVals.ddx = zeros(lenTime, lenFullFrame);
             end
             
             if obj.basisFeatureFlags.M
-                M = zeros(lenFullJoint, lenFullJoint, lenTime);
+                basisFeatureVals.M = zeros(lenFullJoint, lenFullJoint, lenTime);
             end
             
             if obj.basisFeatureFlags.R
-                R = zeros(3, lenFullFrame * 3, lenTime); % 3 rows x 3*numFrames x timesteps
+                basisFeatureVals.R = zeros(3, lenFullFrame * 3, lenTime); % 3 rows x 3*numFrames x timesteps
             end
 
+            % calciulate the features needed in a loop over time
             for i = 1:lenTime
                 currQ = q(i, :);
                 currDq = dq(i, :);
@@ -129,73 +130,45 @@ classdef IOCInstanceNew < handle
                 obj.dynamicModel.updateState(currQ, currDq);
                 
                 if obj.basisFeatureFlags.ddq
-                    ddq(i, :) = obj.dynamicModel.forwardDynamicsQDqTau(currQ, currDq, currTau);
+                    basisFeatureVals.ddq(i, :) = obj.dynamicModel.forwardDynamicsQDqTau(currQ, currDq, currTau);
                 end
                 
                 if obj.basisFeatureFlags.x
                     for j = 1:length(obj.fullFrameNames)
                         inds = (1:3)+(j-1)*3;
-                        x(i, inds) = obj.dynamicModel.getEndEffectorPosition(j);
+                        basisFeatureVals.x(i, inds) = obj.dynamicModel.getEndEffectorPosition(j);
                     end
                 end
                 
                 if obj.basisFeatureFlags.R
                     for j = 1:length(obj.fullFrameNames)
                         inds = (1:3)+(j-1)*3;
-                        R(:, inds, i) = obj.dynamicModel.getEndEffectorPosition(j);
+                        basisFeatureVals.R(:, inds, i) = obj.dynamicModel.getEndEffectorPosition(j);
                     end
                 end
                 
                 if obj.basisFeatureFlags.dx
                     for j = 1:length(obj.fullFrameNames)
                         inds = (1:3)+(j-1)*3;
-                        dx(i, inds) = obj.dynamicModel.getEndEffectorVelocity(j);
+                        basisFeatureVals.dx(i, inds) = obj.dynamicModel.getEndEffectorVelocity(j);
                     end
                 end
                 
                 if obj.basisFeatureFlags.ddx
                     for j = 1:length(obj.fullFrameNames)
                         inds = (1:3)+(j-1)*3;
-                        ddx(i, inds) = obj.dynamicModel.getEndEffectorAcceleration(ddq(i, :), j);
+                        basisFeatureVals.ddx(i, inds) = obj.dynamicModel.getEndEffectorAcceleration(basisFeatureVals.ddq(i, :), j);
                     end
                 end
                 
                 if obj.basisFeatureFlags.M
                     obj.dynamicModel.updateState(currQ, currDq);
                     obj.dynamicModel.model.calculateMassMatrix();
-                    M(:, :, i) = obj.dynamicModel.model.M; 
+                    basisFeatureVals.M(:, :, i) = obj.dynamicModel.model.M; 
                 end
             end
             
-            % for features that need to be numerically diff
-            if obj.basisFeatureFlags.dddq
-                minWinLen = 1;
-                lenWidth = lenFullJoint;
-                dddq = obj.numDiff(ddq, minWinLen, lenTime, lenWidth);
-            end
-            
-            if obj.basisFeatureFlags.dddx
-                minWinLen = 1;
-                lenWidth = lenFullFrame;
-                dddx = obj.numDiff(ddx, minWinLen, lenTime, lenWidth);
-            end
-            
-            if obj.basisFeatureFlags.dtau
-                minWinLen = 1;
-                lenWidth = lenFullJoint;
-                dtau = obj.numDiff(tau, minWinLen, lenTime, lenWidth);
-            end
-            
-            if obj.basisFeatureFlags.ddtau
-                minWinLen = 2;
-                lenWidth = lenFullJoint;
-                ddtau = obj.numDiff(dtau, minWinLen, lenTime, lenWidth);
-            end
-            
-            % now calculate the cost function features
-            featureVals = zeros(lenTime, lenFeatures);
-            
-            % assemble the basis features
+            % if any of the state/control signals are deemed essential
             if obj.basisFeatureFlags.q
                 basisFeatureVals.q = q;
             end
@@ -204,46 +177,37 @@ classdef IOCInstanceNew < handle
                 basisFeatureVals.dq = dq;
             end
             
-            if obj.basisFeatureFlags.ddq
-                basisFeatureVals.ddq = ddq;
+            if obj.basisFeatureFlags.tau
+                basisFeatureVals.dq = tau;
             end
             
+            % for features that need to be numerically diff
             if obj.basisFeatureFlags.dddq
-                basisFeatureVals.dddq = dddq;
-            end
-            
-            if obj.basisFeatureFlags.x
-                basisFeatureVals.x = x;
-            end
-            
-            if obj.basisFeatureFlags.dx
-                basisFeatureVals.dx = dx;
-            end
-            
-            if obj.basisFeatureFlags.ddx
-                basisFeatureVals.ddx = ddx;
+                minWinLen = 1;
+                lenWidth = lenFullJoint;
+                basisFeatureVals.dddq = obj.numDiff(ddq, minWinLen, lenTime, lenWidth);
             end
             
             if obj.basisFeatureFlags.dddx
-                basisFeatureVals.dddx = dddx;
-            end
-            
-            if obj.basisFeatureFlags.tau
-                basisFeatureVals.tau = tau;
+                minWinLen = 1;
+                lenWidth = lenFullFrame;
+                basisFeatureVals.dddx = obj.numDiff(ddx, minWinLen, lenTime, lenWidth);
             end
             
             if obj.basisFeatureFlags.dtau
-                basisFeatureVals.dtau = dtau;
+                minWinLen = 1;
+                lenWidth = lenFullJoint;
+                basisFeatureVals.dtau = obj.numDiff(tau, minWinLen, lenTime, lenWidth);
             end
             
             if obj.basisFeatureFlags.ddtau
-                basisFeatureVals.ddtau = ddtau;
+                minWinLen = 2;
+                lenWidth = lenFullJoint;
+                basisFeatureVals.ddtau = obj.numDiff(dtau, minWinLen, lenTime, lenWidth);
             end
             
-            if obj.basisFeatureFlags.M
-                basisFeatureVals.M = M;
-            end
-
+            % now calculate the cost function features
+            featureVals = zeros(lenTime, lenFeatures);
             for j = 1:lenFeatures
                 % calculate the cost function features, where the i is
                 % time and j is the feature index
@@ -264,25 +228,6 @@ classdef IOCInstanceNew < handle
             else
                 % window not large enough to calc this feature
                 filtData = zeros(lenTime, lenWidth);
-            end
-            
-            if 0
-                
-                clf
-                if size(rawData, 2) == 3
-                    for j = 1:3
-                        subplot(1, 3, j);
-                        plot(1:lenTime, rawData(:, j), 'o'); hold on;
-                        plot(2:lenTime, filtData(2:end, j));
-                    end
-                else
-                    for j = 1:15
-                        subplot(3, 5, j);
-                        plot(1:lenTime, rawData(:, j), 'o'); hold on;
-                        plot(2:lenTime, filtData(2:end, j));
-                    end
-                end
-                
             end
         end
         

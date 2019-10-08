@@ -17,7 +17,7 @@ classdef ModelRL < handle
             numDof = length(obj.model.joints);
         end
         
-        function [q, dq, ddq, tau, trajT, trajU, trajX] = loadData(obj, trialInfo)
+        function [q, dq, tau, trajT, trajU, trajX] = loadData(obj, trialInfo)
             load(trialInfo.path);
             
             % keep only the joint angles corresponding
