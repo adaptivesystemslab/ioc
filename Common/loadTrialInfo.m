@@ -34,7 +34,7 @@ function [trialInfo] = loadTrialInfo(trialInfoOrig, configFile, potentialBasePat
     end
     
     trialInfo.configFile = configFilePath;
-    trialInfo.windowWidth = IOCInstanceNew.winSize;
-    trialInfo.delta = IOCInstanceNew.delta;
+    trialInfo.windowWidth = IOCInstance.winSize;
+    trialInfo.delta = IOCInstance.delta;
     trialInfo.path = targetPath;
 end

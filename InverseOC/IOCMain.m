@@ -10,11 +10,11 @@ tic;
 % configFilePath = '../Data/IOC_ExpressiveData_test.json';
 % configFilePath = '../Data_json/LinConfig/IOC_IITFatigue_test.json';
 % configFilePath = '../Data_json/LinConfig/IOC_Healthy1.json';
-configFilePath = '../Data_json/LinConfig/IOC_Jumping2D.json';
+% configFilePath = '../Data_json/LinConfig/IOC_Jumping2D.json';
 % configFilePath = '../Data_json/IOC_IITFatigue_test.json';
 
 % Wanxin's Configurations
-% configFilePath = '../Data_json/JinConfig/Squat_IIT/IOC_IITFatigue_Test_Sub1.json';
+configFilePath = '../Data_json/JinConfig/Squat_IIT/IOC_IITFatigue_Test_Sub1.json';
 % configFilePath = '../Data_json/JinConfig/Jump/IOC_Github_Jumping2D_Sub2.json';
 % configFilePath = '../Data_json/LinConfig/IOC_Healthy1.json';
 
@@ -58,8 +58,8 @@ for i=1
     [status, alreadyExist] = checkMkdir(subsavePath);
     
     if ~alreadyExist || overwriteFiles
-        IOCRun(trialInfo, subsavePath);
-%         IOCIncomplete(trialInfo,savePath)
+%         IOCRun(trialInfo, subsavePath);
+        IOCIncomplete(trialInfo,savePath)
     end
 end
 

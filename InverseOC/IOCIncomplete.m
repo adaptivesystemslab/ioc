@@ -8,7 +8,7 @@ trialInfo.numWeights = length(trialInfo.candidateFeatures);
 trialInfo.numDofs = model.getModelDof();
 %-----------------load the original trajectory data------------------
 % load and generate the trajectory for the whole horizon
-[q, dq, ddq, tau, trajT, trajU, trajX, traj] = model.loadData(trialInfo);
+traj = model.loadData(trialInfo);
 % Initialization of threshold and condition variables
 dt = traj.trajT(2) - traj.trajT(1);
 
@@ -228,11 +228,7 @@ if cut && ~isempty(indMat)
             if (strcmpi(str,'y')&&t(2))
                 segTraj.q=traj.q(t,:);
                 segTraj.dq=traj.dq(t,:);
-                segTraj.ddq=traj.ddq(t,:);
                 segTraj.tau=traj.tau(t,:);
-                segTraj.states=traj.states(t,:);
-                segTraj.control=traj.control(t,:);
-                segTraj.time=traj.time(t);
                 segTraj.trajT=traj.trajT(t,:);
                 segTraj.trajU=traj.trajU(t,:);
                 segTraj.trajX=traj.trajX(t,:);
