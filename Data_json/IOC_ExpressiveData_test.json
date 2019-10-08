@@ -1,0 +1,61 @@
+{
+	"runParamGlobal":
+	[
+        {
+            "templateName":"",  
+			"baseModel":"",   
+            "modelType":"rl",
+			"model":"",			
+			"gamma": [],
+			"dimWeights": [5],
+			"maxWinLen": [400],
+            "hWinAdvFlag": "forward",
+			"runInds": [1, 5005],
+            "displayInfo":"final",
+            "saveIntermediate": [300],
+            "weights":[]         
+		}
+	],
+	
+	"runTemplates":
+	[		{
+			"templateName":"7DOF_2CF_Forward",  
+			"baseModel":"Expressive",            
+			"model":"ArmOnly",		
+            "candidateFeatures": 
+			[
+				{
+					"feature":"angAccelSumSqu", 
+					"jointNames": ["joint_rshoulder_0", "joint_relbow_0", "joint_rwrist_0"],
+                    "normCoeff": [1]
+				}, 
+				{
+					"feature":"cartDistToTarget", 
+					"frameNames": ["frame_rhand_end"],
+                    "normCoeff": [1],
+                    "refFrameNames": ["frame_rhand_end"],
+                    "refTimes" : [1]
+				},
+                {
+					"feature":"cartDistToTarget", 
+					"frameNames": ["frame_rhand_end"],
+                    "normCoeff": [1],
+                    "refFrameNames": ["frame_rhand_end"],
+                    "refTimes" : [2]
+				}
+			]
+		}
+	],
+	
+	"Files":
+	[
+        {
+            "runName":"Subj1_BaseLine_7DOF_2CF",
+            "basepath":"D:/aslab/data_IK",
+            "subpath":"FullBody_IIT_2017/2019_04_10_squat02/matEkfIk/SQUA_STD_FAT_Subject01_mocap_mocap_X00_floating_ekfId1_ekfIk.mat",
+            "runInds": [],
+            "dimWeights": [2],
+            "refTimes": [100, 200]
+        }
+	]
+}

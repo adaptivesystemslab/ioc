@@ -83,6 +83,12 @@ classdef IOCInstanceNew < handle
             end
         end
         
+        function specialize(obj, trajU, trajX)
+            for i = 1:length(obj.features)     
+                obj.features(i).specialize(obj.fullJointNames, obj.fullFrameNames, obj.dynamicModel, trajU, trajX);
+            end
+        end
+        
         function featureVals = calcFeatures(obj, state, control)
             % calculate the required basis features, then determine the cost 
             % function features determined by obj.features. the features 

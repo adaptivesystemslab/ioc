@@ -68,32 +68,13 @@ classdef ModelRL_Jumping_KW < ModelRL
             dt = 0.005;
             time = dt*(0:(size(qFlip, 1)-1));
             qRaw = qFlip(:, qInds);
-            q = filter_dualpassBW(qRaw, 0.04, 0, 5);
-
-            dqRaw = calcDerivVert(q, dt);
-            dq = filter_dualpassBW(dqRaw, 0.04, 0, 5);
-            %             dq = dqRaw;
-
-            % don't filter ddq and tau to keep
-            ddqRaw = calcDerivVert(dq, dt);
-            %             ddq = filter_dualpassBW(ddqRaw, 0.04, 0, 5);
-            ddq = ddqRaw;
-
-            tauRaw = zeros(size(q));
-            for indTime = 1:length(time) % recalc torque given redistributed masses
-                tauRaw(indTime, :) = obj.inverseDynamicsQDqDdq(q(indTime, :), dq(indTime, :), ddq(indTime, :));
-            end
-
-            %             tau = filter_dualpassBW(tauRaw, 0.04, 0, 5);
-            tau = tauRaw;
-
-            %             states = [q dq];
-            states = encodeState(q, dq);
-            control = tau;
-
-            trajT = time';
-            trajU = control;
-            trajX = states;
+            
+            [q, dq, tau, trajT, trajU, trajX] = obj.filtData(time, qRaw);
+        end
+        
+        function featureSpecialize(obj)
+            % if there's any customized specialization that is required,
+            % the individual modelRLs should override this
         end
     end
 end

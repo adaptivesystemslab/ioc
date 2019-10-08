@@ -1,11 +1,6 @@
 classdef ModelRL < handle
     properties
         model;
-
-%         modelJointNameRemap;
-%         modelBaseFolder = '../Libraries/rl/ik_framework';
-        
-%         totalActuatedJoints;
     end
     
     methods
@@ -30,15 +25,20 @@ classdef ModelRL < handle
             
             time = saveVar.time;
             qRaw = saveVar.jointAngle.array(:, qInds);
+            
+            [q, dq, tau, trajT, trajU, trajX] = obj.filtData(time, qRaw);
+        end
+        
+        function [q, dq, tau, trajT, trajU, trajX] = filtData(obj, time, qRaw)
             q = filter_dualpassBW(qRaw, 0.04, 0, 5);
             
             dqRaw = calcDerivVert(q, saveVar.dt);
             dq = filter_dualpassBW(dqRaw, 0.04, 0, 5);
-%             dq = dqRaw;
+            %             dq = dqRaw;
             
             % don't filter ddq and tau to keep
             ddqRaw = calcDerivVert(dq, saveVar.dt);
-%             ddq = filter_dualpassBW(ddqRaw, 0.04, 0, 5);
+            %             ddq = filter_dualpassBW(ddqRaw, 0.04, 0, 5);
             ddq = ddqRaw;
             
             tauRaw = zeros(size(q));
@@ -46,7 +46,7 @@ classdef ModelRL < handle
                 tauRaw(indTime, :) = obj.inverseDynamicsQDqDdq(q(indTime, :), dq(indTime, :), ddq(indTime, :));
             end
             
-%             tau = filter_dualpassBW(tauRaw, 0.04, 0, 5);
+            %             tau = filter_dualpassBW(tauRaw, 0.04, 0, 5);
             tau = tauRaw;
             
             states = encodeState(q, dq);
@@ -55,6 +55,11 @@ classdef ModelRL < handle
             trajT = time';
             trajU = control;
             trajX = states;
+        end
+        
+        function featureSpecialize(obj)
+            % if there's any customized specialization that is required,
+            % the individual modelRLs should override this
         end
         
         function addEndEffectors(obj, frameStr)

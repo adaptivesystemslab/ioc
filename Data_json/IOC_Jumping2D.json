@@ -41,6 +41,29 @@
                     "normCoeff": [1]
 				}
 			]
+		},
+        {
+			"templateName":"3DOF_17CF_Forward",  
+			"baseModel":"Jumping",            
+			"model":"Jumping2D",		
+            "candidateFeatures": 
+			[
+				{
+					"feature":"angAccelSumSqu", 
+					"jointNames": ["rhip_jFlexion", "rknee_jExtension", "rankle_jDorsiflexion"],
+                    "normCoeff": [1]
+				}, 
+				{
+					"feature":"angJerkSumSqu", 
+					"jointNames": ["rhip_jFlexion", "rknee_jExtension", "rankle_jDorsiflexion"],
+                    "normCoeff": [1]
+				}, 
+				{
+					"feature":"angPowerSumSqu", 
+					"jointNames": ["rhip_jFlexion", "rknee_jExtension", "rankle_jDorsiflexion"],
+                    "normCoeff": [1]
+				}
+			]
 		}
 	],
 	
