@@ -1,54 +1,27 @@
 function IOCRun(trialInfo, savePath)
     frameDelim = '_';
-
-    if ~exist('savePath', 'var')
-        savePath = '';
-    end
-    
-    % Return to calling function if no trial info is passed along
-    if isempty(fieldnames(trialInfo))
-        disp('No trial info was given');
-        return
-    end
     
     % Load to memory model and information needed for running IOC
     model = getModel(trialInfo);
-    [q, dq, ddq, tau, trajT, trajU, trajX] = model.loadData(trialInfo);
+    traj = model.loadData(trialInfo);
     
-    if 0
-        mdl = model.model;
-        vis = rlVisualizer('vis',640,480);
-        mdl.forwardPosition();
-        vis.addModel(mdl);
-        vis.addMarker('x-axis', [1 0 0], [0.2 0.2 0.2 1]);
-        vis.addMarker('y-axis', [0 1 0], [0.2 0.2 0.2 1]);
-        vis.addMarker('z-axis', [0 0 1], [0.2 0.2 0.2 1]);
-        vis.update();
-        
-        for i = 1:length(trajT)
-            mdl.position = q(i, :);
-            mdl.forwardPosition();
-            vis.update();
-            pause(0.01);
-        end
+    q = traj.q;
+    dq = traj.dq;
+    tau = traj.tau;
+    frameInds = traj.frameInds;
+    trajT = traj.trajT;
+    trajX = traj.trajX;
+    trajU = traj.trajU;
+    
+    if 0 % visualize the data if want to check the q generated
+        model.plotTrajectory(q);
     end
-    
-    if ~isempty(trialInfo.runInds)
-        frameInds = trialInfo.runInds(1):trialInfo.runInds(2);
-    else
-        frameInds = 1:length(trajT);
-    end
-    
-    if max(frameInds) > length(trajT)
-        frameInds = frameInds(1):length(trajT);
-    end
-    
+
     trialInfo.frameInds = frameInds;
     trialInfo.numWeights = length(trialInfo.candidateFeatures);
     trialInfo.numDofs = model.getModelDof;
     
-    % generate default trialInfo if missing
-    % weights
+    % generate default trialInfo if missing weights
     if isempty(trialInfo.weights)
         trialInfo.weights = ones(1, trialInfo.numWeights);
     end
@@ -64,7 +37,7 @@ function IOCRun(trialInfo, savePath)
     dt = trajT(2) - trajT(1);
 
     % Create IOC instance
-    ioc = IOCInstanceNew(model, dt);
+    ioc = IOCInstance(model, dt);
     ioc.init(trialInfo);
 %     ioc.setFeatureNormalization(trajX, trajU);
     
@@ -82,10 +55,11 @@ function IOCRun(trialInfo, savePath)
     trialInfo.lenDof = size(trajX, 2)/2;
     trialInfo.hWant = (size(trajX, 2) + trialInfo.numWeights) * trialInfo.dimWeights;
     
+    % calculating the features/dynamics for storage prurposes
     iocFeatures = ioc.calcFeatures(trajX(precalcAllFrames, :), trajU(precalcAllFrames, :));
     iocDynamics = ioc.calcDynamics(trajX(precalcAllFrames, :), trajU(precalcAllFrames, :));
  
-    if trialInfo.saveIntermediate > 0 
+    if trialInfo.saveIntermediate > 0 % save a mat file based on the value here, to limit the size of the overall mat file
         saveInds = [];
         for i = 1:ceil(frameInds(end)/trialInfo.saveIntermediate)
             saveInds = [saveInds; (i-1)*trialInfo.saveIntermediate i*trialInfo.saveIntermediate-1];
@@ -98,6 +72,7 @@ function IOCRun(trialInfo, savePath)
         saveInds(1, 2) = frameInds(end);
     end
     
+    % print to console so it will be saved in output logs
     trialInfo
     
     % precalc singular H1 and H2 matrix
@@ -122,8 +97,6 @@ function IOCRun(trialInfo, savePath)
         if ~isempty(progressVarTemp)
             progressVar(indFrame) = progressVarTemp;
             processSecondaryVar(indFrame) = processSecondaryVarTemp;
-        else
-            lala = 1;
         end
         
         % save either on the regular intervals, or at the last frame
@@ -280,7 +253,7 @@ function [progressVar, processSecondaryVar, precalcGradient] = calcWinLenAndH(tr
         end
         
         % check H matrix for completion
-        [progressVar] = checkHMatrix(H, currFullWinInds, trialInfo, hitMaxWinLen);
+        [progressVar] = checkHMatrix(H, currFullWinInds, trialInfo, trajT, hitMaxWinLen);
         
         if ~isempty(progressVar)
             processSecondaryVar.H1 = H1;
@@ -345,7 +318,7 @@ function [H, H1, H2] = assembleHMatrixWithPrecalc(H1, H2, fullWinInds, precalcGr
     H = [H1 -H2];
 end
 
-function [progressVar] = checkHMatrix(H, fullWinInds, trialInfo, hitMaxWinLen)
+function [progressVar] = checkHMatrix(H, fullWinInds, trialInfo, trajT, hitMaxWinLen)
     progressVar = [];
 
     % proceed with H matrix inversion
@@ -376,8 +349,8 @@ function [progressVar] = checkHMatrix(H, fullWinInds, trialInfo, hitMaxWinLen)
 % % %                 fullWinInds(1), fullWinInds(end), length(fullWinInds), trialInfo.maxWinLen, rank, trialInfo.gamma, error(1), ...
 % % %                 rankPassCode(1), rankPassCode(2), rankPassCode(3) );
 
-           fprintf('[%] Obs frames %i:%i of max %u/%u, rank: %0.2f/%0.2f, ', ...
-                datestr(now), fullWinInds(1), fullWinInds(end), length(fullWinInds), trialInfo.maxWinLen, rank, trialInfo.gamma);
+           fprintf('[%s] Obs %i:%i of %i, len %u/%u, rank %0.2f/%0.2f, ', ...
+                datestr(now), fullWinInds(1), fullWinInds(end), length(trajT), length(fullWinInds), trialInfo.maxWinLen, rank, trialInfo.gamma);
 
             fprintf('Weights: ');
             for j = 1:trialInfo.numWeights
@@ -388,10 +361,9 @@ function [progressVar] = checkHMatrix(H, fullWinInds, trialInfo, hitMaxWinLen)
         case 'final'
             if completed
                 % Display information
-                fprintf('Obs frames %i:%i of max %u/%u, rank: %0.2f/%0.2f, error: %0.3f, code: %u,%u,%u, ', ...
-                    fullWinInds(1), fullWinInds(end), length(fullWinInds), trialInfo.maxWinLen, rank, trialInfo.gamma, error(1), ...
-                    rankPassCode(1), rankPassCode(2), rankPassCode(3) );
-
+                fprintf('[%s] Obs %i:%i of %i, len %u/%u, rank %0.2f/%0.2f, ', ...
+                    datestr(now), fullWinInds(1), fullWinInds(end), length(trajT), length(fullWinInds), trialInfo.maxWinLen, rank, trialInfo.gamma);
+                
                 fprintf('Weights: ');
                 for j = 1:trialInfo.numWeights
                     fprintf('%+0.3f,', weights(j));

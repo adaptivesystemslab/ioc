@@ -17,7 +17,7 @@ classdef ModelRL_Jumping_KW < ModelRL
                     obj.model.forwardPosition();
         end
         
-        function [q, dq, ddq, tau, trajT, trajU, trajX, traj] = loadData(obj, trialInfo)
+        function traj = loadData(obj, trialInfo)
             load(trialInfo.path);
             
             targNum = trialInfo.targNum;
@@ -31,23 +31,22 @@ classdef ModelRL_Jumping_KW < ModelRL
             param.jump.world2base = squeeze(JA.world2base((12*(targNum-1) + jumpNum),:,:));
             param.jump.bad2d = JA.bad2D(jumpNum,targNum);
             
-                    % Crop out initial and final calibration motions
-%                     takeoffFrames = 200; % 1 second before takeoff frame ...
-%                     landFrames = 300; % ... to 1.5 seconds after takeoff frame (~ 1 second after landing)
-%                     framesToUse = (param.jump.takeoffFrame-takeoffFrames):(param.jump.takeoffFrame+landFrames);
+            % Crop out initial and final calibration motions
+            takeoffFrames = 200; % 1 second before takeoff frame ...
+            landFrames = 300; % ... to 1.5 seconds after takeoff frame (~ 1 second after landing)
+            framesToUse = (param.jump.takeoffFrame-takeoffFrames):(param.jump.takeoffFrame+landFrames);
                     
-            takeoffFrames = 0; % 1 second before takeoff frame ...
-            landFrames = 0; % ... to 1.5 seconds after takeoff frame (~ 1 second after landing)
-            framesToUse = (param.jump.takeoffFrame-takeoffFrames):(param.jump.landFrame+landFrames);
+%             takeoffFrames = 0; % 1 second before takeoff frame ...
+%             landFrames = 0; % ... to 1.5 seconds after takeoff frame (~ 1 second after landing)
+%             framesToUse = (param.jump.takeoffFrame-takeoffFrames):(param.jump.landFrame+landFrames);
 
-%             if(numel(framesToUse) < size(JA.targ(targNum).jump(jumpNum).data,1))
-%                 fullDataAngles = JA.targ(targNum).jump(jumpNum).data(framesToUse,:);
-%             else % jump recording stops sooner than "landFrames" after TOFrame
-%                 fullDataAngles = JA.targ(targNum).jump(jumpNum).data( framesToUse(1):end ,:);
-%                 fullDataAngles = [fullDataAngles; repmat(fullDataAngles(end,:),(numel(framesToUse) - size(fullDataAngles,1)),1)]; % repeat last joint angle measurement for remainder of frames
-%             end
-
-            fullDataAngles = JA.targ(targNum).jump(jumpNum).data
+            if(numel(framesToUse) < size(JA.targ(targNum).jump(jumpNum).data,1))
+                fullDataAngles = JA.targ(targNum).jump(jumpNum).data(framesToUse,:);
+            else % jump recording stops sooner than "landFrames" after TOFrame
+                fullDataAngles = JA.targ(targNum).jump(jumpNum).data( framesToUse(1):end ,:);
+                fullDataAngles = [fullDataAngles; repmat(fullDataAngles(end,:),(numel(framesToUse) - size(fullDataAngles,1)),1)]; % repeat last joint angle measurement for remainder of frames
+            end
+%             fullDataAngles = JA.targ(targNum).jump(jumpNum).data;
 
             % keep only a subset of the joint angles
 %             qInds = [];
@@ -57,57 +56,25 @@ classdef ModelRL_Jumping_KW < ModelRL
 %             end
             qInds = 1:length(obj.model.joints);
             
-            % also, negate the following joints since they're past
-            % the flip
+            % also, negate the following joints since they're past the flip
             qFlip = fullDataAngles;
-            %                     jointsToFlip = {'rankle_jDorsiflexion', 'rknee_jExtension', 'rhip_jFlexion'};
-            % %                     jointsToFlip = {'rankle_jDorsiflexion', 'rknee_jExtension', 'rhip_jFlexion', 'back_jFB', 'rjoint1'};
-            %                     for indQ = 1:length(jointsToFlip)
-            %                         qIndsFlip(indQ) = find(ismember(model.modelJointNameRemap, jointsToFlip{indQ}));
-            %                         qFlip(:, qIndsFlip(indQ)) = -fullDataAngles(:, qIndsFlip(indQ));
-            %                     end
+%                     jointsToFlip = {'rankle_jDorsiflexion', 'rknee_jExtension', 'rhip_jFlexion'};
+% %                     jointsToFlip = {'rankle_jDorsiflexion', 'rknee_jExtension', 'rhip_jFlexion', 'back_jFB', 'rjoint1'};
+%                     for indQ = 1:length(jointsToFlip)
+%                         qIndsFlip(indQ) = find(ismember(model.modelJointNameRemap, jointsToFlip{indQ}));
+%                         qFlip(:, qIndsFlip(indQ)) = -fullDataAngles(:, qIndsFlip(indQ));
+%                     end
 
             dt = 0.005;
             time = dt*(0:(size(qFlip, 1)-1));
             qRaw = qFlip(:, qInds);
-            q = filter_dualpassBW(qRaw, 0.04, 0, 5);
 
-            dqRaw = calcDerivVert(q, dt);
-            dq = filter_dualpassBW(dqRaw, 0.04, 0, 5);
-            %             dq = dqRaw;
-
-            % don't filter ddq and tau to keep
-            ddqRaw = calcDerivVert(dq, dt);
-            %             ddq = filter_dualpassBW(ddqRaw, 0.04, 0, 5);
-            ddq = ddqRaw;
-
-            tauRaw = zeros(size(q));
-            for indTime = 1:length(time) % recalc torque given redistributed masses
-                tauRaw(indTime, :) = obj.inverseDynamicsQDqDdq(q(indTime, :), dq(indTime, :), ddq(indTime, :));
-            end
-
-            %             tau = filter_dualpassBW(tauRaw, 0.04, 0, 5);
-            tau = tauRaw;
-
-            %             states = [q dq];
-            states = encodeState(q, dq);
-            control = tau;
-
-            trajT = time';
-            trajU = control;
-            trajX = states;
-            
-            traj.q=q;
-            traj.dq=dq;
-            traj.ddq=ddq;
-            traj.tau=tau;
-            traj.states=states;
-            traj.control=control;
-            traj.time=time';
-            traj.trajT=trajT;
-            traj.trajU=trajU;
-            traj.trajX=trajX;
-            traj.frameInds=1:length(time);
+            traj = obj.filtData(time, dt, qRaw, trialInfo);
+        end
+        
+        function featureSpecialize(obj)
+            % if there's any customized specialization that is required,
+            % the individual modelRLs should override this
         end
     end
 end

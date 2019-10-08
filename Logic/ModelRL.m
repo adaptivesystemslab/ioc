@@ -1,11 +1,6 @@
 classdef ModelRL < handle
     properties
         model;
-
-%         modelJointNameRemap;
-%         modelBaseFolder = '../Libraries/rl/ik_framework';
-        
-%         totalActuatedJoints;
     end
     
     methods
@@ -17,7 +12,7 @@ classdef ModelRL < handle
             numDof = length(obj.model.joints);
         end
         
-        function [q, dq, ddq, tau, trajT, trajU, trajX, traj] = loadData(obj, trialInfo)
+        function traj = loadData(obj, trialInfo)
             load(trialInfo.path);
             
             % keep only the joint angles corresponding
@@ -30,15 +25,20 @@ classdef ModelRL < handle
             
             time = saveVar.time;
             qRaw = saveVar.jointAngle.array(:, qInds);
+            
+            traj = obj.filtData(time, saveVar.dt, qRaw, trialInfo);
+        end
+        
+        function traj = filtData(obj, time, dt, qRaw, trialInfo)
             q = filter_dualpassBW(qRaw, 0.04, 0, 5);
             
-            dqRaw = calcDerivVert(q, saveVar.dt);
+            dqRaw = calcDerivVert(q, dt);
             dq = filter_dualpassBW(dqRaw, 0.04, 0, 5);
-%             dq = dqRaw;
+            %             dq = dqRaw;
             
             % don't filter ddq and tau to keep
-            ddqRaw = calcDerivVert(dq, saveVar.dt);
-%             ddq = filter_dualpassBW(ddqRaw, 0.04, 0, 5);
+            ddqRaw = calcDerivVert(dq, dt);
+            %             ddq = filter_dualpassBW(ddqRaw, 0.04, 0, 5);
             ddq = ddqRaw;
             
             tauRaw = zeros(size(q));
@@ -46,27 +46,36 @@ classdef ModelRL < handle
                 tauRaw(indTime, :) = obj.inverseDynamicsQDqDdq(q(indTime, :), dq(indTime, :), ddq(indTime, :));
             end
             
-%             tau = filter_dualpassBW(tauRaw, 0.04, 0, 5);
+            %             tau = filter_dualpassBW(tauRaw, 0.04, 0, 5);
             tau = tauRaw;
             
             states = encodeState(q, dq);
-            control = tau;
+            controls = tau;
             
-            trajT = time';
-            trajU = control;
-            trajX = states;
+            if ~isempty(trialInfo.runInds)
+                frameInds = trialInfo.runInds(1):trialInfo.runInds(2);
+            else
+                frameInds = 1:length(time);
+            end
+            
+            if max(frameInds) > length(time)
+                frameInds = frameInds(1):length(time);
+            end
             
             traj.q=q;
             traj.dq=dq;
-            traj.ddq=ddq;
             traj.tau=tau;
-            traj.states=states;
-            traj.control=control;
-            traj.time=time';
-            traj.trajT=trajT;
-            traj.trajU=trajU;
-            traj.trajX=trajX;
-            traj.frameInds=1:length(time);            
+            
+            traj.trajT=time';
+            traj.trajX=states;
+            traj.trajU=controls;
+            
+            traj.frameInds=frameInds;            
+        end
+        
+        function featureSpecialize(obj)
+            % if there's any customized specialization that is required,
+            % the individual modelRLs should override this
         end
         
         function addEndEffectors(obj, frameStr)
@@ -110,6 +119,10 @@ classdef ModelRL < handle
         
         function x = getEndEffectorPosition(obj, i)
             x = obj.model.sensors(i).transform(1:3, 4);
+        end
+        
+        function R = getEndEffectorOrientation(obj, i)
+            R = obj.model.sensors(i).transform(1:3, 1:3);
         end
         
         function dx = getEndEffectorVelocity(obj, i)
