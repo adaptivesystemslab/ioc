@@ -21,7 +21,7 @@ classdef IOCInstance < handle
     end
     
     methods
-        function obj = IOCInstanceNew(dynamicModel, dt)
+        function obj = IOCInstance(dynamicModel, dt)
             % constructor
             obj.dynamicModel = dynamicModel;
             obj.dt = dt;

@@ -58,7 +58,7 @@ if status
         % Create dynamic model and IOC instance associated to it. This
         % instance will be used to compute target features
         dynModel = getModel(currentTrial.model, currentTrial.modelType);
-        ioc = IOCInstanceNew(dynModel, 0.01);
+        ioc = IOCInstance(dynModel, 0.01);
         ioc.init(currentTrial);
                 
         % Define optimization setup based on json entry

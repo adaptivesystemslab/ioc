@@ -41,7 +41,7 @@ end
 
 %----------------perform ioc on each cutted traj---------------------
 % Create IOC instance
-ioc = IOCInstanceNew(model, dt);
+ioc = IOCInstance(model, dt);
 ioc.init(trialInfo);
 % initialize the result vector
 
