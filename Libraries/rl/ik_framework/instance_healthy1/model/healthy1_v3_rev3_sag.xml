@@ -19,14 +19,6 @@
         <!-- Root node -->
         <body id="body_base"/> <!-- fixed, starting -->
 
-        <frame id="frame_rshoulder_0"/> <!-- fixed, sagittal -->
-        <frame id="frame_rshoulder_1"/> <!-- revolute, sagittal -->
-        <frame id="frame_rshoulder_2"/> <!-- fixed, transverse -->
-        <frame id="frame_rshoulder_3"/> <!-- revolute, transverse -->
-        <frame id="frame_rshoulder_4"/> <!-- fixed, IR -->
-        <frame id="frame_rshoulder_5"/> <!-- revolute, IR -->
-        <frame id="frame_rshoulder_6"/> <!-- fixed, next frame -->
-
         <!-- Right lower body -->
         <frame id="frame_rhip_0"/> <!-- fixed, sagittal -->
         <frame id="frame_rhip_1"/> <!-- revolute, sagittal -->
@@ -52,7 +44,6 @@
      
         <frame id="frame_rballfoot_end"/> <!-- fixed, next frame -->
   
-		<body id="body_rshoulder_rhip"/>
         <body id="body_rhip_rknee"/>
         <body id="body_rknee_rankle"/>
         <body id="body_rankle_rballfoot"/>
@@ -85,12 +76,12 @@
                 <z>0</z>
             </translation>
         </fixed>
-        <revolute id="frame_6dof_revz0_to_frame_6dof_revz1">
+        <fixed id="frame_6dof_revz0_to_frame_6dof_revz1">
             <frame>
                 <a idref="frame_6dof_revz0"/>
                 <b idref="frame_6dof_revz1"/>
             </frame>
-        </revolute>
+        </fixed>
         <fixed id="frame_6dof_revz1_to_frame_6dof_revz2">
             <frame>
                 <a idref="frame_6dof_revz1"/>
@@ -206,81 +197,12 @@
             </translation>
         </fixed>
         
-        <fixed id="length_base_rshoulder">
+        <fixed id="length_base_rhip">
             <frame>
                 <a idref="body_base"/>
-                <b idref="frame_rshoulder_0"/>
-            </frame>
-        </fixed>
-        
-        <fixed id="fixed_rshoulder_0"> 
-            <frame> <!-- Frame rotation to sag -->
-                <a idref="frame_rshoulder_0"/>
-                <b idref="frame_rshoulder_1"/>
-            </frame>
-            <rotation>
-                <x>0</x>
-                <y>90</y>
-                <z>0</z>
-            </rotation>
-        </fixed>
-        <revolute id="joint_rshoulder_0">
-            <frame> <!-- Sag joint -->
-                <a idref="frame_rshoulder_1"/>
-                <b idref="frame_rshoulder_2"/>
-            </frame>
-        </revolute>
-        <fixed id="fixed_rshoulder_1">
-            <frame> <!-- Frame rotation to trans joint -->
-                <a idref="frame_rshoulder_2"/>
-                <b idref="frame_rshoulder_3"/>
-            </frame>
-            <rotation>
-                <x>-90</x>
-                <y>0</y>
-                <z>0</z>
-            </rotation>
-        </fixed>        
-        <fixed id="joint_rshoulder_1">
-            <frame> <!-- Trans joint -->
-                <a idref="frame_rshoulder_3"/>
-                <b idref="frame_rshoulder_4"/>
-            </frame>
-        </fixed>
-        <fixed id="fixed_rshoulder_2">
-            <frame> <!-- Frame rotation to IR joint -->
-                <a idref="frame_rshoulder_4"/>
-                <b idref="frame_rshoulder_5"/>
-            </frame>
-            <rotation>
-                <x>0</x>
-                <y>-90</y>
-                <z>0</z>
-            </rotation>
-        </fixed>                
-        <fixed id="joint_rshoulder_2">
-            <frame> <!-- IR joint-->
-                <a idref="frame_rshoulder_5"/>
-                <b idref="frame_rshoulder_6"/>
-            </frame>
-        </fixed>
-        <fixed id="fixed_rshoulder_3">
-            <frame> <!-- Frame rotation to neutral frame -->
-                <a idref="frame_rshoulder_6"/>
-                <b idref="body_rshoulder_rhip"/>
-            </frame>
-            <rotation>
-                <x>0</x>
-                <y>0</y>
-                <z>-90</z>
-            </rotation>
-        </fixed>
-        <fixed id="length_rshoulder_rhip">
-            <frame> <!-- Offset to hip frame --> 
-                <a idref="body_rshoulder_rhip"/>
                 <b idref="frame_rhip_0"/>
             </frame>
-        </fixed>     	
+        </fixed>
         
         <fixed id="fixed_rhip_0"> 
             <frame> <!-- Frame rotation to sag -->
@@ -492,12 +414,12 @@
                 <z>0</z>
             </translation>
         </fixed>
-        <revolute id="frame_6dof2_revz0_to_frame_6dof2_revz1">
+        <fixed id="frame_6dof2_revz0_to_frame_6dof2_revz1">
             <frame>
                 <a idref="frame_6dof2_revz0"/>
                 <b idref="frame_6dof2_revz1"/>
             </frame>
-        </revolute>
+        </fixed>
         <fixed id="frame_6dof2_revz1_to_frame_6dof2_revz2">
             <frame>
                 <a idref="frame_6dof2_revz1"/>

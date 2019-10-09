@@ -32,7 +32,7 @@ function model = getModel(trialInfo)
         case 'Healthy1'
             switch trialInfo.model
                 case '4DOF'
-                    xmlPath = '../Libraries/rl/ik_framework/instance_healthy1/model/healthy1_v3_rev1_sag.xml';
+                    xmlPath = '../Libraries/rl/ik_framework/instance_healthy1/model/healthy1_v3_rev3_sag.xml';
                     model = ModelRL_Healthy1();
                     model.loadModel(xmlPath, trialInfo.path);
             end
