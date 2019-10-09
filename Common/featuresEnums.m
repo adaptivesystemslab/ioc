@@ -7,12 +7,12 @@ classdef featuresEnums
     % also, list of all frames and joints to default into
     
     enumeration
-        cartVeloSumSqu 
-        cartAccelSumSqu
-        cartJerkSumSqu
-        cartCurvatureSumSqu
-        cartRadCurvatureSumSqu
-        cartBoundingBoxSumSqu
+        cartVeloSumSqu % sumsq cart velo of all frames (or some subset)
+        cartAccelSumSqu % sumsq cart accel of all frames (or some subset)
+        cartJerkSumSqu % sumsq cart jerk of all frames (or some subset)
+        cartCurvatureSumSqu % sumsq curvature of all frames (or some subset)
+        cartRadCurvatureSumSqu % inverse of cartCurvatureSumSqu 
+        cartBoundingBoxSumSqu 
         cartBoundingVolumeSumSqu 
         cartDisplacementSumSqu 
         cartQuantityMotionSumSqu 
@@ -21,7 +21,7 @@ classdef featuresEnums
         cartSpaceEffortSumSqu 
         cartFlowEffortSumSqu 
         
-        centreMassSumSqu 
+        centreMassSumSqu % overall centre of mass
         centreMassDisplacementSumSqu 
         
         angVeloSumSqu
@@ -46,5 +46,13 @@ classdef featuresEnums
         
         cartDistToTarget
         rotDistToTarget
+        
+        
+        
+        centreMassPosAxis % com pos, in either x,y,z
+        centreMassVeloAxis % com vel, in either x,y,z
+        cartVeloAxis % cart velo of a given frame, in either xyz
+        centreMassVeloRelativeToFrame % com velo relative to some cart frame velo
+        
     end
 end

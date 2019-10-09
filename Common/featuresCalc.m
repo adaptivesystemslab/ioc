@@ -2,6 +2,8 @@ classdef featuresCalc < handle
     % denotes the type of features to calculate from the dynamic model.
     % this class is used in conjunction with IOCInstance
     properties
+        % friendly name for the feature
+        name
         % loaded feature type from .json. this is a enum of featureEnums
         feature
         % loaded parameter form .json. these are modifiers that are parsed 
@@ -59,6 +61,7 @@ classdef featuresCalc < handle
             % uniform parsing
             externalParamParser = inputParser;
             externalParamParser.KeepUnmatched = true;
+            addOptional(externalParamParser, 'name', []);
             addOptional(externalParamParser, 'feature', []);
             addOptional(externalParamParser, 'jointNames', []);
             addOptional(externalParamParser, 'frameNames', []);
@@ -71,6 +74,11 @@ classdef featuresCalc < handle
 
             parse(externalParamParser, jsonBlob);
             jsonParsed = externalParamParser.Results;
+            
+            obj.name = jsonParsed.name;
+            if isempty(obj.name)
+                obj.name = jsonParsed.feature; % give the function a default name
+            end
             
             obj.feature = featuresEnums.(jsonParsed.feature); % enum parse
             obj.jointNames = jsonParsed.jointNames(:);
