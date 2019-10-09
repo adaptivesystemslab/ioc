@@ -215,12 +215,12 @@
                 <z>0</z>
             </rotation>
         </fixed>
-        <revolute id="joint_rhip_0">
+        <fixed id="joint_rhip_0">
             <frame> <!-- Sag joint -->
                 <a idref="frame_rhip_1"/>
                 <b idref="frame_rhip_2"/>
             </frame>
-        </revolute>
+        </fixed>
         <fixed id="fixed_rhip_1">
             <frame> <!-- Frame rotation to trans joint -->
                 <a idref="frame_rhip_2"/>

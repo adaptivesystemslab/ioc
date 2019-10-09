@@ -31,8 +31,13 @@ function model = getModel(trialInfo)
 
         case 'Healthy1'
             switch trialInfo.model
-                case '4DOF'
-                    xmlPath = '../Libraries/rl/ik_framework/instance_healthy1/model/healthy1_v3_rev3_sag.xml';
+                case '2DOF_ankle'
+                    xmlPath = '../Libraries/rl/ik_framework/instance_healthy1/model/healthy1_v3_rev3_sag_ankleCentric.xml';
+                    model = ModelRL_Healthy1();
+                    model.loadModel(xmlPath, trialInfo.path);
+                    
+                case '2DOF_hip'
+                    xmlPath = '../Libraries/rl/ik_framework/instance_healthy1/model/healthy1_v3_rev3_sag_hipCentric.xml';
                     model = ModelRL_Healthy1();
                     model.loadModel(xmlPath, trialInfo.path);
             end

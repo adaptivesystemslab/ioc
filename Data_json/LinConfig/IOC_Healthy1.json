@@ -20,9 +20,8 @@
 	"runTemplates":
 	[		
         {
-			"templateName":"3DOF_3CF_Forward",  
+			"templateName":"3CF_Forward",  
 			"baseModel":"Healthy1",            
-			"model":"4DOF",		
             "candidateFeatures": 
 			[
 				{
@@ -49,26 +48,30 @@
         {
             "runName":"Subj02_HFEO_03CF",
             "basepath":"D:/aslab/data_IK", 
-            "subpath":"Lowerbody_healthy1_2011_IK/20190104/matEkfIk/mocap_mocap_X00_hip/HFEO_STD_PPB1_Subject2_mocap_mocap_X00_hip_ekfId1_ekfIk.mat",
-			"runTemplate": "3DOF_3CF_Forward"
+            "subpath":"Lowerbody_healthy1_2011_IK/20190109/matEkfIk/mocap_mocap_X00_hip/HFEO_STD_PPB1_Subject2_mocap_mocap_X00_hip_ekfId1_ekfIk.mat",
+			"runTemplate": "3CF_Forward"
+			"model":"2DOF_hip",
         },
         {
             "runName":"Subj02_KHEF_03CF",
             "basepath":"D:/aslab/data_IK", 
-            "subpath":"Lowerbody_healthy1_2011_IK/20190104/matEkfIk/mocap_mocap_X00_hip/KHEF_STD_PPB1_Subject2_mocap_mocap_X00_hip_ekfId1_ekfIk.mat",
-			"runTemplate": "3DOF_3CF_Forward"
+            "subpath":"Lowerbody_healthy1_2011_IK/20190109/matEkfIk/mocap_mocap_X00_hip/KHEF_STD_PPB1_Subject2_mocap_mocap_X00_hip_ekfId1_ekfIk.mat",
+			"runTemplate": "3CF_Forward"
+			"model":"2DOF_hip",
         },
         {
             "runName":"Subj02_SQUA_03CF",
             "basepath":"D:/aslab/data_IK/", 
-            "subpath":"Lowerbody_healthy1_2011_IK/20190104/matEkfIk/mocap_mocap_X00_ankle/SQUA_STD_SLO1_Subject2_mocap_mocap_X00_ankle_ekfId1_ekfIk.mat",
-			"runTemplate": "3DOF_3CF_Forward"
+            "subpath":"Lowerbody_healthy1_2011_IK/20190109/matEkfIk/mocap_mocap_X00_ankle/SQUA_STD_SLO1_Subject2_mocap_mocap_X00_ankle_ekfId1_ekfIk.mat",
+			"runTemplate": "3CF_Forward"
+			"model":"2DOF_ankle",
         },
         {
             "runName":"Subj02_STSO_03CF",
             "basepath":"D:/aslab/data_IK", 
-            "subpath":"Lowerbody_healthy1_2011_IK/20190104/matEkfIk/mocap_mocap_X00_ankle/STSO_SIT_SLO1_Subject2_mocap_mocap_X00_ankle_ekfId1_ekfIk.mat",
-			"runTemplate": "3DOF_3CF_Forward"
+            "subpath":"Lowerbody_healthy1_2011_IK/20190109/matEkfIk/mocap_mocap_X00_ankle/STSO_SIT_SLO1_Subject2_mocap_mocap_X00_ankle_ekfId1_ekfIk.mat",
+			"runTemplate": "3CF_Forward"
+			"model":"2DOF_ankle",
         }
 	]
 }

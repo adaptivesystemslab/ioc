@@ -1,0 +1,538 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- This is the 48 DOF IIT fullbody model 
+	https://github.com/claudia-lat/MAPest/blob/master/Experiments/23links_human/misc/humanModelpng.png
+	https://github.com/claudia-lat/MAPest/blob/master/Experiments/23links_human/misc/modelDoFs_description.png
+-->
+
+<rlmdl>
+    <model>
+        <manufacturer>UniversityOfWaterloo</manufacturer>
+        <name>Healthy1</name>
+        <world id="world">
+            <g>
+                <x>0</x>
+                <y>0</y>
+                <z>9.81</z>
+            </g>
+        </world>
+        
+        <!-- Root node -->
+        <body id="body_base"/> <!-- fixed, starting -->
+
+        <!-- Right lower body -->
+        <frame id="frame_rhip_0"/> <!-- fixed, sagittal -->
+        <frame id="frame_rhip_1"/> <!-- revolute, sagittal -->
+        <frame id="frame_rhip_2"/> <!-- fixed, transverse -->
+        <frame id="frame_rhip_3"/> <!-- revolute, transverse -->
+        <frame id="frame_rhip_4"/> <!-- fixed, IR -->
+        <frame id="frame_rhip_5"/> <!-- revolute, IR -->
+        <frame id="frame_rhip_6"/> <!-- fixed, next frame -->
+  
+        <frame id="frame_rknee_0"/> <!-- fixed, sagittal -->
+        <frame id="frame_rknee_1"/> <!-- revolute, sagittal -->
+        <frame id="frame_rknee_2"/> <!-- fixed, IR -->
+        <frame id="frame_rknee_3"/> <!-- revolute, IR -->
+        <frame id="frame_rknee_4"/> <!-- fixed, next frame -->	
+     
+        <frame id="frame_rankle_0"/> <!-- fixed, sagittal -->
+        <frame id="frame_rankle_1"/> <!-- revolute, sagittal -->
+        <frame id="frame_rankle_2"/> <!-- fixed, transverse -->
+        <frame id="frame_rankle_3"/> <!-- revolute, transverse --> 
+        <frame id="frame_rankle_4"/> <!-- fixed, IR -->
+        <frame id="frame_rankle_5"/> <!-- revolute, IR -->
+        <frame id="frame_rankle_6"/> <!-- fixed, next frame -->
+     
+        <frame id="frame_rballfoot_end"/> <!-- fixed, next frame -->
+  
+        <body id="body_rhip_rknee"/>
+        <body id="body_rknee_rankle"/>
+        <body id="body_rankle_rballfoot"/>
+		
+		<frame id="frame_6dof_root"/>
+		
+        <fixed id="world_to_base">
+            <frame>
+                <a idref="world"/>
+                <b idref="frame_6dof_root"/>
+            </frame>
+        </fixed>
+		
+        <frame id="frame_6dof_revz2"/>
+        <frame id="frame_6dof_revz0"/>
+        <frame id="frame_6dof_revz1"/>
+        <fixed id="frame_6dof_prism2rev_to_frame_6dof_revz0">
+            <frame>
+                <a idref="frame_6dof_root"/>
+                <b idref="frame_6dof_revz0"/>
+            </frame>
+            <rotation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <fixed id="frame_6dof_revz0_to_frame_6dof_revz1">
+            <frame>
+                <a idref="frame_6dof_revz0"/>
+                <b idref="frame_6dof_revz1"/>
+            </frame>
+        </fixed>
+        <fixed id="frame_6dof_revz1_to_frame_6dof_revz2">
+            <frame>
+                <a idref="frame_6dof_revz1"/>
+                <b idref="frame_6dof_revz2"/>
+            </frame>
+            <rotation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <frame id="frame_6dof_revy2"/>
+        <frame id="frame_6dof_revy0"/>
+        <frame id="frame_6dof_revy1"/>
+        <fixed id="frame_6dof_revz2_to_frame_6dof_revy0">
+            <frame>
+                <a idref="frame_6dof_revz2"/>
+                <b idref="frame_6dof_revy0"/>
+            </frame>
+            <rotation>
+                <x>-90</x>
+                <y>0</y>
+                <z>0</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <fixed id="frame_6dof_revy0_to_frame_6dof_revy1">
+            <frame>
+                <a idref="frame_6dof_revy0"/>
+                <b idref="frame_6dof_revy1"/>
+            </frame>
+        </fixed>
+        <fixed id="frame_6dof_revy1_to_frame_6dof_revy2">
+            <frame>
+                <a idref="frame_6dof_revy1"/>
+                <b idref="frame_6dof_revy2"/>
+            </frame>
+            <rotation>
+                <x>90</x>
+                <y>0</y>
+                <z>0</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <frame id="frame_6dof_revx2"/>
+        <frame id="frame_6dof_revx0"/>
+        <frame id="frame_6dof_revx1"/>
+        <fixed id="frame_6dof_revy2_to_frame_6dof_revx0">
+            <frame>
+                <a idref="frame_6dof_revy2"/>
+                <b idref="frame_6dof_revx0"/>
+            </frame>
+            <rotation>
+                <x>0</x>
+                <y>90</y>
+                <z>0</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <fixed id="frame_6dof_revx0_to_frame_6dof_revx1">
+            <frame>
+                <a idref="frame_6dof_revx0"/>
+                <b idref="frame_6dof_revx1"/>
+            </frame>
+        </fixed>
+        <fixed id="frame_6dof_revx1_to_frame_6dof_revx2">
+            <frame>
+                <a idref="frame_6dof_revx1"/>
+                <b idref="frame_6dof_revx2"/>
+            </frame>
+            <rotation>
+                <x>0</x>
+                <y>-90</y>
+                <z>0</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <fixed id="frame_6dof_revx2_to_body_base">
+            <frame>
+                <a idref="frame_6dof_revx2"/>
+                <b idref="body_base"/>
+            </frame>
+            <rotation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        
+        <fixed id="length_base_rhip">
+            <frame>
+                <a idref="body_base"/>
+                <b idref="frame_rhip_0"/>
+            </frame>
+        </fixed>
+        
+        <fixed id="fixed_rhip_0"> 
+            <frame> <!-- Frame rotation to sag -->
+                <a idref="frame_rhip_0"/>
+                <b idref="frame_rhip_1"/>
+            </frame>
+            <rotation>
+                <x>0</x>
+                <y>90</y>
+                <z>0</z>
+            </rotation>
+        </fixed>
+        <revolute id="joint_rhip_0">
+            <frame> <!-- Sag joint -->
+                <a idref="frame_rhip_1"/>
+                <b idref="frame_rhip_2"/>
+            </frame>
+        </revolute>
+        <fixed id="fixed_rhip_1">
+            <frame> <!-- Frame rotation to trans joint -->
+                <a idref="frame_rhip_2"/>
+                <b idref="frame_rhip_3"/>
+            </frame>
+            <rotation>
+                <x>-90</x>
+                <y>0</y>
+                <z>0</z>
+            </rotation>
+        </fixed>        
+        <fixed id="joint_rhip_1">
+            <frame> <!-- Trans joint -->
+                <a idref="frame_rhip_3"/>
+                <b idref="frame_rhip_4"/>
+            </frame>
+        </fixed>
+        <fixed id="fixed_rhip_2">
+            <frame> <!-- Frame rotation to IR joint -->
+                <a idref="frame_rhip_4"/>
+                <b idref="frame_rhip_5"/>
+            </frame>
+            <rotation>
+                <x>0</x>
+                <y>-90</y>
+                <z>0</z>
+            </rotation>
+        </fixed>                
+        <fixed id="joint_rhip_2">
+            <frame> <!-- IR joint-->
+                <a idref="frame_rhip_5"/>
+                <b idref="frame_rhip_6"/>
+            </frame>
+        </fixed>
+        <fixed id="fixed_rhip_3">
+            <frame> <!-- Frame rotation to neutral frame -->
+                <a idref="frame_rhip_6"/>
+                <b idref="body_rhip_rknee"/>
+            </frame>
+            <rotation>
+                <x>0</x>
+                <y>0</y>
+                <z>-90</z>
+            </rotation>
+        </fixed>
+        <fixed id="length_rhip_rknee">
+            <frame> <!-- Offset to knee frame --> 
+                <a idref="body_rhip_rknee"/>
+                <b idref="frame_rknee_0"/>
+            </frame>
+        </fixed>     	
+        
+        <fixed id="fixed_rknee_0">
+            <frame> <!-- Frame rotation to sag joint -->
+                <a idref="frame_rknee_0"/>
+                <b idref="frame_rknee_1"/>
+            </frame>
+            <rotation>
+                <x>0</x>
+                <y>90</y>
+                <z>0</z>
+            </rotation>
+        </fixed>     
+        <revolute id="joint_rknee_0">
+            <frame> <!-- Sag joint -->
+                <a idref="frame_rknee_1"/>
+                <b idref="frame_rknee_2"/>
+            </frame>
+        </revolute>
+        <fixed id="fixed_rknee_1">
+            <frame> <!-- Frame rotation to IR joint -->
+                <a idref="frame_rknee_2"/>
+                <b idref="frame_rknee_3"/>
+            </frame>
+            <rotation>
+                <x>-90</x>
+                <y>0</y>
+                <z>90</z>
+            </rotation>
+        </fixed>        
+        <fixed id="joint_rknee_1">
+            <frame> <!-- IR joint -->
+                <a idref="frame_rknee_3"/>
+                <b idref="frame_rknee_4"/>
+            </frame>
+        </fixed>
+        <fixed id="fixed_rknee_2">
+            <frame><!-- Frame rotation to neutral frame -->
+                <a idref="frame_rknee_4"/>
+                <b idref="body_rknee_rankle"/>
+            </frame>
+            <rotation>
+                <x>0</x>
+                <y>0</y>
+                <z>-90</z>
+            </rotation>
+        </fixed>                
+        <fixed id="length_rknee_rankle">
+            <frame> <!-- Offset to ankle frame-->
+                <a idref="body_rknee_rankle"/>
+                <b idref="frame_rankle_0"/>
+            </frame>
+        </fixed>  		
+        
+        <fixed id="fixed_rankle_0">
+            <frame> <!-- Frame rotation to sag joint -->
+                <a idref="frame_rankle_0"/>
+                <b idref="frame_rankle_1"/>
+            </frame>
+            <rotation>
+                <x>0</x>
+                <y>90</y>
+                <z>0</z>
+            </rotation>
+        </fixed>      
+        <fixed id="joint_rankle_0">
+            <frame> <!-- Sag joint -->
+                <a idref="frame_rankle_1"/>
+                <b idref="frame_rankle_2"/>
+            </frame>
+        </fixed>
+        <fixed id="fixed_rankle_1">
+            <frame> <!-- Frame rotation to trans joint -->
+                <a idref="frame_rankle_2"/>
+                <b idref="frame_rankle_3"/>
+            </frame>
+            <rotation>
+                <x>-90</x>
+                <y>0</y>
+                <z>0</z>
+            </rotation>
+        </fixed>        
+        <fixed id="joint_rankle_1">
+            <frame> <!-- Trans joint -->
+                <a idref="frame_rankle_3"/>
+                <b idref="frame_rankle_4"/>
+            </frame>
+        </fixed>
+        <fixed id="fixed_rankle_2">
+            <frame> <!-- Rotation to IR joint -->
+                <a idref="frame_rankle_4"/>
+                <b idref="frame_rankle_5"/>
+            </frame>
+            <rotation>
+                <x>0</x>
+                <y>-90</y>
+                <z>0</z>
+            </rotation>
+        </fixed>                
+        <fixed id="joint_rankle_2">
+            <frame> <!-- IR joint-->
+                <a idref="frame_rankle_5"/>
+                <b idref="frame_rankle_6"/>
+            </frame>
+        </fixed>
+        <fixed id="fixed_rankle_3">
+            <frame> <!-- Frame rotation to neutral frame -->
+                <a idref="frame_rankle_6"/>
+                <b idref="body_rankle_rballfoot"/>
+            </frame>
+            <rotation>
+                <x>0</x>
+                <y>0</y>
+                <z>-90</z>
+            </rotation>
+        </fixed>
+        <fixed id="length_rankle_rballfoot">
+            <frame> <!-- Offset to ankle foot frame-->
+                <a idref="body_rankle_rballfoot"/>
+                <b idref="frame_rballfoot_end"/>
+            </frame>
+        </fixed>    	
+        
+		<frame id="frame_6dof2_root"/>
+		<frame id="frame_6dof2_revz2"/>
+        <frame id="frame_6dof2_revz0"/>
+        <frame id="frame_6dof2_revz1"/>
+        <fixed id="frame_6dof2_prism2rev_to_frame_6dof2_revz0">
+            <frame>
+                <a idref="frame_rballfoot_end"/>
+                <b idref="frame_6dof2_revz0"/>
+            </frame>
+            <rotation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <fixed id="frame_6dof2_revz0_to_frame_6dof2_revz1">
+            <frame>
+                <a idref="frame_6dof2_revz0"/>
+                <b idref="frame_6dof2_revz1"/>
+            </frame>
+        </fixed>
+        <fixed id="frame_6dof2_revz1_to_frame_6dof2_revz2">
+            <frame>
+                <a idref="frame_6dof2_revz1"/>
+                <b idref="frame_6dof2_revz2"/>
+            </frame>
+            <rotation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <frame id="frame_6dof2_revy2"/>
+        <frame id="frame_6dof2_revy0"/>
+        <frame id="frame_6dof2_revy1"/>
+        <fixed id="frame_6dof2_revz2_to_frame_6dof2_revy0">
+            <frame>
+                <a idref="frame_6dof2_revz2"/>
+                <b idref="frame_6dof2_revy0"/>
+            </frame>
+            <rotation>
+                <x>-90</x>
+                <y>0</y>
+                <z>0</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <fixed id="frame_6dof2_revy0_to_frame_6dof2_revy1">
+            <frame>
+                <a idref="frame_6dof2_revy0"/>
+                <b idref="frame_6dof2_revy1"/>
+            </frame>
+        </fixed>
+        <fixed id="frame_6dof2_revy1_to_frame_6dof2_revy2">
+            <frame>
+                <a idref="frame_6dof2_revy1"/>
+                <b idref="frame_6dof2_revy2"/>
+            </frame>
+            <rotation>
+                <x>90</x>
+                <y>0</y>
+                <z>0</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <frame id="frame_6dof2_revx2"/>
+        <frame id="frame_6dof2_revx0"/>
+        <frame id="frame_6dof2_revx1"/>
+        <fixed id="frame_6dof2_revy2_to_frame_6dof2_revx0">
+            <frame>
+                <a idref="frame_6dof2_revy2"/>
+                <b idref="frame_6dof2_revx0"/>
+            </frame>
+            <rotation>
+                <x>0</x>
+                <y>90</y>
+                <z>0</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <fixed id="frame_6dof2_revx0_to_frame_6dof2_revx1">
+            <frame>
+                <a idref="frame_6dof2_revx0"/>
+                <b idref="frame_6dof2_revx1"/>
+            </frame>
+        </fixed>
+        <fixed id="frame_6dof2_revx1_to_frame_6dof2_revx2">
+            <frame>
+                <a idref="frame_6dof2_revx1"/>
+                <b idref="frame_6dof2_revx2"/>
+            </frame>
+            <rotation>
+                <x>0</x>
+                <y>-90</y>
+                <z>0</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <fixed id="frame_6dof2_revx2_to_body_base">
+            <frame>
+                <a idref="frame_6dof2_revx2"/>
+                <b idref="frame_6dof2_root"/>
+            </frame>
+            <rotation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+    </model>
+</rlmdl>
