@@ -7,14 +7,14 @@ tic;
 %% Define internal settings
 % Jonathan's Configurations
 % configFilePath = '../Data/IOC_gitupload_test.json';
-% configFilePath = '../Data/IOC_ExpressiveData_test.json';
+configFilePath = '../Data_json/CarrenoConfig/IOC_ExpressiveData_test.json';
 % configFilePath = '../Data_json/LinConfig/IOC_IITFatigue_test.json';
 % configFilePath = '../Data_json/LinConfig/IOC_Healthy1.json';
 % configFilePath = '../Data_json/LinConfig/IOC_Jumping2D.json';
 % configFilePath = '../Data_json/IOC_IITFatigue_test.json';
 
-% Wanxin's Configurations
-configFilePath = '../Data_json/JinConfig/Squat_IIT/IOC_IITFatigue_Test_Sub1.json';
+%% Wanxin's Configurations
+% configFilePath = '../Data_json/JinConfig/Squat_IIT/IOC_IITFatigue_Test_Sub1.json';
 % configFilePath = '../Data_json/JinConfig/Jump/IOC_Github_Jumping2D_Sub2.json';
 % configFilePath = '../Data_json/LinConfig/IOC_Healthy1.json';
 
@@ -25,8 +25,8 @@ configFilePath = '../Data_json/JinConfig/Squat_IIT/IOC_IITFatigue_Test_Sub1.json
 
 %% Create and/or look for folder where solutions are going to be saved
 % currentDate = datestr(datetime("now"),"yyyy_mm_dd_HH_MM_SS");
-% currentDate = 'expressiveTest';
-currentDate = 'result01';
+currentDate = 'expressiveTest';
+% currentDate = 'result01';
 savePath = sprintf('../Data/IOC/%s/', currentDate);
 
 overwriteFiles = 1;
@@ -58,8 +58,8 @@ for i=1
     [status, alreadyExist] = checkMkdir(subsavePath);
     
     if ~alreadyExist || overwriteFiles
-%         IOCRun(trialInfo, subsavePath);
-        IOCIncomplete(trialInfo,savePath)
+        IOCRun(trialInfo, subsavePath);
+%        IOCIncomplete(trialInfo,savePath)
     end
 end
 
