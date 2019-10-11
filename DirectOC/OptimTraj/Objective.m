@@ -1,4 +1,4 @@
-function f = objective(t, x, u, weights, iocObject)
+function f = Objective(t, x, u, weights, iocObject)
 
     w = weights'; w = w/sum(w);
         
