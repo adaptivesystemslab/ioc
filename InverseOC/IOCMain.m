@@ -7,13 +7,13 @@ tic;
 %% Define internal settings
 % Jonathan's Configurations
 % configFilePath = '../Data/IOC_gitupload_test.json';
-configFilePath = '../Data_json/CarrenoConfig/IOC_ExpressiveData_test.json';
+% configFilePath = '../Data_json/CarrenoConfig/IOC_ExpressiveData_test.json';
 % configFilePath = '../Data_json/LinConfig/IOC_IITFatigue_test.json';
 % configFilePath = '../Data_json/LinConfig/IOC_Healthy1.json';
-% configFilePath = '../Data_json/LinConfig/IOC_Jumping2D.json';
+configFilePath = '../Data_json/LinConfig/IOC_Jumping2D.json';
 % configFilePath = '../Data_json/IOC_IITFatigue_test.json';
 
-%% Wanxin's Configurations
+% Wanxin's Configurations
 % configFilePath = '../Data_json/JinConfig/Squat_IIT/IOC_IITFatigue_Test_Sub1.json';
 % configFilePath = '../Data_json/JinConfig/Jump/IOC_Github_Jumping2D_Sub2.json';
 % configFilePath = '../Data_json/LinConfig/IOC_Healthy1.json';
@@ -39,7 +39,7 @@ setPaths();
 configFile = jsondecode(fileread(configFilePath));
 n = length(configFile.Files);
 
-for i=1
+for i=1:n
     runParam = [];
     configFileI = configFile.Files(i);
 
@@ -59,7 +59,7 @@ for i=1
     
     if ~alreadyExist || overwriteFiles
         IOCRun(trialInfo, subsavePath);
-%        IOCIncomplete(trialInfo,savePath)
+%         IOCIncomplete(trialInfo,savePath)
     end
 end
 

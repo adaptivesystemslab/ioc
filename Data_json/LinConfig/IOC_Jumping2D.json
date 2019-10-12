@@ -49,20 +49,92 @@
             "candidateFeatures": 
 			[
 				{
+					"name":"kinetic energy of model",
+					"feature":"kineticEnergySumSqu"
+				}, 
+				{
+					"name":"CoM height",
+					"feature":"centreMassSumSqu", 
+					"axes": [0, 0, 1]
+				}, 
+				{
+					"name":"CoM vertical velocity",
+					"feature":"centreMassVeloSumSqu", 
+					"axes": [0, 0, 1]
+				}, 
+				{
+					"name":"Toe vertical velocity",
+					"feature":"cartVeloSumSqu", 
+					"frameNames": ["rtoe0"],
+					"axes": [0, 0, 1]
+				}, 	
+				{
+					"name":"Toe forward velocity",
+					"feature":"cartVeloSumSqu", 
+					"frameNames": ["rtoe0"],
+					"axes": [1, 0, 0]
+				}, 	
+				{
+					"name":"CoM forward velocity relative to toe",
+					"feature":"centreMassVeloRelativeToFrame", 
+					"refFrameNames": ["rtoe0"],
+					"axes": [1, 0, 0]
+				}, 		
+				{
+					"name":"torso: joint acceleration",
 					"feature":"angAccelSumSqu", 
-					"jointNames": ["rhip_jFlexion", "rknee_jExtension", "rankle_jDorsiflexion"],
-                    "normCoeff": [1]
-				}, 
+					"jointNames": ["back_jFB"]
+				}, 			
 				{
+					"name":"torso: joint jerk",
 					"feature":"angJerkSumSqu", 
-					"jointNames": ["rhip_jFlexion", "rknee_jExtension", "rankle_jDorsiflexion"],
-                    "normCoeff": [1]
-				}, 
+					"jointNames": ["back_jFB"]
+				}, 		
 				{
+					"name":"torso: joint torque",
+					"feature":"torqueSumSqu", 
+					"jointNames": ["back_jFB"]
+				}, 			
+				{
+					"name":"torso: joint torque",
 					"feature":"angPowerSumSqu", 
-					"jointNames": ["rhip_jFlexion", "rknee_jExtension", "rankle_jDorsiflexion"],
-                    "normCoeff": [1]
-				}
+					"jointNames": ["back_jFB"]
+				}, 		
+				{
+					"name":"arms: joint acceleration",
+					"feature":"angAccelSumSqu", 
+					"jointNames": ["rshoulder_jElevation", "relbow_jFlexion", "lshoulder_jElevation", "lelbow_jFlexion"]
+				}, 			
+				{
+					"name":"arms: joint jerk",
+					"feature":"angJerkSumSqu", 
+					"jointNames": ["rshoulder_jElevation", "relbow_jFlexion", "lshoulder_jElevation", "lelbow_jFlexion"]
+				}, 		
+				{
+					"name":"arms: joint torque",
+					"feature":"torqueSumSqu", 
+					"jointNames": ["rshoulder_jElevation", "relbow_jFlexion", "lshoulder_jElevation", "lelbow_jFlexion"]
+				}, 			
+				{
+					"name":"arms: joint torque",
+					"feature":"angPowerSumSqu", 
+					"jointNames": ["rshoulder_jElevation", "relbow_jFlexion", "lshoulder_jElevation", "lelbow_jFlexion"]
+				}, 		
+				{
+					"name":"legs: joint acceleration",
+					"feature":"angAccelSumSqu", 
+					"jointNames": ["rhip_jFlexion", "rknee_jExtension", "rankle_jDorsiflexion", "lhip_jFlexion", "lknee_jExtension", "lankle_jDorsiflexion"]
+				}, 			
+				{
+					"name":"legs: joint jerk",
+					"feature":"angJerkSumSqu", 
+					"jointNames": ["rhip_jFlexion", "rknee_jExtension", "rankle_jDorsiflexion", "lhip_jFlexion", "lknee_jExtension", "lankle_jDorsiflexion"]
+				}, 		
+				{
+					"name":"legs: joint torque",
+					"feature":"torqueSumSqu", 
+					"jointNames": ["rhip_jFlexion", "rknee_jExtension", "rankle_jDorsiflexion", "lhip_jFlexion", "lknee_jExtension", "lankle_jDorsiflexion"]
+				}				
 			]
 		}
 	],
@@ -73,7 +145,7 @@
             "runName":"Subj02_Targ01_Jump01_03DOF_03CF",
             "basepath":"D:/aslab/data_IK",
             "subpath":"Jumping_To_Target_Data_Collection_2018/data_2D/JA_P02_2D.mat",
-			"runTemplate": "3DOF_3CF_Forward",
+			"runTemplate": "3DOF_17CF_Forward",
 			"targNum": [1],
 			"jumpNum": [1]
         }
