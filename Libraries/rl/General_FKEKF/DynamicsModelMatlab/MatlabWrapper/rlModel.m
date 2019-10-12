@@ -32,6 +32,7 @@ classdef rlModel < matlab.mixin.Heterogeneous & handle
           %Note array index in c starts at 0
           for i=0:num_bodies-1
               obj.bodies(end+1) = rlBody(DynamicsModelMatlab(1,7,obj.c_ptr,i));
+              obj.bodies(end).m = 0; % mass inits to 1 for some reason
           end
           
           num_joints = DynamicsModelMatlab(1,12,obj.c_ptr);

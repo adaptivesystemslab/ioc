@@ -15,13 +15,14 @@ classdef featuresEnums
         cartBoundingBoxSumSqu 
         cartBoundingVolumeSumSqu 
         cartDisplacementSumSqu 
-        cartQuantityMotionSumSqu 
+        cartQuantityMotionSumSqu % weighted end eff velo
         cartWeightEffortSumSqu 
         cartTimeEffortSumSqu 
         cartSpaceEffortSumSqu 
         cartFlowEffortSumSqu 
         
         centreMassSumSqu % overall centre of mass
+        centreMassVeloSumSqu % overall centre of mass velo
         centreMassDisplacementSumSqu 
         
         angVeloSumSqu
@@ -49,10 +50,8 @@ classdef featuresEnums
         
         
         
-        centreMassPosAxis % com pos, in either x,y,z
-        centreMassVeloAxis % com vel, in either x,y,z
+       
         cartVeloAxis % cart velo of a given frame, in either xyz
         centreMassVeloRelativeToFrame % com velo relative to some cart frame velo
-        
     end
 end

@@ -131,7 +131,7 @@ classdef ModelRL < handle
             J = obj.model.sensors(i).baseJacobian;
             
             dq = obj.model.velocity;
-            dxTemp = J*dq';
+            dxTemp = J*dq;
             dx = dxTemp(4:6)';
         end
         
@@ -296,6 +296,11 @@ classdef ModelRL < handle
             vis = rlVisualizer('vis',640,480);
             obj.model.forwardPosition();
             vis.addModel(obj.model);
+            
+            vis.addMarker('x-axis', [1 0 0], [0.2 0.2 0.2 1]);
+            vis.addMarker('y-axis', [0 1 0], [0.2 0.2 0.2 1]);
+            vis.addMarker('z-axis', [0 0 1], [0.2 0.2 0.2 1]);
+            
             vis.update();
             
             for i = 1:size(q, 1)

@@ -6,10 +6,10 @@ function IOCAnalysis()
 %     residualThreshold = [1e1 1e0 1e-1 1e-2 1e-3 1e-4 1e-5]; % 0.1
 %     residualThreshold = [1e1 1e0 1e-1 1e-2 1e-3 1e-4 1e-5]/1e7; 
 
-    perturbAmount = 10.^[-5:4]; 
-    residualThreshold = 10.^[-7:10];
-%     perturbAmount = [1e-1];
-%     residualThreshold = [1e-1];
+%     perturbAmount = 10.^[-5:4]; 
+%     residualThreshold = 10.^[-7:10];
+    perturbAmount = [1e-1];
+    residualThreshold = [1e-1];
 
     maxAcross = 4;
     maxDown = 7;
@@ -60,13 +60,13 @@ function IOCAnalysis()
 %             try
                 % plot results
 %                 fprintf('%s\n', suffix);
-%                 outputPathFig1 = fullfile(basePath, ['fig_results_individual_' suffix]);
+                outputPathFig1 = fullfile(basePath, ['fig_results_individual_' suffix]);
                 outputPathFig2 = fullfile(outputPath, ['fig_results_cumulativeAllPass_' suffix]);
                 outputPathFig3 = fullfile(outputPath, ['fig_results_cumulativeRankPass_' suffix]);
                 outputPathMat1 = fullfile(outputPath, ['mat_results_cumulativeAllPass_' suffix]);
                 outputPathCsv = fullfile(outputPath, ['csv_' suffix]);
 %                 csv_populate(matData, masterPathCsv);
-%                 plotting_individual(matData, outputPathFig1, outputPathCsv, masterPathCsv);
+                plotting_individual(matData, outputPathFig1, outputPathCsv, masterPathCsv);
                 matSave = plotting_cumulative(matData, outputPathFig2, outputPathFig3, outputPathCsv, masterPathCsv, faceColours, outputPathMat1);
                 
                 % load data and perturb
@@ -828,33 +828,57 @@ function h = plotting_individual(matData, outputPathFig, outputPathCsv, masterPa
     
     % make fig
     h = figure('Position', [488 342 560*2 420*2]); 
-    ax(1) = subplot(411);
-    plot(t, q);
-    ylabel('Joint Angle [rad]');
-    title('Individual weight windows');
-    
-    ax(2) = subplot(412);
+%     ax(1) = subplot(311);
+%     plot(t, q);
+%     ylabel('Joint Angle [rad]');
+%     title('Individual weight windows');
+%     
+    ax(1) = subplot(211);
     area(t, weights);
     lgd = legend(weightLabels,'AutoUpdate','off');
     lgd.NumColumns = 1;
     ylabel('Weights [0:1]');
     
-    ax(3) = subplot(413);
-    area(t, rank);
-    hold on;
-    plot([t(1) t(end)], [minRankThres minRankThres], 'k', 'LineWidth', 2);
-    ylim([0 minRankThres*1.2]);
-    ylabel('Final Rank');
+%     ax(3) = subplot(413);
+%     area(t, rank);
+%     hold on;
+%     plot([t(1) t(end)], [minRankThres minRankThres], 'k', 'LineWidth', 2);
+%     ylim([0 minRankThres*1.2]);
+%     ylabel('Final Rank');
     
-    ax(4) = subplot(414);
-    area(t, winLen*dt);
-    hold on;
-    plot([t(1) t(end)], [minLenThres minLenThres]*dt, 'k', 'LineWidth', 2);
-    plot([t(1) t(end)], [maxLenThres maxLenThres]*dt, 'k', 'LineWidth', 2);
-    ylim([minLenThres/1.2*dt maxLenThres*1.2*dt]);
-    ylabel('Win Len [s]');
+%     ax(4) = subplot(414);
+%     area(t, winLen*dt);
+%     hold on;
+%     plot([t(1) t(end)], [minLenThres minLenThres]*dt, 'k', 'LineWidth', 2);
+%     plot([t(1) t(end)], [maxLenThres maxLenThres]*dt, 'k', 'LineWidth', 2);
+%     ylim([minLenThres/1.2*dt maxLenThres*1.2*dt]);
+%     ylabel('Win Len [s]');
     
-    linkaxes(ax, 'x');
+    
+        data = cell2mat({progressVar.winInds}')
+    minimum = data(:, 1);
+    maximum = data(:, 2);
+%     h = figure;
+    
+    ax(2) = subplot(212);
+%     aH = axes;
+
+    bH = bar(t, maximum);
+    hold on;
+    bH1 = bar(t, minimum);
+    for ii = bH1
+        ii.FaceColor = [1 1 1];
+        ii.LineStyle = 'None';
+        ii.EdgeColor = [1 1 1];
+    end
+    for ii = bH
+        ii.LineStyle = 'None';
+        ii.EdgeColor = [1 1 1];
+    end
+%     axes('Position',aH.Position,'XTick',[],'YTick',[],'Color','None');
+
+   linkaxes(ax, 'x');
+   xlim([0 t(end)]);
     xlabel('Time [s]');
     
     saveas(h, outputPathFig, 'fig');

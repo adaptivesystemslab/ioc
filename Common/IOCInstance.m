@@ -32,6 +32,9 @@ classdef IOCInstance < handle
             % be extracted from the dynamic model
             obj.dynamicModel.forwardKinematics();
             rlModel = obj.dynamicModel.model;
+        
+             % use the model state order for the joints for consistency
+            obj.fullJointNames = {rlModel.joints.name}';
             
             % initialize the variables to something temp
             obj.features = featuresCalc();
@@ -43,30 +46,16 @@ classdef IOCInstance < handle
             for i = 1:length(jsonBlob.candidateFeatures)
                 currJsonBlob = jsonBlob.candidateFeatures(i);
                 obj.features(i) = featuresCalc(currJsonBlob);
-                frameRequired = [frameRequired; obj.features(i).frameNames];
+                obj.features(i).initCf(obj.dynamicModel, obj.fullJointNames);
                 
-                % specific cases that requires frame information to be
-                % added
-                switch obj.features(i).feature
-                    case featuresEnums.cartDisplacementSumSqu
-                        frameRequired = [frameRequired; obj.features(i).refFrameNames];
-                end
+                frameRequired = [frameRequired; obj.features(i).frameNames; obj.features(i).refFrameNames];
+                basisFeatures = [basisFeatures obj.features(i).bf];
             end
-            
-            % use the model state order for the joints for consistency
-            obj.fullJointNames = {rlModel.joints.name};
-            obj.fullJointNames = obj.fullJointNames(:);
-            
+           
             % use the alphabetical frame order for joint pos
             obj.fullFrameNames = unique(frameRequired);
             obj.dynamicModel.addEndEffectors(obj.fullFrameNames);
             obj.dynamicModel.forwardKinematics();
-            
-            % now assign these parameters back into the feature listings
-            for i = 1:length(obj.features)     
-                obj.features(i).initialize(obj.fullJointNames, obj.fullFrameNames, obj.dynamicModel);
-                basisFeatures = [basisFeatures obj.features(i).bf];
-            end
             
             % update the full basis feature list so calcFeatures will know
             % which basis features are required
@@ -80,6 +69,11 @@ classdef IOCInstance < handle
                 end
                 
                 obj.basisFeatureFlags.(char(allBasisFeatures(i))) = featureUse;
+            end
+            
+            % now assign the frameinds parameters back into the feature listings
+            for i = 1:length(obj.features)
+                obj.features(i).initInds(obj.fullJointNames, obj.fullFrameNames);
             end
         end
         

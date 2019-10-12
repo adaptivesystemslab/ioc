@@ -9,11 +9,15 @@ classdef featuresCalc < handle
         % loaded parameter form .json. these are modifiers that are parsed 
         % by this function and IOCInstance to determine how to calculate 
         % the cost function
-        jointNames % which joint frame to use
-        frameNames % which transform frame to use
-        bodyNames % if calculating COM and want true COM, the corresponding body names to the frames needs to be loaded if weights are not manually defined
-        refFrameNames % reference frame or pose
-        weights % weights for cfs that require it, or determine xyz for bounding box
+        
+        jointNames % which joint frame to use. leave blank if want to use all the
+                   % joint frames
+        frameNames % which transform frame to use. 
+                   % for COM-related functions, leave blank if want to use all the body frames
+%         bodyNames  
+        refFrameNames % reference frame or pose. its use depends on the cf
+        weights % weights for cfs that require it
+        axes % xyz for bounding box or other directional-able features
         
         % determines if the frameInds belongs to frames (ie cartesian) or
         % joints (ie revolute)
@@ -22,8 +26,9 @@ classdef featuresCalc < handle
         % IOCInstance from obj.param
         jointInds
         frameInds
-        referenceInds
-        referenceVals
+%         bodyInds
+        refInds
+        refVals
         refTimes
         windowLength
         
@@ -65,8 +70,9 @@ classdef featuresCalc < handle
             addOptional(externalParamParser, 'feature', []);
             addOptional(externalParamParser, 'jointNames', []);
             addOptional(externalParamParser, 'frameNames', []);
-            addOptional(externalParamParser, 'bodyNames', []);
+%             addOptional(externalParamParser, 'bodyNames', []);
             addOptional(externalParamParser, 'weights', []);
+            addOptional(externalParamParser, 'axes', []);
             addOptional(externalParamParser, 'refFrameNames', []);            
             addOptional(externalParamParser, 'windowLength', []);
             addOptional(externalParamParser, 'normCoeff', 1);
@@ -83,44 +89,52 @@ classdef featuresCalc < handle
             obj.feature = featuresEnums.(jsonParsed.feature); % enum parse
             obj.jointNames = jsonParsed.jointNames(:);
             obj.frameNames = jsonParsed.frameNames(:);
-            obj.bodyNames = jsonParsed.bodyNames(:);
+%             obj.bodyNames = jsonParsed.bodyNames(:);
             obj.refFrameNames = jsonParsed.refFrameNames;
             obj.refTimes = jsonParsed.refTimes(:);
             
-            obj.weights = jsonParsed.weights;
+            obj.weights = jsonParsed.weights(:)';
+            obj.axes = jsonParsed.axes(:)';
             obj.windowLength = jsonParsed.windowLength;
             
             obj.normCoeff = jsonParsed.normCoeff;
+            
+            if numel(obj.refFrameNames) ~= numel(obj.frameNames)
+                % as in, there's many framenames but only one ref
+                for i = 2:length(obj.frameNames)
+                    obj.refFrameNames{i} = obj.refFrameNames{1};
+                end
+            end
         end
         
-        function initialize(obj, fullJointNames, fullFrameNames, dynamicModel)
+        function initCf(obj, dynamicModel, fullJointNames)
             sumSqu = @(x) sum(x.^2, 2);
 %             sumAbs = @(x) sum(abs(x), 2);
 %             maxAbs = @(x) max(abs(x), [], 2);
             
             obj.bf = basisFeaturesEnums.dddx;  % initializing to something temp for now
-            
-            obj.jointInds = featuresCalc.setJointInds(fullJointNames, obj.jointNames);
-            obj.frameInds = featuresCalc.setFrameInds(fullFrameNames, obj.frameNames);
 
             switch obj.feature
                 case featuresEnums.cartVeloSumSqu
                     obj.bf(1) = basisFeaturesEnums.dx;
                     obj.cf = @(basisFeatures) ...
-                        sumSqu(basisFeatures.dx(:, obj.frameInds));
+                        sumSqu(basisFeatures.dx(:, obj.frameInds) .* repmat(obj.axes, size(basisFeatures.dx, 1), 1));
+                    obj.checkDefaultAxes();
                     
                 case featuresEnums.cartAccelSumSqu
                     obj.bf(1) = basisFeaturesEnums.ddx;
                     obj.bf(2) = basisFeaturesEnums.ddq;
                     obj.cf = @(basisFeatures) ...
-                        sumSqu(basisFeatures.ddx(:, obj.frameInds));
+                        sumSqu(basisFeatures.ddx(:, obj.frameInds) .* repmat(obj.axes, size(basisFeatures.ddx, 1), 1));
+                    obj.checkDefaultAxes();
                     
                 case featuresEnums.cartJerkSumSqu
                     obj.bf(1) = basisFeaturesEnums.dddx;
                     obj.bf(2) = basisFeaturesEnums.ddx;
                     obj.bf(3) = basisFeaturesEnums.ddq;
                     obj.cf = @(basisFeatures) ...
-                        sumSqu(basisFeatures.dddx(:, obj.frameInds));
+                        sumSqu(basisFeatures.dddx(:, obj.frameInds) .* repmat(obj.axes, size(basisFeatures.dddx, 1), 1));
+                    obj.checkDefaultAxes();
                     
                 case featuresEnums.cartCurvatureSumSqu
                     obj.bf(1) = basisFeaturesEnums.dx;
@@ -150,144 +164,124 @@ classdef featuresCalc < handle
                     obj.bf(1) = basisFeaturesEnums.x;
                     obj.cf = @(basisFeatures) ...
                         sumSqu(obj.calcCfCartDisplacement(basisFeatures));
-                    if numel(obj.refFrameNames) ~= numel(obj.frameNames) 
-                        % as in, there's many framenames but only one ref
-                        for i = 2:length(obj.frameNames)
-                            obj.refFrameNames{i} = obj.refFrameNames{1};
-                        end
-                    end
-                    obj.referenceInds = featuresCalc.setFrameInds(fullFrameNames, obj.refFrameNames);
                     
                 case featuresEnums.cartQuantityMotionSumSqu
                     obj.bf(1) = basisFeaturesEnums.dx;
                     obj.cf = @(basisFeatures) ...
-                        sumSqu(obj.calcCfCartQuantityMotionSumSqu(basisFeatures));
-                    if isempty(obj.weights) % equal weights
-                        obj.weights = ones(size(obj.frameNames))*(1/numel(obj.frameNames));
-                    end
+                        sumSqu(obj.calcCfWeightedEndEffVelo(basisFeatures));
+                    obj.checkDefaultWeights(obj.frameNames);
                     
                 case featuresEnums.cartWeightEffortSumSqu
                     obj.bf(1) = basisFeaturesEnums.dx;
                     obj.cf = @(basisFeatures) ...
                         sumSqu(obj.calcCfCartWeightEffortSumSqu(basisFeatures));
-                    if isempty(obj.weights) % equal weights
-                        obj.weights = ones(size(obj.frameNames))*(1/numel(obj.frameNames));
-                    end
-                    if isempty(obj.windowLength) % equal weights
-                        obj.windowLength = 1;
-                    end
+                    obj.checkDefaultWeights(obj.frameNames);
+                    obj.checkDefaultLengths();
                     
                 case featuresEnums.cartTimeEffortSumSqu
                     obj.bf(1) = basisFeaturesEnums.ddx;
                     obj.cf = @(basisFeatures) ...
                         sumSqu(obj.calcCfCartTimeFlowEffortSumSqu(basisFeatures.ddx));
-                    if isempty(obj.weights) % equal weights
-                        obj.weights = ones(size(obj.frameNames))*(1/numel(obj.frameNames));
-                    end
-                    if isempty(obj.windowLength) % equal weights
-                        obj.windowLength = 1;
-                    end
+                    obj.checkDefaultWeights(obj.frameNames);
+                    obj.checkDefaultLengths();
                     
                 case featuresEnums.cartSpaceEffortSumSqu
                     obj.bf(1) = basisFeaturesEnums.x;
                     obj.cf = @(basisFeatures) ...
                         sumSqu(obj.calcCfCartSpaceEffortSumSqu(basisFeatures));
-                    if isempty(obj.weights) % equal weights
-                        obj.weights = ones(size(obj.frameNames))*(1/numel(obj.frameNames));
-                    end
-                    if isempty(obj.windowLength) % equal weights
-                        obj.windowLength = 1;
-                    end
+                    obj.checkDefaultWeights(obj.frameNames);
+                    obj.checkDefaultLengths();
                     
                 case featuresEnums.cartFlowEffortSumSqu
                     obj.bf(1) = basisFeaturesEnums.dddx;
                     obj.cf = @(basisFeatures) ...
                         sumSqu(obj.calcCfCartTimeFlowEffortSumSqu(basisFeatures.dddx));
-                    if isempty(obj.weights) % equal weights
-                        obj.weights = ones(size(obj.frameNames))*(1/numel(obj.frameNames));
-                    end
-                    if isempty(obj.windowLength) % equal weights
-                        obj.windowLength = 1;
-                    end
+                    obj.checkDefaultWeights(obj.frameNames);
+                    obj.checkDefaultLengths();
                     
                 case featuresEnums.centreMassSumSqu
                     obj.bf(1) = basisFeaturesEnums.x;
                     obj.cf = @(basisFeatures) ...
-                        sumSqu(obj.calcCfCentreOfMass(basisFeatures));
-                    if isempty(obj.weights)
-                        obj.weights = featuresCalc.calcMassWeights(obj.bodyNames, dynamicModel.model);
-                    end
+                        sumSqu(obj.calcCfWeightedEndEffPos(basisFeatures));
+                    obj.checkDefaultWeightsCOM(dynamicModel);
+                    obj.checkDefaultAxes();
+                    
+                case featuresEnums.centreMassVeloSumSqu
+                    obj.bf(1) = basisFeaturesEnums.x;
+                    obj.cf = @(basisFeatures) ...
+                        sumSqu(obj.calcCfWeightedEndEffVelo(basisFeatures));
+                    obj.checkDefaultWeightsCOM(dynamicModel);
+                    obj.checkDefaultAxes();                    
                     
                 case featuresEnums.centreMassDisplacementSumSqu
                     obj.bf(1) = basisFeaturesEnums.x;
                     obj.cf = @(basisFeatures) ...
                         sumSqu(obj.calcCfCentreMassDisplacement(basisFeatures));
-                    if isempty(obj.weights)
-                        obj.weights = featuresCalc.calcMassWeights(obj.bodyNames, dynamicModel.model);
-                    end
-                    obj.referenceVals = featuresCalc.calcCentreMassReferencePose(fullFrameNames, obj.frameNames, dynamicModel); % determined by initial pose
+                    obj.checkDefaultWeightsCOM(dynamicModel);
+                    obj.refVals = featuresCalc.calcCentreMassReferencePose(fullFrameNames, obj.frameNames, dynamicModel); % determined by initial pose
                     
                 case featuresEnums.angVeloSumSqu
                     obj.bf(1) = basisFeaturesEnums.dq;
                     obj.cf = @(basisFeatures) ...
                         sumSqu(basisFeatures.dq(:, obj.jointInds));
+                    obj.checkDefaultJoints(fullJointNames);
                     
                 case featuresEnums.angAccelSumSqu
                     obj.bf(1) = basisFeaturesEnums.ddq;
                     obj.bf(2) = basisFeaturesEnums.dq;
                     obj.cf = @(basisFeatures) ...
                         sumSqu(basisFeatures.ddq(:, obj.jointInds));
+                    obj.checkDefaultJoints(fullJointNames);
                     
                 case featuresEnums.angJerkSumSqu
                     obj.bf(1) = basisFeaturesEnums.dddq;
                     obj.bf(2) = basisFeaturesEnums.ddq;
                     obj.bf(3) = basisFeaturesEnums.dq;
-                    obj.cf = @(basisFeatures) ...
-                        sumSqu(obj.calcCfAngJerk(basisFeatures));
 %                     obj.cf = @(basisFeatures) ...
-%                         sumSqu(basisFeatures.dddq(:, obj.jointInds));       
+%                         sumSqu(obj.calcCfAngJerk(basisFeatures));
+                    obj.cf = @(basisFeatures) ...
+                        sumSqu(basisFeatures.dddq(:, obj.jointInds));       
+                    obj.checkDefaultJoints(fullJointNames);
                     
                 case featuresEnums.angCurvatureSumSqu
                     obj.bf(1) = basisFeaturesEnums.dq;
                     obj.bf(2) = basisFeaturesEnums.ddq;
                     obj.cf = @(basisFeatures) ...
                         sumSqu(obj.calcCfAngCurvature(basisFeatures));
+                    obj.checkDefaultJoints(fullJointNames);
                     
                 case featuresEnums.angRadCurvatureSumSqu
                     obj.bf(1) = basisFeaturesEnums.dq;
                     obj.bf(2) = basisFeaturesEnums.ddq;
                     obj.cf = @(basisFeatures) ...
                         sumSqu(obj.calcCfAngCurvature(basisFeatures).^(-1));
+                    obj.checkDefaultJoints(fullJointNames);
                     
                 case featuresEnums.angQuantityMotionSumSqu
                     obj.bf(1) = basisFeaturesEnums.dx;
                     obj.cf = @(basisFeatures) ...
                         sumSqu(obj.calcCfAngQuantityMotionSumSqu(basisFeatures));
-                    if isempty(obj.weights) % equal weights
-                        obj.weights = ones(size(obj.jointNames))*(1/numel(obj.jointNames));
-                    end
+                    obj.checkDefaultWeights(obj.frameNames);
                    
                 case featuresEnums.angWeightEffortSumSqu
                     obj.bf(1) = basisFeaturesEnums.dq;
                     obj.cf = @(basisFeatures) ...
                         sumSqu(obj.calcCfAngWeightEffortSumSqu(basisFeatures));
-                    if isempty(obj.weights) % equal weights
-                        obj.weights = ones(size(obj.jointNames))*(1/numel(obj.jointNames));
-                    end
-                    if isempty(obj.windowLength) % equal weights
-                        obj.windowLength = 1;
-                    end
+                    obj.checkDefaultWeights(obj.jointNames);
+                    obj.checkDefaultLengths();
                     
                 case featuresEnums.torqueSumSqu
                     obj.bf(1) = basisFeaturesEnums.tau;
                     obj.cf = @(basisFeatures) ...
                         sumSqu(basisFeatures.tau(:, obj.jointInds));
+                    obj.checkDefaultJoints();
                     
                 case featuresEnums.torqueVeloSumSqu
                     obj.bf(1) = basisFeaturesEnums.dtau;
                     obj.bf(2) = basisFeaturesEnums.tau;
                     obj.cf = @(basisFeatures) ...
                         sumSqu(basisFeatures.dtau(:, obj.jointInds));
+                    obj.checkDefaultJoints();
                     
                 case featuresEnums.torqueAccelSumSqu
                     obj.bf(1) = basisFeaturesEnums.ddtau;
@@ -295,6 +289,7 @@ classdef featuresCalc < handle
                     obj.bf(3) = basisFeaturesEnums.tau;
                     obj.cf = @(basisFeatures) ...
                         sumSqu(basisFeatures.ddtau(:, obj.jointInds));
+                    obj.checkDefaultJoints();
                     
                 case featuresEnums.kineticEnergySumSqu
                     obj.bf(1) = basisFeaturesEnums.dq;
@@ -307,22 +302,19 @@ classdef featuresCalc < handle
                     obj.bf(2) = basisFeaturesEnums.tau;
                     obj.cf = @(basisFeatures) ...
                         sumSqu(basisFeatures.dq(:, obj.jointInds) .* basisFeatures.tau(:, obj.jointInds));
+                    obj.checkDefaultJoints();
                     
                 case featuresEnums.extensivenessMaxSumSqu
                     obj.bf(1) = basisFeaturesEnums.x;
                     obj.cf = @(basisFeatures) ...
                         maxAbs(obj.calcCfExtenstiveness(basisFeatures));
-                    if isempty(obj.weights)
-                        obj.weights = featuresCalc.calcMassWeights(obj.bodyNames, dynamicModel.model);
-                    end
+                    obj.checkDefaultWeightsCOM(dynamicModel);
                     
                 case featuresEnums.extensivenessSumSumSqu
                     obj.bf(1) = basisFeaturesEnums.x;
                     obj.cf = @(basisFeatures) ...
                         sumSqu(obj.calcCfExtenstiveness(basisFeatures));
-                    if isempty(obj.weights)
-                        obj.weights = featuresCalc.calcMassWeights(obj.bodyNames, dynamicModel.model);
-                    end
+                    obj.checkDefaultWeightsCOM(dynamicModel);
                     
                 case featuresEnums.shapeDirectionSumSqu
                     obj.bf(1) = basisFeaturesEnums.x;
@@ -333,28 +325,76 @@ classdef featuresCalc < handle
                     obj.bf(1) = basisFeaturesEnums.x;
                     obj.cf = @(basisFeatures)...
                         sumSqu(obj.calcCfCartDistToTarget(basisFeatures));
-                    if numel(obj.refFrameNames) ~= numel(obj.frameNames) 
-                        % as in, there's many framenames but only one ref
-                        for i = 2:length(obj.frameNames)
-                            obj.refFrameNames{i} = obj.refFrameNames{1}; % TO REVIEW
-                        end
-                    end
-                    obj.referenceInds = featuresCalc.setFrameInds(fullFrameNames, obj.refFrameNames);
                     
                 case featuresEnums.rotDistToTarget
                     obj.bf(1) = basisFeaturesEnums.R;
                     obj.cf = @(basisFeatures)...
                         sumSqu(obj.calcCfRotDistToTarget(basisFeatures));
-                    if numel(obj.refFrameNames) ~= numel(obj.frameNames) 
-                        % as in, there's many framenames but only one ref
-                        for i = 2:length(obj.frameNames)
-                            obj.refFrameNames{i} = obj.refFrameNames{1}; % TO REVIEW
-                        end
-                    end
-                    obj.referenceInds = featuresCalc.setFrameInds(fullFrameNames, obj.refFrameNames);
-                              
+                               
+                case featuresEnums.centreMassVeloRelativeToFrame
+                    obj.bf(1) = basisFeaturesEnums.dx;
+                    obj.cf = @(basisFeatures) ...
+                        sumSqu(obj.calcCfCentreMassDisplacementRelativeToFrame(basisFeatures));
+                    obj.checkDefaultWeightsCOM(dynamicModel);
+                    obj.checkDefaultAxes();
+                    
                 otherwise
                     error('featuresCalc not defined');
+            end
+        end
+        
+        function initInds(obj, fullJointNames, fullFrameNames)  
+            obj.jointInds = featuresCalc.setJointInds(fullJointNames, obj.jointNames);
+            obj.frameInds = featuresCalc.setFrameInds(fullFrameNames, obj.frameNames); 
+            
+            obj.refInds = featuresCalc.setFrameInds(fullFrameNames, obj.refFrameNames);
+        end
+        
+        function checkDefaultWeights(obj, frameJointNames)
+            if isempty(obj.weights) % equal weights
+                fprintf('featuresCalc: %s (%s): No weights defined in json, using uniform weights over all frames/joints\n', obj.name, obj.feature);
+                obj.weights = ones(size(frameJointNames))*(1/numel(frameJointNames));
+            end
+        end
+        
+        function checkDefaultWeightsCOM(obj, dynamicModel)
+            if isempty(obj.frameNames)
+                fprintf('featuresCalc: %s (%s): No frames defined in json, using mass of individual links\n', obj.name, obj.feature);
+                obj.frameNames = {dynamicModel.model.bodies.name}';
+            else
+                fprintf('featuresCalc: %s (%s): Frames are defined in json, verify that frame was intentional and not for refFrame\n', obj.name, obj.feature);
+            end
+            
+            if isempty(obj.weights)
+                fprintf('featuresCalc: %s (%s): No weights defined in json, using mass of all listed bodynames\n', obj.name, obj.feature);
+                obj.weights = featuresCalc.calcMassWeights(obj.frameNames, dynamicModel.model);
+            end
+            
+            % if an entry does not have any weights, remove it from the
+            % frame names to reduce calculation costs
+            findFilledInds = find(obj.weights > 0);
+            obj.weights = obj.weights(findFilledInds);
+            obj.frameNames = obj.frameNames(findFilledInds);
+        end
+        
+        function checkDefaultAxes(obj)
+            if isempty(obj.axes)
+                fprintf('featuresCalc: %s (%s): No axes defined in json, using [1 1 1]\n', obj.name, obj.feature);
+                obj.axes = ones(1, 3);
+            end
+        end
+        
+        function checkDefaultLengths(obj)
+            if isempty(obj.windowLength) % equal weights
+                fprintf('featuresCalc: %s (%s): No length defined in json, using 1\n', obj.name, obj.feature);
+                obj.windowLength = 1;
+            end
+        end
+        
+        function checkDefaultJoints(obj, fullJointNames)
+            if isempty(obj.jointNames) % if no joint names defined, init to all the joints
+                fprintf('featuresCalc: %s (%s): No joints defined in json, using all joints\n', obj.name, obj.feature);
+                obj.jointNames = fullJointNames;
             end
         end
         
@@ -364,7 +404,7 @@ classdef featuresCalc < handle
                     % Get cartesian position of reference frame at given timeframe
                     lenDofs = lenght(obj.refFrameNames);
                     lenTimes = lenght(obj.refTimes);
-                    obj.referenceVals = zeros(lenTimes, lenDofs * 3);
+                    obj.refVals = zeros(lenTimes, lenDofs * 3);
                     default_state = dynamicModel.getState();
                     
                     for i = 1:lenTimes
@@ -374,9 +414,9 @@ classdef featuresCalc < handle
                         dynamicModel.forwardKinematics();
                         
                         for j=1:lenDofs
-                            inds = obj.referenceInds((1:3)+(j-1)*3);
+                            inds = obj.refInds(j, :);
                             targetInd = find(ismember(fullFrameNames, obj.refFrameNames(j)));
-                            obj.referenceVals(i,inds) = dynamicModel.getEndEffectorPosition(targetInd);
+                            obj.refVals(i,inds) = dynamicModel.getEndEffectorPosition(targetInd);
                         end
                     end
                     % Set dynamic model state to default
@@ -386,7 +426,7 @@ classdef featuresCalc < handle
                     % Get cartesian position of reference frame at given timeframe
                     lenDofs = lenght(obj.refFrameNames);
                     lenTimes = lenght(obj.refTimes);
-                    obj.referenceVals = zeros(3, lenDofs * 3, lenTimes);
+                    obj.refVals = zeros(3, lenDofs * 3, lenTimes);
                     default_state = dynamicModel.getState();
                     
                     for i = 1:lenTimes
@@ -395,9 +435,9 @@ classdef featuresCalc < handle
                         dynamicModel.updateState(targetState(1:size(targetState,1)/2),targetState(size(targetState,1)/2+1:end));
                         dynamicModel.forwardKinematics();
                             for j=1:lenDofs
-                                inds = obj.referenceInds((1:3)+(j-1)*3);
+                                inds = obj.refInds(j, :);
                                 targetInd = find(ismember(fullFrameNames, obj.refFrameNames(j)));
-                                obj.referenceVals(:,inds, i) = dynamicModel.getEndEffectorPosition(targetInd);
+                                obj.refVals(:,inds, i) = dynamicModel.getEndEffectorPosition(targetInd);
                             end
                     end
                     % Set dynamic model state to default
@@ -421,7 +461,7 @@ classdef featuresCalc < handle
             cf = zeros(lenTime, lenDofs);
             for i = 1:lenTime
                 for j = 1:lenDofs
-                    inds = obj.frameInds((1:3)+(j-1)*3);
+                    inds = obj.frameInds(j, :);
                     num = norm(cross(features.ddx(i, inds), features.dx(i, inds))); % todo can vectorize
                     den = norm(features.dx(i, inds).^(3/2));
                     if den > 0
@@ -453,7 +493,7 @@ classdef featuresCalc < handle
             for i = 1:lenTime
                 allCartPos = zeros(lenDofs, 3);
                 for j = 1:lenDofs
-                    inds = obj.frameInds((1:3)+(j-1)*3);
+                    inds = obj.frameInds(j, :);
                     allCartPos(j, :) = features.x(i, inds);
                 end
                 
@@ -480,15 +520,26 @@ classdef featuresCalc < handle
             cf = zeros(lenTime, lenDofs);
             for i = 1:lenTime
                 for j = 1:lenDofs
-                    checkInds = obj.frameInds((1:3)+(j-1)*3);
-                    refInds = obj.referenceInds((1:3)+(j-1)*3);
+                    checkInds = obj.frameInds(j, :);
+                    refInds = obj.refInds(j, :);
                     cfVal = norm(features.x(i, checkInds) - features.x(i, refInds));
                     cf(i, j) = cfVal;
                 end
             end
         end
         
-        function cf = calcCfCentreOfMass(obj, features)
+        function cf = calcCfCentreMassDisplacementRelativeToFrame(obj, features)
+            lenTime = size(features.dx, 1);
+            cf = zeros(lenTime, 3);
+
+            cf_com = obj.calcCfWeightedEndEffPos(features);
+            for i = 1:lenTime
+                cfNew = cf_com(i, :) - features.x(i, obj.refInds);
+                cf(i, :) = cfNew.*obj.axes;
+            end
+        end
+        
+        function cf = calcCfWeightedEndEffPos(obj, features)
             lenTime = size(features.x, 1);
             lenDofs = size(obj.frameInds, 2)/3;
             
@@ -496,16 +547,16 @@ classdef featuresCalc < handle
             for i = 1:lenTime
                 cfVal = zeros(1, 3);
                 for j = 1:lenDofs
-                    inds = obj.frameInds((1:3)+(j-1)*3);
+                    inds = obj.frameInds(j, :);
                     cfVal = cfVal + obj.weights(j)*features.x(i, inds);
                 end
                 
                 com = cfVal / sum(obj.weights);
-                cf(i, :) = com;
+                cf(i, :) = com.*obj.axes;
             end
         end
         
-        function cf = calcCfCartQuantityMotionSumSqu(obj, features)
+        function cf = calcCfWeightedEndEffVelo(obj, features)
             lenTime = size(features.dx, 1);
             lenDofs = size(obj.frameInds, 2)/3;
             
@@ -513,12 +564,12 @@ classdef featuresCalc < handle
             for i = 1:lenTime
                 cfVal = zeros(1, 3);
                 for j = 1:lenDofs
-                    inds = obj.frameInds((1:3)+(j-1)*3);
+                    inds = obj.frameInds(j, :);
                     cfVal = cfVal + obj.weights(j)*features.dx(i, inds);
                 end
                 
                 cfNorm = cfVal / sum(obj.weights);
-                cf(i, :) = cfNorm;
+                cf(i, :) = cfNorm .* obj.axes;
             end
         end
         
@@ -548,7 +599,7 @@ classdef featuresCalc < handle
             for i = 1:lenTime  % calc the sum over all the joints
                 cfVal = zeros(1, 3);
                 for j = 1:lenDofs
-                    inds = obj.frameInds((1:3)+(j-1)*3);
+                    inds = obj.frameInds(j, :);
                     cfVal = cfVal + obj.weights(j)*norm(features.dx(i, inds).^ 2);
                 end
                 
@@ -600,7 +651,7 @@ classdef featuresCalc < handle
 %             for i = 1:lenTime
 %                 cfVal = zeros(1, 3);
 %                 for j = 1:lenDofs % sum over all the joints at time i
-%                     inds = obj.frameInds((1:3)+(j-1)*3);
+%                     inds = obj.frameInds(j, :);
 %                     cfVal = cfVal + obj.weights(j)*features.ddx(i, inds);
 %                 end
 %                 
@@ -663,7 +714,7 @@ classdef featuresCalc < handle
             for i = 1:lenTime
                 cfVal = zeros(1, 3);
                 for j = 1:lenDofs % sum over all the joints at time i
-                    inds = obj.frameInds((1:3)+(j-1)*3);
+                    inds = obj.frameInds(j, :);
                     cfVal = cfVal + obj.weights(j)*features_x(i, inds);
                 end
                 
@@ -689,8 +740,8 @@ classdef featuresCalc < handle
             for i = 1:lenTime
                 cfVal = zeros(3, 1);
                 for j = 1:lenDofs
-                    inds = obj.frameInds((1:3)+(j-1)*3);
-                    cfVal = features.x(i, inds) - obj.referenceVals(inds);
+                    inds = obj.frameInds(j, :);
+                    cfVal = features.x(i, inds) - obj.refVals(inds);
                 end
                 
                 cf(i, :) = cfVal;
@@ -705,7 +756,7 @@ classdef featuresCalc < handle
             for i = 2:lenTime
                 cfVal = zeros(3, 1);
                 for j = 1:lenDofs
-                    inds = obj.frameInds((1:3)+(j-1)*3);
+                    inds = obj.frameInds(j, :);
                     temp(i) = norm(obj.weights(j)*features.x(i, inds) - obj.weights(j)*features.x(i-1, inds));
                 end
                 
@@ -719,13 +770,13 @@ classdef featuresCalc < handle
             lenTime = size(features.x, 1);
             lenDofs = size(obj.frameInds, 2)/3;
             
-            com = obj.calcCfCentreOfMass(features);
+            com = obj.calcCfWeightedEndEffPos(features);
             
             cf = zeros(lenTime, lenDofs);
             for i = 1:lenTime
                 cfVal = zeros(3, 1);
                 for j = 1:lenDofs
-                    inds = obj.frameInds((1:3)+(j-1)*3);
+                    inds = obj.frameInds(j, :);
                     cf(i, j) = obj.weights(j)*norm(com(i, :) - features.x(i, inds));
                 end
             end
@@ -739,7 +790,7 @@ classdef featuresCalc < handle
             for i = 2:lenTime
                 for j = 1:lenDofs
                     % assemble
-                    inds = obj.frameInds((1:3)+(j-1)*3);
+                    inds = obj.frameInds(j, :);
                     tempx(j, :) = features.x(i, inds);
                     tempdx(j, :) = features.dx(i, inds);
                     tempddx(j, :) = features.ddx(i, inds);
@@ -785,7 +836,7 @@ classdef featuresCalc < handle
                 for j = 1:lenRefTimes
                     for k= 1:lenDofs
                         inds = obj.frameInds((1:3)+(k-1)*3);
-                        rInds = obj.referenceInds((1:3)+(k-1)*3);
+                        rInds = obj.refInds((1:3)+(k-1)*3);
                         curPose = features.x(i,inds);
                         refPose = obj.refVals(j,rInds);
                         % Here we consider that distances are computed by
@@ -811,7 +862,7 @@ classdef featuresCalc < handle
                 for j = 1:lenRefTimes
                     for k= 1:lenDofs
                         inds = obj.frameInds((1:3)+(k-1)*3);
-                        rInds = obj.referenceInds((1:3)+(k-1)*3);
+                        rInds = obj.refInds((1:3)+(k-1)*3);
                         curPose = features.R(:,inds,i);
                         refPose = obj.refVals(:,rInds,j);
                         cfVal = cfVal + acos((trace(curPose*refPose') -1)/2); 
@@ -833,9 +884,9 @@ classdef featuresCalc < handle
         function frameInds = setFrameInds(fullFrameNames, frameNames)
             frameInds = [];
             for i = 1:length(frameNames)
-                inds = (1:3)+(i-1)*3;
                 targetInd = find(ismember(fullFrameNames, frameNames(i)));
-                frameInds(inds) = (1:3)+(targetInd-1)*3;
+%                 inds = (1:3)+(i-1)*3;
+                frameInds(i,:) = (1:3)+(targetInd-1)*3;
             end
         end
         
