@@ -20,7 +20,7 @@
 	"runTemplates":
 	[		
         {
-			"templateName":"3DOF_3CF_Forward",  
+			"templateName":"12DOF_3CF_Forward",  
 			"baseModel":"Jumping",            
 			"model":"Jumping2D",		
             "candidateFeatures": 
@@ -43,7 +43,7 @@
 			]
 		},
         {
-			"templateName":"3DOF_17CF_Forward",  
+			"templateName":"12DOF_17CF_Forward",  
 			"baseModel":"Jumping",            
 			"model":"Jumping2D",		
             "candidateFeatures": 
@@ -142,10 +142,10 @@
 	"Files":
 	[
         {
-            "runName":"Subj02_Targ01_Jump01_03DOF_03CF",
+            "runName":"Subj02_Targ01_Jump01_12DOF_17CF",
             "basepath":"D:/aslab/data_IK",
             "subpath":"Jumping_To_Target_Data_Collection_2018/data_2D/JA_P02_2D.mat",
-			"runTemplate": "3DOF_17CF_Forward",
+			"runTemplate": "12DOF_17CF_Forward",
 			"targNum": [1],
 			"jumpNum": [1]
         }
