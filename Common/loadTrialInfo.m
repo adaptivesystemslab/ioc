@@ -39,7 +39,9 @@ function [trialInfo] = loadTrialInfo(trialInfoOrig, configFile, potentialBasePat
            trialInfo.candidateFeatures{j}.refTimes = trialInfoOrig.refTimes(idx);
         end
     end
-    trialInfoOrig = rmfield(trialInfoOrig, 'refTimes');
+    if isfield(trialInfoOrig, 'refTimes')
+        trialInfoOrig = rmfield(trialInfoOrig, 'refTimes');
+    end
     
     runParamFields = fieldnames(trialInfoOrig);    
     for j = 1:length(runParamFields) 
