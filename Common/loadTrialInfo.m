@@ -33,15 +33,15 @@ function [trialInfo] = loadTrialInfo(trialInfoOrig, configFile, potentialBasePat
        
     % overwrite feature related fields and remove them from trialInfoOrig
     %For now it only considers refTimes
-    for j = 1:length(trialInfo.candidateFeatures)
-        if isfield(trialInfo.candidateFeatures{j}, 'refTimes') && isfield(trialInfoOrig, 'refTimes')
-           idx = trialInfo.candidateFeatures{j}.refTimes(1);
-           trialInfo.candidateFeatures{j}.refTimes = trialInfoOrig.refTimes(idx);
-        end
-    end
-    if isfield(trialInfoOrig, 'refTimes')
-        trialInfoOrig = rmfield(trialInfoOrig, 'refTimes');
-    end
+%    for j = 1:length(trialInfo.candidateFeatures)
+%        if isfield(trialInfo.candidateFeatures{j}, 'refTimes') && isfield(trialInfoOrig, 'refTimes')
+%           idx = trialInfo.candidateFeatures{j}.refTimes(1);
+%           trialInfo.candidateFeatures{j}.refTimes = trialInfoOrig.refTimes(idx);
+%        end
+%    end
+%    if isfield(trialInfoOrig, 'refTimes')
+%        trialInfoOrig = rmfield(trialInfoOrig, 'refTimes');
+%    end
     
     runParamFields = fieldnames(trialInfoOrig);    
     for j = 1:length(runParamFields) 
