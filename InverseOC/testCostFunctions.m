@@ -39,7 +39,7 @@ for i = 1:size(q, 1)
 end
 
 % calculate cost functions
-ioc = IOCInstanceNew(rlModel, dt);
+ioc = IOCInstance(rlModel, dt);
 ioc.init(trialInfo);
 
 state = encodeState(q, dq);

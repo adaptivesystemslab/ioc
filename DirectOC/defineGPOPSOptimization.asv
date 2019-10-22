@@ -1,0 +1,64 @@
+function setup = defineGPOPSOptimization(config, continuousFunc)
+
+    numDof = length(config.initialState.jointAngles);
+    name = sprintf("Robot_%s_DOC", config.name);
+
+    %% Setup for Problem Bounds 
+    iphase = 1;
+    bounds.phase(iphase).initialtime.lower   =  config.initialState.time;
+    bounds.phase(iphase).initialtime.upper   =  config.initialState.time;
+    bounds.phase(iphase).finaltime.lower     =  config.finalState.time;
+    bounds.phase(iphase).finaltime.upper     =  config.finalState.time;
+    bounds.phase(iphase).initialstate.lower  =  [config.initialState.jointAngles', config.initialState.angularVelocities'];
+    bounds.phase(iphase).initialstate.upper  =  [config.initialState.jointAngles', config.initialState.angularVelocities'];    
+    bounds.phase(iphase).state.lower         =  config.bounds.minState';
+    bounds.phase(iphase).state.upper         =  config.bounds.maxState';
+    bounds.phase(iphase).finalstate.lower    =  [config.finalState.jointAngles', config.finalState.angularVelocities'];
+    bounds.phase(iphase).finalstate.upper    =  [config.finalState.jointAngles', config.finalState.angularVelocities'];
+    bounds.phase(iphase).control.lower       =  config.bounds.minControl';
+    bounds.phase(iphase).control.upper       =  config.bounds.maxControl';
+    bounds.phase(iphase).integral.lower      =  0;
+    bounds.phase(iphase).integral.upper      =  inf;
+    
+    auxdata.state.lower = bounds.phase(iphase).state.lower;
+    auxdata.state.upper = bounds.phase(iphase).state.upper;
+    auxdata.control.lower = bounds.phase(iphase).control.lower;
+    auxdata.control.upper = bounds.phase(iphase).control.upper;
+    
+
+    %% Provide Guess of Solution by defining range of values 
+    guess.phase(iphase).state=[currentTrial.guess.jointAngles, currentTrial.guess.angularVelocities];
+    guess.phase(iphase).control  = currentTrial.guess.control;
+    guess.phase(iphase).time     = currentTrial.guess.;
+    guess.phase(iphase).integral = 100000;
+
+
+    %% Provide Mesh Refinement Method and Initial Mesh 
+    mesh.method          = 'hp-PattersonRao'; %'hp-LiuRao-Legendre';%'hp-PattersonRao';
+    mesh.tolerance       = 1e-3;
+    mesh.maxiterations   = 3;
+    mesh.colpointsmin    = 2;
+    mesh.colpointsmax    = 5;
+    mesh.phase.colpoints = 2*ones(1,5);
+    mesh.phase.fraction  = ones(1,5)/5;
+
+    %% Assemble Information into Problem Structure 
+    setup.mesh                            = mesh;
+    setup.name                            = char(name);
+    setup.functions.endpoint              = @humanDynEndFunc;
+    setup.functions.continuous            = continuousFunc;
+    setup.displaylevel                    = 2;
+    setup.bounds                          = bounds;
+    setup.guess                           = guess;
+    setup.auxdata                         = auxdata;
+    setup.nlp.solver                      = 'ipopt';
+    setup.nlp.ipoptoptions.linear_solver  = 'ma57';
+    setup.nlp.ipoptoptions.tolerance      = 1e-3;
+    setup.nlp.ipoptoptions.maxiterations  = 25;
+    setup.derivatives.supplier            = 'sparseBD';   % valid options are 'sparseCD', 'sparseFD', 'sparseBD','analytic', and 'adigator'
+    setup.derivatives.derivativelevel     = 'second';
+    setup.derivatives.dependencies        = 'sparse';
+    setup.method                          = 'RPMdifferentiation';
+    setup.scales.method                   = 'automatic-bounds';
+end
+

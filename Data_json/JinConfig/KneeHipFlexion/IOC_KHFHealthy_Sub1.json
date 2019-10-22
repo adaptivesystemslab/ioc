@@ -1,0 +1,146 @@
+{
+	"runParamGlobal":
+	[
+        {
+            "templateName":"",  
+			"baseModel":"",   
+            "modelType":"rl",
+			"model":"",			
+			"gamma": [],
+			"dimWeights": [5],
+			"maxWinLen": [400],
+            "hWinAdvFlag": "forward",
+			"runInds": [],
+            "displayInfo":"final",
+            "saveIntermediate": [300],
+            "weights":[]         
+		}
+	],
+	
+	"runTemplates":
+	[		
+        {
+			"templateName":"3CF_Forward",  
+			"baseModel":"Healthy1",            
+            "candidateFeatures": 
+			[
+				{
+					"feature":"angAccelSumSqu", 
+					"jointNames": ["joint_rhip_0", "joint_rknee_0", "joint_rankle_0"],
+                    "normCoeff": [1]
+				}, 
+				{
+					"feature":"angJerkSumSqu", 
+					"jointNames": ["joint_rhip_0", "joint_rknee_0", "joint_rankle_0"],
+                    "normCoeff": [1]
+				}, 
+				{
+					"feature":"angPowerSumSqu", 
+					"jointNames": ["joint_rhip_0", "joint_rknee_0", "joint_rankle_0"],
+                    "normCoeff": [1]
+				}
+			]
+		},
+				{
+			"templateName":"4CF_Forward",  
+			"baseModel":"Healthy1",  		
+            "candidateFeatures": 
+			[
+				{
+					"feature":"angAccelSumSqu", 
+					"jointNames": ["joint_rhip_0", "joint_rknee_0", "joint_rankle_0"],
+                    "normCoeff": [1]
+				}, 
+				{
+					"feature":"angJerkSumSqu", 
+					"jointNames": ["joint_rhip_0", "joint_rknee_0", "joint_rankle_0"],
+                    "normCoeff": [1]
+				}, 
+				{
+					"feature":"torqueSumSqu", 
+					"jointNames": ["joint_rhip_0", "joint_rknee_0", "joint_rankle_0"],
+                    "normCoeff": [1]
+				},
+				{
+					"feature":"angPowerSumSqu", 
+					"jointNames": ["joint_rhip_0", "joint_rknee_0", "joint_rankle_0"],
+                    "normCoeff": [1]
+				}
+			]
+		},
+				{
+        	"templateName":"8CF_Forward",  
+			"baseModel":"Healthy1",  
+            "candidateFeatures": 
+			[
+				{
+					"feature":"cartJerkSumSqu", 
+					"frameNames": ["frame_rhip_0"],
+                    "normCoeff": [1]
+				}, 
+				{
+					"feature":"angAccelSumSqu", 
+					"jointNames": ["joint_rhip_0", "joint_rknee_0", "joint_rankle_0"],
+                    "normCoeff": [1]
+				},
+				{
+					"feature":"angJerkSumSqu", 
+					"jointNames": ["joint_rhip_0", "joint_rknee_0", "joint_rankle_0"],
+                    "normCoeff": [1]
+				}, 
+				{
+					"feature":"torqueSumSqu", 
+					"jointNames": ["joint_rhip_0", "joint_rknee_0", "joint_rankle_0"],
+                    "normCoeff": [1]
+				},
+				{
+					"feature":"torqueVeloSumSqu", 
+					"jointNames": ["joint_rhip_0", "joint_rknee_0", "joint_rankle_0"],
+                    "normCoeff": [1]
+				}, 
+				{
+					"feature":"torqueAccelSumSqu", 
+					"jointNames": ["joint_rhip_0", "joint_rknee_0", "joint_rankle_0"],
+                    "normCoeff": [1]
+				}, 
+				{
+					"feature":"kineticEnergySumSqu",
+                    "normCoeff": [1]
+				}, 		
+				{
+					"feature":"angPowerSumSqu", 
+					"jointNames": ["joint_rhip_0", "joint_rknee_0", "joint_rankle_0"],
+                    "normCoeff": [1]
+				}
+			]
+		}
+        
+
+
+	],
+	
+	"Files":
+	[
+        {
+            "runName":"Subj01_KHEF_03CF",
+            "basepath":"D:/aslab/data_IK", 
+            "subpath":"Lowerbody_healthy1_2011_IK/20191018/matEkfIk/mocap_mocap_X00_hip/KHEF_STD_PPB1_Subject1_mocap_mocap_X00_hip_ekfId1_ekfIk.mat",
+			"runTemplate": "3CF_Forward",
+			"model":"2DOF_hip"
+        },
+		{
+            "runName":"Subj01_KHEF_04CF",
+            "basepath":"D:/aslab/data_IK", 
+            "subpath":"Lowerbody_healthy1_2011_IK/20191018/matEkfIk/mocap_mocap_X00_hip/KHEF_STD_PPB1_Subject1_mocap_mocap_X00_hip_ekfId1_ekfIk.mat",
+			"runTemplate": "4CF_Forward",
+			"model":"2DOF_hip"
+        },
+		{
+            "runName":"Subj01_KHEF_08CF",
+            "basepath":"D:/aslab/data_IK", 
+            "subpath":"Lowerbody_healthy1_2011_IK/20191018/matEkfIk/mocap_mocap_X00_hip/KHEF_STD_PPB1_Subject1_mocap_mocap_X00_hip_ekfId1_ekfIk.mat",
+			"runTemplate": "8CF_Forward",
+			"model":"2DOF_hip"
+        }
+	]
+}

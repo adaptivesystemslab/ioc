@@ -1,6 +1,6 @@
 function IOCIncomplete(trialInfo,savePath)
 
-%-----------------load the model and other information----------------
+%% -----------------load the model and other information----------------
 % get the dynamics model of human body.
 model = getModel(trialInfo);
 % get basic information for IOC
@@ -11,16 +11,21 @@ trialInfo.numDofs = model.getModelDof();
 traj = model.loadData(trialInfo);
 % Initialization of threshold and condition variables
 dt = traj.trajT(2) - traj.trajT(1);
+clc
 
-%-----------------cut the orginal trajectory manually----------------
-% % set the savefule for the trimed trajectory
-cutSavePath=fullfile('..\Data\IOC\CuttedData\Squat_IIT\',trialInfo.runName(1:6),'up');  
-% %----------this section can also be commented if not needed----------
-% checkMkdir(cutSavePath) %check the folder exists
-% clearFlag=true; %clear or not the existing files
-% VisualizerCutter(model,traj,cutSavePath,clearFlag)
+
+%% -----------------cut the orginal trajectory manually----------------
+% cutSavePath=fullfile('..\Data\IOC\CuttedData\Squat_IIT\',trialInfo.runName(1:6),'up');  
+% cutSavePath=fullfile('..\Data\IOC\CuttedData\KneeHipFlexion\',trialInfo.runName(1:6),'up');  
+cutSavePath=fullfile('..\Data\IOC\CuttedData\HipFlexion\',trialInfo.runName(1:6),'up');  
+% cutSavePath=fullfile('..\Data\IOC\CuttedData\Squat\',trialInfo.runName(1:6),'up');  
+% cutSavePath=fullfile('..\Data\IOC\CuttedData\Sit\',trialInfo.runName(1:6),'up');  
+
+% ----------this section can also be commented if not needed----------
+checkMkdir(cutSavePath) %check the folder exists
+clearFlag=true; %clear or not the existing files
+VisualizerCutter(model,traj,cutSavePath,clearFlag)
 % VisualizerCutter(model,traj)
-% return 
 
 
 %% -----------------read the cropped trajectory------------------------
@@ -31,14 +36,12 @@ segIntervalIndex=load(fullfile(files(1).folder,files(1).name));
 segIntervalIndex=segIntervalIndex.segIntervalIndex;
 if(isempty(segIntervalIndex)) return; end %#ok<SEPEX>
 
-
 %% ----------------perform ioc on each cutted traj---------------------
 % Create IOC instance
-ioc = IOCInstanceNew(model, dt);
+ioc = IOCInstance(model, dt);
 ioc.init(trialInfo);
-% initialize the result vector
-% processing while increasing the window length
 
+% processing while increasing the window length
 for k=1:size(segIntervalIndex,1)
     % take out the current segment
     segFrame=segIntervalIndex(k,1):segIntervalIndex(k,2);
@@ -49,7 +52,9 @@ for k=1:size(segIntervalIndex,1)
     segTraj.dq=traj.dq(segFrame,:);
     segTraj.tau=traj.tau(segFrame,:);
     segTraj.frames=segFrame;
-        
+    
+    
+    
     % Initialize the recovery matrix [H1, H2];
     H1=[];
     H2=[];
@@ -147,13 +152,20 @@ if cut
     segIntervalMat=[];
 end
 for i = 1:length(traj.trajT)
-    %visualizer
+    %visualize
     mdl.position = traj.q(i, :);
     mdl.forwardPosition();
     mdl.forwardVelocity();
     mdl.forwardAcceleration();
     mdl.inverseDynamics();
     vis.update();
+    clc
+     model.model.joints.name
+    rad2deg(traj.q(i,:))
+    if (i==1)
+        pause
+    end
+     pause;
     
     %% if cut needed
     if cut

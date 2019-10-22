@@ -1,0 +1,45 @@
+{
+	"Trials": [
+		{
+			"name": "Trial01",
+			"baseModel":"IIT",
+			"dt": 0.01,
+			"model":"IIT_3DOF",
+			"path":"H:/data/FullBody_IIT_2017/2019_04_10_squat02/matEkfIk/SQUA_STD_FAT_Subject01_mocap_mocap_X00_floating_ekfId1_ekfIk.mat",
+			"initialState": {
+				"time": 8.81,
+				"jointAngles": [-1.3026,   1.5632,  -0.5470],
+				"angularVelocities": [0, 0, 0]
+			},
+			"finalState": {
+				"time": 9.73,
+				"jointAngles": [-0.0480,   0.1794, -0.1598],
+				"angularVelocities": [0, 0, 0]
+			},
+			"bounds":
+			{
+				"minState": [-3, -3, -3, -100, -100, -100],
+				"maxState": [3, 3, 3, 100, 100, 100],
+				"minControl": [-1000, -1000, -1000],
+				"maxControl": [1000, 1000, 1000]
+			},
+			"guess": "spline",
+			"weights": [0, 1,0],
+			"candidateFeatures": 
+			[
+				{
+					"feature":"angAccelSumSqu", 
+					"jointNames": ["joint_rhip_0", "joint_rknee_0", "joint_rankle_0"]
+				}, 
+				{
+					"feature":"angJerkSumSqu", 
+					"jointNames": ["joint_rhip_0", "joint_rknee_0", "joint_rankle_0"]
+				},
+				{
+					"feature":"angPowerSumSqu", 
+					"jointNames": ["joint_rhip_0", "joint_rknee_0", "joint_rankle_0"]
+				}
+			]
+		}
+	]
+}

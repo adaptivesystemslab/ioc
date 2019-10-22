@@ -18,7 +18,8 @@
 	],
 	
 	"runTemplates":
-	[		{
+	[	
+		{
 			"templateName":"3DOF_3CF_Forward",  
 			"baseModel":"IIT",            
 			"model":"IIT_3DOF",		
