@@ -288,7 +288,7 @@ function [H, H1, H2] = assembleHMatrix(trajT, trajX, trajU, dt, ioc, H1, H2, ful
 end
 
 function [df_dx, df_du, dp_dx, dp_du, x, u] = getGradient(trajX, trajU, incurrInd, ioc)   
-    [x, u] = setDataLength(trajX, trajU, IOCInstance.winSize, incurrInd);
+    [x, u] = setDataLength(trajX, trajU, IOCInstanceNew.winSize, incurrInd);
     [fx, fu, px, pu] = ioc.getDerivativesNewObservation(x, u);
     df_dx = fx';
     df_du = fu';

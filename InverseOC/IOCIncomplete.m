@@ -14,56 +14,53 @@ dt = traj.trajT(2) - traj.trajT(1);
 
 %-----------------cut the orginal trajectory manually----------------
 % % set the savefule for the trimed trajectory
-% cutSavePath=fullfile('..\Data\IOC\CuttedData\SquatMotion\',trialInfo.runName(1:11));   % for squatting motion
-% cutSavePath=fullfile('..\Data\IOC\CuttedData\Jumping',trialInfo.runName(1:26));   % for the jumping motion
+cutSavePath=fullfile('..\Data\IOC\CuttedData\Squat_IIT\',trialInfo.runName(1:6),'up');  
 % %----------this section can also be commented if not needed----------
 % checkMkdir(cutSavePath) %check the folder exists
 % clearFlag=true; %clear or not the existing files
 % VisualizerCutter(model,traj,cutSavePath,clearFlag)
-VisualizerCutter(model,traj)
-return 
+% VisualizerCutter(model,traj)
+% return 
 
-%-----------------read the cropped trajectory------------------------
+
+%% -----------------read the cropped trajectory------------------------
 % read the cropped trajectory.
-% if the squating motion
-% files=dir(fullfile(cutSavePath,'\down\*.mat'));
-% files=dir(fullfile(cutSavePath,'\down\*.mat'));
-
-
-% if the jumping motion
 files=dir(fullfile(cutSavePath,'\*.mat'));
+if(isempty(files)) return; end %#ok<SEPEX>
+segIntervalIndex=load(fullfile(files(1).folder,files(1).name));
+segIntervalIndex=segIntervalIndex.segIntervalIndex;
+if(isempty(segIntervalIndex)) return; end %#ok<SEPEX>
 
-for k=1:length(files)
-    dataPath=fullfile(files(k).folder,files(k).name);
-    trajSet(k)=load(dataPath);
-end
 
-
-%----------------perform ioc on each cutted traj---------------------
+%% ----------------perform ioc on each cutted traj---------------------
 % Create IOC instance
-ioc = IOCInstance(model, dt);
+ioc = IOCInstanceNew(model, dt);
 ioc.init(trialInfo);
 % initialize the result vector
+% processing while increasing the window length
 
-for k=1:length(trajSet)
-    traj=trajSet(k).segTraj;   
-    % visualize the trajectory first
-%     VisualizerCutter(model,traj)
-    
-    
+for k=1:size(segIntervalIndex,1)
+    % take out the current segment
+    segFrame=segIntervalIndex(k,1):segIntervalIndex(k,2);
+    segTraj.trajX=traj.trajX(segFrame,:);
+    segTraj.trajU=traj.trajU(segFrame,:);
+    segTraj.trajT=traj.trajT(segFrame);
+    segTraj.q=traj.q(segFrame,:);
+    segTraj.dq=traj.dq(segFrame,:);
+    segTraj.tau=traj.tau(segFrame,:);
+    segTraj.frames=segFrame;
+        
     % Initialize the recovery matrix [H1, H2];
     H1=[];
     H2=[];
     % IOC using the beginning segment of the trajectory
-    rankIndVec=[];
-    weightsVec=[];
-    for i=1:traj.frameInds(end)
+    for i=1:length(segFrame)
         % print
         clc
         sprintf('Data: %s', trialInfo.runName)
-        sprintf('Prcentage: %.1f%%', i/traj.frameInds(end)*100)
-        currX=traj.trajX(i,:);
-        currU=traj.trajU(i,:);
+        sprintf('Prcentage: %.1f%%', i/length(segFrame)*100)
+        currX=segTraj.trajX(i,:);
+        currU=segTraj.trajU(i,:);
         %compute the deriviatives(jacobian matrix) for the system
         Jx=ioc.getDynamicsStateDerivatives(currX,currU);
         Ju=ioc.getDynamicsControlDerivatives(currX,currU);
@@ -78,25 +75,22 @@ for k=1:length(trajSet)
         % assemble the recovery matrix
         [H1,H2]=assembleH1H2(Jx, Ju, Px, Pu, H1,H2);
         H=[H1, H2];
-        % check the status of the recovery matrix
-%         Hhat = H;
-        Hhat = H/norm(H,'fro');
+        Hhat = H;
         % solve for the weights from the current recvoery matirx
         [weights, ~] = computeWeights(Hhat, trialInfo.numWeights);
-        % solve for the rank index from the current recovery matrix
         if (isempty(trialInfo.gamma))
             trialInfo.gamma=4;
         end
-        [rankInd, completed, errorCode] = validateCompletion(Hhat,trialInfo.gamma, trialInfo.delta, trialInfo.dimWeights);
+        [rankInd, ~, ~] = validateCompletion(Hhat,trialInfo.gamma, trialInfo.delta, trialInfo.dimWeights);
         % storage for each step
-        weightsVec(end+1,:)=weights;
-        rankIndVec(end+1,:)=rankInd;
+        weightsVec(i,:)=weights;
+        rankIndVec(i,:)=rankInd;
     end
     
     %store the results
     iocResults(k).weightsVec=weightsVec;
     iocResults(k).rankIndVec=rankIndVec;
-    iocResults(k).traj=traj;
+    iocResults(k).traj=segTraj;
     for ii=1:length(ioc.features)
         iocResults(k).featureLabels{ii}=char(ioc.features(ii).feature);
     end
@@ -111,7 +105,6 @@ for k=1:length(trajSet)
         ylim([0 1])
     end
     drawnow
-    
 %     figure(2)
 %     clf
 %     plot(iocResults(end).rankIndVec);
@@ -122,13 +115,8 @@ pause;
 
 end
 
-
-
-
 %----------------------------save the results-----------------------------
 % save('iocResults.mat','iocResults')
-
-
 end
 
 function VisualizerCutter(model,traj,cutSavePath,clearFlag)
@@ -156,7 +144,7 @@ vis.update();
 if cut
     indStart=[];
     indEnd=[];
-    indMat=[];
+    segIntervalMat=[];
 end
 for i = 1:length(traj.trajT)
     %visualizer
@@ -184,7 +172,7 @@ for i = 1:length(traj.trajT)
         end
         if ~isempty(indStart)&& ~isempty(indEnd) && indEnd>indStart
             interval=[indStart, indEnd];
-            indMat(end+1,:)=interval
+            segIntervalMat(end+1,:)=interval
             indStart=[];
             indEnd=[];
         end
@@ -196,17 +184,18 @@ end
 
 
 %save the segment
-if cut && ~isempty(indMat)
+segIntervalIndex=[];
+if cut && ~isempty(segIntervalMat)
     checkMkdir(cutSavePath) 
     
     if clearFlag
        delete(fullfile(cutSavePath,'*.mat')) %delete all the mat files under the folder
     end
-    for k=1:size(indMat,1)
+    for k=1:size(segIntervalMat,1)
         %save
-        t=indMat(k,1):indMat(k,2);
+        t=segIntervalMat(k,1):segIntervalMat(k,2);
         
-        if t(end)<traj.frameInds(end)
+        if t(end)<length(traj.trajT)
             
             % animate it again for confirmation
             clc
@@ -226,16 +215,18 @@ if cut && ~isempty(indMat)
                 str = input(prompt,'s');
             end
             if (strcmpi(str,'y')&&t(2))
-                segTraj.q=traj.q(t,:);
-                segTraj.dq=traj.dq(t,:);
-                segTraj.tau=traj.tau(t,:);
-                segTraj.trajT=traj.trajT(t,:);
-                segTraj.trajU=traj.trajU(t,:);
-                segTraj.trajX=traj.trajX(t,:);
-                segTraj.frameInds=traj.frameInds(t)-traj.frameInds(t(1))+1;
-%                 segTraj.qLabels=traj.qLabels;
-                savefile=strcat(cutSavePath,'\Segment_',num2str(traj.trajT(t(1))),'_',num2str(traj.trajT(t(end))),'.mat');
-                save(savefile,'segTraj')
+                segIntervalIndex(end+1,:)=segIntervalMat(k,:);
+%                 segTraj.q=traj.q(t,:);
+%                 segTraj.dq=traj.dq(t,:);
+%                 segTraj.tau=traj.tau(t,:);
+%                 segTraj.trajT=traj.trajT(t,:);
+%                 segTraj.trajU=traj.trajU(t,:);
+%                 segTraj.trajX=traj.trajX(t,:);
+%                 segTraj.frameInds=traj.frameInds(t)-traj.frameInds(t(1))+1;
+% %                 segTraj.qLabels=traj.qLabels;
+                savefile=strcat(cutSavePath,'/segIntervalIndex.mat');
+                save(savefile,'segIntervalIndex')
+                segIntervalIndex
                 disp('Saved!')
             else
                 continue;
