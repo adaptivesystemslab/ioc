@@ -19,13 +19,8 @@ function phaseout = humanDynContinuousFunc(input, weights, iocObject)
  
     
     %Compute features
-    features = iocObject.calcFeatures(x, u);
-    normFeatures = features ./ max(features(:));
-    phaseout.integrand=normFeatures*w';
+    features = iocObject.calcFeatures(x, u)+1e-8;
+%     normFeatures = features ./ max(features(:));
+    phaseout.integrand=features*w';
     
-%     figure(1)
-%     clf
-%     plot(t,q);
-%     drawnow
-%     pause;
 end

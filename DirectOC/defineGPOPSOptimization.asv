@@ -27,20 +27,25 @@ function setup = defineGPOPSOptimization(config, continuousFunc)
     
 
     %% Provide Guess of Solution by defining range of values 
-    guess.phase(iphase).state=[currentTrial.guess.jointAngles, currentTrial.guess.angularVelocities];
-    guess.phase(iphase).control  = currentTrial.guess.control;
-    guess.phase(iphase).time     = currentTrial.guess.;
-    guess.phase(iphase).integral = 100000;
+    guess.phase(iphase).state=[config.guess.jointAngles, config.guess.angularVelocities];
+    guess.phase(iphase).control  = config.guess.control;
+    guess.phase(iphase).time     = config.guess.time';
+    guess.phase(iphase).integral = 0;
+%     guess.phase(iphase).state=rand(size([config.guess.jointAngles, config.guess.angularVelocities]));
+%     guess.phase(iphase).control  = rand(size(config.guess.control));
+%     guess.phase(iphase).time     = config.guess.time';
+%     guess.phase(iphase).integral = 0;
+
 
 
     %% Provide Mesh Refinement Method and Initial Mesh 
-    mesh.method          = 'hp-PattersonRao'; %'hp-LiuRao-Legendre';%'hp-PattersonRao';
+    mesh.method          = 'hp-LiuRao-Legendre'; %'hp-LiuRao-Legendre';%'hp-PattersonRao';
     mesh.tolerance       = 1e-3;
-    mesh.maxiterations   = 3;
+    mesh.maxiterations   = 5;
     mesh.colpointsmin    = 2;
-    mesh.colpointsmax    = 5;
-    mesh.phase.colpoints = 2*ones(1,5);
-    mesh.phase.fraction  = ones(1,5)/5;
+    mesh.colpointsmax    = 20;
+    mesh.phase.colpoints = 10;
+    mesh.phase.fraction  = 1;
 
     %% Assemble Information into Problem Structure 
     setup.mesh                            = mesh;
@@ -52,10 +57,10 @@ function setup = defineGPOPSOptimization(config, continuousFunc)
     setup.guess                           = guess;
     setup.auxdata                         = auxdata;
     setup.nlp.solver                      = 'ipopt';
-    setup.nlp.ipoptoptions.linear_solver  = 'ma57';
+    setup.nlp.ipoptoptions.linear_solver  = 'mumps';
     setup.nlp.ipoptoptions.tolerance      = 1e-3;
-    setup.nlp.ipoptoptions.maxiterations  = 25;
-    setup.derivatives.supplier            = 'sparseBD';   % valid options are 'sparseCD', 'sparseFD', 'sparseBD','analytic', and 'adigator'
+    setup.nlp.ipoptoptions.maxiterations  = 30;
+    setup.derivatives.supplier            = 'sparseCD';   % valid options are 'sparseCD', 'sparseFD', 'sparseBD','analytic', and 'adigator'
     setup.derivatives.derivativelevel     = 'second';
     setup.derivatives.dependencies        = 'sparse';
     setup.method                          = 'RPMdifferentiation';

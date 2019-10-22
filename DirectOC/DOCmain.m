@@ -11,7 +11,8 @@ configFile = jsondecode(fileread('../Data_json/PamelaConfig/DOC_Template.json'))
 
 % Create setup and define continuous functions for GPOPS2
 currentTrial = configFile.Trials;
-weights = currentTrial.weights;
+% weights = currentTrial.weights;
+weights=[0,1,0]';
 
 % Create dynamic model and IOC instance associated to it. This
 % instance will be used to compute target features
@@ -36,18 +37,18 @@ solution = output.result.solution;
 time = solution.phase.time;
 state = solution.phase.state;
 control = solution.phase.control;
-% % plot
-% figure(1)
-% clf
-% plot(time,state(:,1:3))
-% legend('q1','q2','q3')
-% figure(2)
-% clf
-% plot(time,state(:,4:6))
-% figure(3)
-% clf
-% plot(time,control)
-% legend('tau1','tau2','tau3')
+% plot
+figure(1)
+clf
+plot(time,state(:,1:3))
+legend('q1','q2','q3')
+figure(2)
+clf
+plot(time,state(:,4:6))
+figure(3)
+clf
+plot(time,control)
+legend('tau1','tau2','tau3')
 
 
 
