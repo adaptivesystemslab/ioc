@@ -356,7 +356,7 @@ classdef rlFeatureSet_ioc < rlFeatureSet % < rlModel
             obj.ddq = calcDeriv(obj.dq, obj.dt);
         end
         
-        function saveVar = saveData(obj, filepath, baseFrameOrig, ekfTuningParam, modelInstance)
+        function saveVar = saveData(obj, filepath, baseFrameOrig, ekfTuningParam, modelInstance, algorithmParam)
 %             for i = 1:size(obj.measurement_label, 2)
 %                 ind = i*3-2:i*3; % pos only
 %                 mocapMarkers.(obj.measurement_label{i}) = obj.measurement_output(:, ind);
@@ -451,6 +451,7 @@ classdef rlFeatureSet_ioc < rlFeatureSet % < rlModel
             saveVar.measurementOutputMatch = obj.measurement_output_match;
             saveVar.measurementEkfMatch = obj.measurement_ekf_match;
 
+            saveVar.algorithmParam = algorithmParam;
             saveVar.modelStruct = modelStruct;
             saveVar.modelSpecs = modelSpecs;
             saveVar.baseFrame = origBaseFrame;
@@ -804,10 +805,10 @@ classdef rlFeatureSet_ioc < rlFeatureSet % < rlModel
                 
                 title(currName);
                 
-                if ~isempty(obj.segments)
-                    %                     [minY, maxY, h_line] = plotBoxes(segmentInfo, colorToUse, offset, minY, maxY)
-                    plotBoxes(obj.segments, [1 0 0], 0, -7*pi/8, 7*pi/8);
-                end
+%                 if ~isempty(obj.segments)
+%                     %                     [minY, maxY, h_line] = plotBoxes(segmentInfo, colorToUse, offset, minY, maxY)
+%                     plotBoxes(obj.segments, [1 0 0], 0, rad2deg(-7*pi/8), rad2deg(7*pi/8));
+%                 end
             end
             
             linkaxes(ax, 'x');

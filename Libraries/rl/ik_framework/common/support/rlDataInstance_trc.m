@@ -110,7 +110,7 @@ classdef rlDataInstance_trc < rlDataInstance % < rlModel
             % always in the same spot as the first frame
             markerOffsetVal = obj.data.(baseMarkerStr);
             firstFrame = markerOffsetVal(1, :);
-            markerOffsetVal = markerOffsetVal + repmat(firstFrame, size(obj.time, 1), 1);
+%             markerOffsetVal = markerOffsetVal + repmat(firstFrame, size(obj.time, 1), 1);
 
             % for the purpose of the offset calculation, remove NaNs by keeping
             % it as the previous known value

@@ -30,19 +30,19 @@ classdef rlModelInstance < handle % < rlModel
         flatSensorSecondaryAttachmentArray = {};
         
         % inds for tracking and errors
-        inds_mocapMarkers_rightArm;
-        inds_mocapMarkers_leftArm;
-        inds_mocapMarkers_rightLeg;
-        inds_mocapMarkers_leftLeg;
-        inds_mocapMarkers_torso;
-        inds_mocapMarkers;
+%        inds_mocapMarkers_rightArm;
+%        inds_mocapMarkers_leftArm;
+%        inds_mocapMarkers_rightLeg;
+%        inds_mocapMarkers_leftLeg;
+%        inds_mocapMarkers_torso;
+%        inds_mocapMarkers;
         
-        inds_joints_rightArm;
-        inds_joints_leftArm;
-        inds_joints_rightLeg;
-        inds_joints_leftLeg;
-        inds_joints_torso;
-        inds_joints;
+%        inds_joints_rightArm;
+%        inds_joints_leftArm;
+%        inds_joints_rightLeg;
+%        inds_joints_leftLeg;
+%        inds_joints_torso;
+%        inds_joints;
     end
     
     properties(Abstract = true)
@@ -87,28 +87,28 @@ classdef rlModelInstance < handle % < rlModel
             end
             
             % match the sensor strings
-            obj.inds_mocapMarkers_rightArm = find(ismember(strSensors, obj.mocapMarkers_rightArm)); 
-            obj.inds_mocapMarkers_leftArm = find(ismember(strSensors, obj.mocapMarkers_leftArm)); 
-            obj.inds_mocapMarkers_rightLeg = find(ismember(strSensors, obj.mocapMarkers_rightLeg)); 
-            obj.inds_mocapMarkers_leftLeg = find(ismember(strSensors, obj.mocapMarkers_leftLeg)); 
-            obj.inds_mocapMarkers_torso = find(ismember(strSensors, obj.mocapMarkers_torso)); 
-            obj.inds_mocapMarkers = sort([obj.inds_mocapMarkers_rightArm ...
-                obj.inds_mocapMarkers_leftArm ...
-                obj.inds_mocapMarkers_rightLeg ...
-                obj.inds_mocapMarkers_leftLeg ...
-                obj.inds_mocapMarkers_torso]);
-            
-            % match the sensor strings
-            obj.inds_joints_rightArm = find(ismember(strJoints, obj.joints_rightArm)); 
-            obj.inds_joints_leftArm = find(ismember(strJoints, obj.joints_leftArm)); 
-            obj.inds_joints_rightLeg = find(ismember(strJoints, obj.joints_rightLeg)); 
-            obj.inds_joints_leftLeg = find(ismember(strJoints, obj.joints_leftLeg)); 
-            obj.inds_joints_torso = find(ismember(strJoints, obj.joints_torso)); 
-            obj.inds_joints = sort([obj.inds_joints_rightArm ...
-                obj.inds_joints_leftArm ...
-                obj.inds_joints_rightLeg ...
-                obj.inds_joints_leftLeg ...
-                obj.inds_joints_torso]);
+%             obj.inds_mocapMarkers_rightArm = find(ismember(strSensors, obj.mocapMarkers_rightArm)); 
+%             obj.inds_mocapMarkers_leftArm = find(ismember(strSensors, obj.mocapMarkers_leftArm)); 
+%             obj.inds_mocapMarkers_rightLeg = find(ismember(strSensors, obj.mocapMarkers_rightLeg)); 
+%             obj.inds_mocapMarkers_leftLeg = find(ismember(strSensors, obj.mocapMarkers_leftLeg)); 
+%             obj.inds_mocapMarkers_torso = find(ismember(strSensors, obj.mocapMarkers_torso)); 
+%             obj.inds_mocapMarkers = sort([obj.inds_mocapMarkers_rightArm ...
+%                 obj.inds_mocapMarkers_leftArm ...
+%                 obj.inds_mocapMarkers_rightLeg ...
+%                 obj.inds_mocapMarkers_leftLeg ...
+%                 obj.inds_mocapMarkers_torso]);
+%             
+%             % match the sensor strings
+%             obj.inds_joints_rightArm = find(ismember(strJoints, obj.joints_rightArm)); 
+%             obj.inds_joints_leftArm = find(ismember(strJoints, obj.joints_leftArm)); 
+%             obj.inds_joints_rightLeg = find(ismember(strJoints, obj.joints_rightLeg)); 
+%             obj.inds_joints_leftLeg = find(ismember(strJoints, obj.joints_leftLeg)); 
+%             obj.inds_joints_torso = find(ismember(strJoints, obj.joints_torso)); 
+%             obj.inds_joints = sort([obj.inds_joints_rightArm ...
+%                 obj.inds_joints_leftArm ...
+%                 obj.inds_joints_rightLeg ...
+%                 obj.inds_joints_leftLeg ...
+%                 obj.inds_joints_torso]);
         end
         
         function [measurementOutData, indx] = rearrangeMeasurement(obj, measurementSourceData, measurementSourceLabel, targetLabelOrder, backupMeasurementInput)
@@ -888,7 +888,8 @@ classdef rlModelInstance < handle % < rlModel
             if ~exist('sensorLengthUseCell', 'var') || isempty(sensorLengthUseCell)
                 lengthUseIndSingle = obj.lengthUseInd;
                 if lengthUseIndSingle == 0
-                    lengthUseIndSingle = 1:length(dataInstance.time);
+					% lengthUseIndSingle = 1:length(dataInstance.time);                
+                    lengthUseIndSingle = 1;
                 end
                 
                 for i = 1:size(obj.sensorSecondaryAttachmentArray, 1)
