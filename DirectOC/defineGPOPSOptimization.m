@@ -18,12 +18,8 @@ function setup = defineGPOPSOptimization(config, continuousFunc)
     bounds.phase(iphase).control.lower       =  config.bounds.minControl';
     bounds.phase(iphase).control.upper       =  config.bounds.maxControl';
     bounds.phase(iphase).integral.lower      =  0;
-    bounds.phase(iphase).integral.upper      =  20000;
-    
-    auxdata.state.lower = bounds.phase(iphase).state.lower;
-    auxdata.state.upper = bounds.phase(iphase).state.upper;
-    auxdata.control.lower = bounds.phase(iphase).control.lower;
-    auxdata.control.upper = bounds.phase(iphase).control.upper;
+    bounds.phase(iphase).integral.upper      =  1e20;
+   
     
 
     %% Provide Guess of Solution by defining range of values 
@@ -31,8 +27,8 @@ function setup = defineGPOPSOptimization(config, continuousFunc)
     guess.phase(iphase).control  = config.guess.control;
     guess.phase(iphase).time     = config.guess.time';
     guess.phase(iphase).integral = 0;
-%     guess.phase(iphase).state=rand(size([config.guess.jointAngles, config.guess.angularVelocities]));
-%     guess.phase(iphase).control  = rand(size(config.guess.control));
+%     guess.phase(iphase).state=3*rand(size([config.guess.jointAngles, config.guess.angularVelocities]));
+%     guess.phase(iphase).control  = 10*rand(size(config.guess.control));
 %     guess.phase(iphase).time     = config.guess.time';
 %     guess.phase(iphase).integral = 0;
 
@@ -40,14 +36,13 @@ function setup = defineGPOPSOptimization(config, continuousFunc)
 
     %% Provide Mesh Refinement Method and Initial Mesh 
     mesh.method          = 'hp-LiuRao-Legendre'; %'hp-LiuRao-Legendre';%'hp-PattersonRao';
-    mesh.tolerance       = 1e-3;
-    mesh.maxiterations   = 1;
+    mesh.tolerance       = 1e-6;
+    mesh.maxiterations   = 10;
     mesh.colpointsmin    = 2;
-    mesh.colpointsmax    = 10;
-%     mesh.phase.colpoints = 4*ones(1,5);
-%     mesh.phase.fraction  = 0.2*ones(1,5);
-    mesh.phase.colpoints = 100;
-    mesh.phase.fraction  = 1;
+    mesh.colpointsmax    = 100;
+    mesh.phase.colpoints = [ 50 20 ];
+    mesh.phase.fraction  = [ 0.5 0.5];
+
 
     %% Assemble Information into Problem Structure 
     setup.mesh                            = mesh;
@@ -57,11 +52,10 @@ function setup = defineGPOPSOptimization(config, continuousFunc)
     setup.displaylevel                    = 2;
     setup.bounds                          = bounds;
     setup.guess                           = guess;
-    setup.auxdata                         = auxdata;
     setup.nlp.solver                      = 'ipopt';
     setup.nlp.ipoptoptions.linear_solver  = 'ma57';
     setup.nlp.ipoptoptions.tolerance      = 1e-3;
-    setup.nlp.ipoptoptions.maxiterations  = 30;
+    setup.nlp.ipoptoptions.maxiterations  = 100;
     setup.derivatives.supplier            = 'sparseFD';   % valid options are 'sparseCD', 'sparseFD', 'sparseBD','analytic', and 'adigator'
     setup.derivatives.derivativelevel     = 'first';
     setup.derivatives.dependencies        = 'sparse';

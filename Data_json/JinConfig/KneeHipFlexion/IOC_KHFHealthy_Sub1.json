@@ -26,17 +26,17 @@
 			[
 				{
 					"feature":"angAccelSumSqu", 
-					"jointNames": ["joint_rhip_0", "joint_rknee_0", "joint_rankle_0"],
+					"jointNames": ["joint_rhip_0", "joint_rknee_0"],
                     "normCoeff": [1]
 				}, 
 				{
 					"feature":"angJerkSumSqu", 
-					"jointNames": ["joint_rhip_0", "joint_rknee_0", "joint_rankle_0"],
+					"jointNames": ["joint_rhip_0", "joint_rknee_0"],
                     "normCoeff": [1]
 				}, 
 				{
 					"feature":"angPowerSumSqu", 
-					"jointNames": ["joint_rhip_0", "joint_rknee_0", "joint_rankle_0"],
+					"jointNames": ["joint_rhip_0", "joint_rknee_0"],
                     "normCoeff": [1]
 				}
 			]
@@ -48,22 +48,22 @@
 			[
 				{
 					"feature":"angAccelSumSqu", 
-					"jointNames": ["joint_rhip_0", "joint_rknee_0", "joint_rankle_0"],
+					"jointNames": ["joint_rhip_0", "joint_rknee_0"],
                     "normCoeff": [1]
 				}, 
 				{
 					"feature":"angJerkSumSqu", 
-					"jointNames": ["joint_rhip_0", "joint_rknee_0", "joint_rankle_0"],
+					"jointNames": ["joint_rhip_0", "joint_rknee_0"],
                     "normCoeff": [1]
 				}, 
 				{
 					"feature":"torqueSumSqu", 
-					"jointNames": ["joint_rhip_0", "joint_rknee_0", "joint_rankle_0"],
+					"jointNames": ["joint_rhip_0", "joint_rknee_0"],
                     "normCoeff": [1]
 				},
 				{
 					"feature":"angPowerSumSqu", 
-					"jointNames": ["joint_rhip_0", "joint_rknee_0", "joint_rankle_0"],
+					"jointNames": ["joint_rhip_0", "joint_rknee_0"],
                     "normCoeff": [1]
 				}
 			]
@@ -80,27 +80,27 @@
 				}, 
 				{
 					"feature":"angAccelSumSqu", 
-					"jointNames": ["joint_rhip_0", "joint_rknee_0", "joint_rankle_0"],
+					"jointNames": ["joint_rhip_0", "joint_rknee_0"],
                     "normCoeff": [1]
 				},
 				{
 					"feature":"angJerkSumSqu", 
-					"jointNames": ["joint_rhip_0", "joint_rknee_0", "joint_rankle_0"],
+					"jointNames": ["joint_rhip_0", "joint_rknee_0"],
                     "normCoeff": [1]
 				}, 
 				{
 					"feature":"torqueSumSqu", 
-					"jointNames": ["joint_rhip_0", "joint_rknee_0", "joint_rankle_0"],
+					"jointNames": ["joint_rhip_0", "joint_rknee_0"],
                     "normCoeff": [1]
 				},
 				{
 					"feature":"torqueVeloSumSqu", 
-					"jointNames": ["joint_rhip_0", "joint_rknee_0", "joint_rankle_0"],
+					"jointNames": ["joint_rhip_0", "joint_rknee_0"],
                     "normCoeff": [1]
 				}, 
 				{
 					"feature":"torqueAccelSumSqu", 
-					"jointNames": ["joint_rhip_0", "joint_rknee_0", "joint_rankle_0"],
+					"jointNames": ["joint_rhip_0", "joint_rknee_0"],
                     "normCoeff": [1]
 				}, 
 				{
@@ -109,7 +109,7 @@
 				}, 		
 				{
 					"feature":"angPowerSumSqu", 
-					"jointNames": ["joint_rhip_0", "joint_rknee_0", "joint_rankle_0"],
+					"jointNames": ["joint_rhip_0", "joint_rknee_0"],
                     "normCoeff": [1]
 				}
 			]

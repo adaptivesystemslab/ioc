@@ -24,20 +24,47 @@
 				"maxControl": [1000, 1000, 1000]
 			},
 			"guess": "spline",
-			"weights": [0, 1,0],
+			"weights": [0.2500 ,   0.0000   , 0.2500   , 0.0000  ,  0.2500  ,  0.2500   , 0.0000  ,  0.0000],
 			"candidateFeatures": 
 			[
 				{
-					"feature":"angAccelSumSqu", 
-					"jointNames": ["joint_rhip_0", "joint_rknee_0", "joint_rankle_0"]
+					"feature":"cartJerkSumSqu", 
+					"frameNames": ["frame_rhip_0"],
+                    "normCoeff": [1]
 				}, 
 				{
-					"feature":"angJerkSumSqu", 
-					"jointNames": ["joint_rhip_0", "joint_rknee_0", "joint_rankle_0"]
+					"feature":"angAccelSumSqu", 
+					"jointNames": ["joint_rhip_0", "joint_rknee_0", "joint_rankle_0"],
+                    "normCoeff": [1]
 				},
 				{
+					"feature":"angJerkSumSqu", 
+					"jointNames": ["joint_rhip_0", "joint_rknee_0", "joint_rankle_0"],
+                    "normCoeff": [1]
+				}, 
+				{
+					"feature":"torqueSumSqu", 
+					"jointNames": ["joint_rhip_0", "joint_rknee_0", "joint_rankle_0"],
+                    "normCoeff": [1]
+				},
+				{
+					"feature":"torqueVeloSumSqu", 
+					"jointNames": ["joint_rhip_0", "joint_rknee_0", "joint_rankle_0"],
+                    "normCoeff": [1]
+				}, 
+				{
+					"feature":"torqueAccelSumSqu", 
+					"jointNames": ["joint_rhip_0", "joint_rknee_0", "joint_rankle_0"],
+                    "normCoeff": [1]
+				}, 
+				{
+					"feature":"kineticEnergySumSqu",
+                    "normCoeff": [1]
+				}, 		
+				{
 					"feature":"angPowerSumSqu", 
-					"jointNames": ["joint_rhip_0", "joint_rknee_0", "joint_rankle_0"]
+					"jointNames": ["joint_rhip_0", "joint_rknee_0", "joint_rankle_0"],
+                    "normCoeff": [1]
 				}
 			]
 		}

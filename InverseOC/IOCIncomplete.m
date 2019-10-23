@@ -16,16 +16,16 @@ clc
 
 %% -----------------cut the orginal trajectory manually----------------
 % cutSavePath=fullfile('..\Data\IOC\CuttedData\Squat_IIT\',trialInfo.runName(1:6),'up');  
-% cutSavePath=fullfile('..\Data\IOC\CuttedData\KneeHipFlexion\',trialInfo.runName(1:6),'up');  
-cutSavePath=fullfile('..\Data\IOC\CuttedData\HipFlexion\',trialInfo.runName(1:6),'up');  
+cutSavePath=fullfile('..\Data\IOC\CuttedData\KneeHipFlexion\',trialInfo.runName(1:6),'up');  
+% cutSavePath=fullfile('..\Data\IOC\CuttedData\HipFlexion\',trialInfo.runName(1:6),'up');  
 % cutSavePath=fullfile('..\Data\IOC\CuttedData\Squat\',trialInfo.runName(1:6),'up');  
 % cutSavePath=fullfile('..\Data\IOC\CuttedData\Sit\',trialInfo.runName(1:6),'up');  
 
 % ----------this section can also be commented if not needed----------
-checkMkdir(cutSavePath) %check the folder exists
-clearFlag=true; %clear or not the existing files
-VisualizerCutter(model,traj,cutSavePath,clearFlag)
-% VisualizerCutter(model,traj)
+% checkMkdir(cutSavePath) %check the folder exists
+% clearFlag=true; %clear or not the existing files
+% VisualizerCutter(model,traj,cutSavePath,clearFlag)
+% % VisualizerCutter(model,traj)
 
 
 %% -----------------read the cropped trajectory------------------------
@@ -53,7 +53,15 @@ for k=1:size(segIntervalIndex,1)
     segTraj.tau=traj.tau(segFrame,:);
     segTraj.frames=segFrame;
     
+    %print the starting and ending time
+    segTraj.q(1,:)
+    segTraj.q(end,:)
+    segTraj.dq(1,:)
+    segTraj.dq(end,:)
+    segTraj.trajT(1)
+    segTraj.trajT(end)
     
+    pause;
     
     % Initialize the recovery matrix [H1, H2];
     H1=[];
@@ -109,6 +117,7 @@ for k=1:size(segIntervalIndex,1)
         ylabel(iocResults(end).featureLabels{r})
         ylim([0 1])
     end
+    weightsVec(end,:)
     drawnow
 %     figure(2)
 %     clf
@@ -160,12 +169,11 @@ for i = 1:length(traj.trajT)
     mdl.inverseDynamics();
     vis.update();
     clc
-     model.model.joints.name
+    model.model.joints.name
     rad2deg(traj.q(i,:))
     if (i==1)
         pause
     end
-     pause;
     
     %% if cut needed
     if cut

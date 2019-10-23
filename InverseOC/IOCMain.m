@@ -16,8 +16,8 @@ tic;
 
 % Wanxin's Configurations
 % configFilePath = '../Data_json/JinConfig/Squat_IIT/IOC_IITFatigue_Test_Sub1.json';
-% configFilePath = '../Data_json/JinConfig/KneeHipFlexion/IOC_KHFHealthy_Sub1.json';
-configFilePath = '../Data_json/JinConfig/HipFlexion/IOC_HFHealthy_Sub1.json';
+configFilePath = '../Data_json/JinConfig/KneeHipFlexion/IOC_KHFHealthy_Sub1.json';
+% configFilePath = '../Data_json/JinConfig/HipFlexion/IOC_HFHealthy_Sub1.json';
 % configFilePath = '../Data_json/JinConfig/Squat/IOC_SQUHealthy_Sub1.json';
 % configFilePath = '../Data_json/JinConfig/Sit/IOC_SITHealthy_Sub1.json';
 %% Create and/or look for folder where solutions are going to be saved

@@ -1,0 +1,49 @@
+{
+	"Trials": [
+		{
+			"runInds": [1, 5005],
+			"name": "Trial01",
+			"baseModel":"Healthy1",
+			"dt": 0.01,
+			"model":"2DOF_hip",
+			"path":"H:/data/Lowerbody_healthy1_2011_IK/20191018/matEkfIk/mocap_mocap_X00_hip/KHEF_STD_PPB1_Subject1_mocap_mocap_X00_hip_ekfId1_ekfIk.mat",
+			"initialState": {
+				"time": 0,
+				"jointAngles": [0.1043,    0.6585],
+				"angularVelocities": [-1.1847,    1.7831]
+			},
+			"finalState": {
+				"time": 0.69,
+				"jointAngles": [-1.1847,    1.7831],
+				"angularVelocities": [-0.1825,    0.6376]
+			},
+			"bounds":
+			{
+				"minState": [-3, -3, -20, -20],
+				"maxState": [3, 3, 20, 20],
+				"minControl": [-1000, -1000],
+				"maxControl": [1000, 1000]
+			},
+			"guess": "spline",
+			"weights": [0, 1, 0],
+			"candidateFeatures": 
+			[
+				{
+					"feature":"angAccelSumSqu", 
+					"jointNames": ["joint_rhip_0", "joint_rknee_0"],
+                    "normCoeff": [1]
+				}, 
+				{
+					"feature":"angJerkSumSqu", 
+					"jointNames": ["joint_rhip_0", "joint_rknee_0"],
+                    "normCoeff": [1]
+				}, 
+				{
+					"feature":"angPowerSumSqu", 
+					"jointNames": ["joint_rhip_0", "joint_rknee_0"],
+                    "normCoeff": [1]
+				}
+			]
+		}
+	]
+}
