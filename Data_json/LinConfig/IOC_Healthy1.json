@@ -48,14 +48,14 @@
         {
             "runName":"Subj02_HFEO_03CF",
             "basepath":"D:/aslab/data_IK", 
-            "subpath":"Lowerbody_healthy1_2011_IK/20191018/matEkfIk/mocap_mocap_X00_hip/HFEO_STD_PPB1_Subject2_mocap_mocap_X00_hip_ekfId1_ekfIk.mat",
+            "subpath":"Lowerbody_healthy1_2011_IK/20191022/matEkfIk/mocap_mocap_X00_hip/HFEO_STD_PPB1_Subject2_mocap_mocap_X00_hip_ekfId1_ekfIk.mat",
 			"runTemplate": "3CF_Forward",
 			"model":"2DOF_hip"
         },
         {
             "runName":"Subj02_KHEF_03CF",
             "basepath":"D:/aslab/data_IK", 
-            "subpath":"Lowerbody_healthy1_2011_IK/20191018/matEkfIk/mocap_mocap_X00_hip/KHEF_STD_PPB1_Subject2_mocap_mocap_X00_hip_ekfId1_ekfIk.mat",
+            "subpath":"Lowerbody_healthy1_2011_IK/20191022/matEkfIk/mocap_mocap_X00_hip/KHEF_STD_PPB1_Subject2_mocap_mocap_X00_hip_ekfId1_ekfIk.mat",
 			"runTemplate": "3CF_Forward",
 			"model":"2DOF_hip"
         },
