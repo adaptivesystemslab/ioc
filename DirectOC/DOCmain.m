@@ -3,7 +3,7 @@ clc;clear all;close all;
 % Add paths to directories with model definition and util functions
 setPaths();
 
-% Load json with information about each trial
+% Load ioc with information about each trial
 configFile = jsondecode(fileread('../Data_json/PamelaConfig/DOC_Template2.json'));
 
 
@@ -22,7 +22,7 @@ ioc.init(currentTrial);
 % Load the actual trajectory
 traj=dynModel.loadData(configFile.Trials);
 % read the cropped trajectory.
-cutSavePath=fullfile('..\Data\IOC\CuttedData\KneeHipFlexion\Subj01\up'); 
+cutSavePath=fullfile('..\Data\IOC_Seg\CuttedData\KneeHipFlexion\Subj01\up'); 
 files=dir(fullfile(cutSavePath,'\*.mat'));
 if(isempty(files)) return; end %#ok<SEPEX>
 segIntervalIndex=load(fullfile(files(1).folder,files(1).name));

@@ -15,17 +15,14 @@ tic;
 % configFilePath = '../Data_json/IOC_IITFatigue_test.json';
 
 % Wanxin's Configurations
-% configFilePath = '../Data_json/JinConfig/Squat_IIT/IOC_IITFatigue_Test_Sub1.json';
-configFilePath = '../Data_json/JinConfig/KneeHipFlexion/IOC_KHFHealthy_Sub1.json';
+configFilePath = '../Data_json/JinConfig/Squat_IIT/IOC_IITFatigue_Test_Sub1.json';
+savePath='../Data/JinIOCResults/IOC_Squat_IIT/Sub1/';
+% configFilePath = '../Data_json/JinConfig/KneeHipFlexion/IOC_KHFHealthy_Sub1.json';
+% savePath='../Data/JinIOCResults/IOC_KneeHipFlexion/Sub1/';
 % configFilePath = '../Data_json/JinConfig/HipFlexion/IOC_HFHealthy_Sub1.json';
 % configFilePath = '../Data_json/JinConfig/Squat/IOC_SQUHealthy_Sub1.json';
 % configFilePath = '../Data_json/JinConfig/Sit/IOC_SITHealthy_Sub1.json';
 %% Create and/or look for folder where solutions are going to be saved
-% currentDate = datestr(datetime("now"),"yyyy_mm_dd_HH_MM_SS");
-currentDate = 'expressiveTest';
-% currentDate = 'result01';
-savePath = sprintf('../Data/IOC/%s/', currentDate);
-
 overwriteFiles = 1;
 
 %% Set up internal parameters
@@ -36,7 +33,7 @@ setPaths();
 configFile = jsondecode(fileread(configFilePath));
 n = length(configFile.Files);
 
-for i=1
+for i=3
     runParam = [];
     configFileI = configFile.Files(i);
 
@@ -51,8 +48,7 @@ for i=1
     trialInfo = loadTrialInfo(configFileI, configFile, potentialBasePaths, configFilePath);
     
     % does the target folder already exist? 
-    subsavePath = fullfile(savePath, trialInfo.runName);
-    [status, alreadyExist] = checkMkdir(subsavePath);
+    [status, alreadyExist] = checkMkdir(savePath);
     
     if ~alreadyExist || overwriteFiles
 %         IOCRun(trialInfo, subsavePath);

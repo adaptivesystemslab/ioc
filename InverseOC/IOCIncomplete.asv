@@ -15,11 +15,11 @@ clc
 
 
 %% -----------------cut the orginal trajectory manually----------------
-cutSavePath=fullfile('..\Data\IOC_Seg\CuttedData\Squat_IIT\',trialInfo.runName(1:6),'up');  
-% cutSavePath=fullfile('..\Data\IOC_Seg\CuttedData\KneeHipFlexion\',trialInfo.runName(1:6),'up');  
-% cutSavePath=fullfile('..\Data\IOC_Seg\CuttedData\HipFlexion\',trialInfo.runName(1:6),'up');  
-% cutSavePath=fullfile('..\Data\IOC_Seg\CuttedData\Squat\',trialInfo.runName(1:6),'up');  
-% cutSavePath=fullfile('..\Data\IOC_Seg\CuttedData\Sit\',trialInfo.runName(1:6),'up');  
+cutSavePath=fullfile('..\Data\IOC\CuttedData\Squat_IIT\',trialInfo.runName(1:6),'up');  
+% cutSavePath=fullfile('..\Data\IOC\CuttedData\KneeHipFlexion\',trialInfo.runName(1:6),'up');  
+% cutSavePath=fullfile('..\Data\IOC\CuttedData\HipFlexion\',trialInfo.runName(1:6),'up');  
+% cutSavePath=fullfile('..\Data\IOC\CuttedData\Squat\',trialInfo.runName(1:6),'up');  
+% cutSavePath=fullfile('..\Data\IOC\CuttedData\Sit\',trialInfo.runName(1:6),'up');  
 
 % ----------this section can also be commented if not needed----------
 % checkMkdir(cutSavePath) %check the folder exists
@@ -48,8 +48,6 @@ iocResultsSaver.modelType=trialInfo.modelType;
 iocResultsSaver.baseModel=trialInfo.baseModel;
 iocResultsSaver.model=trialInfo.model;
 iocResultsSaver.origDataSubPath=trialInfo.subpath;
-iocResultsSaver.dt=dt;
-iocResultsSaver.candidateFeatures=trialInfo.candidateFeatures;
 
 % processing while increasing the window length
 for k=1:size(segIntervalIndex,1)
@@ -132,7 +130,7 @@ for k=1:size(segIntervalIndex,1)
 %     plot(iocResults(end).rankIndVec);
 %     drawnow
 
-    %save data
+    fprintf("Now.....Saving Data");
     iocResultsSaver.iocResults(k).trajSegIndex=segFrame;
     iocResultsSaver.iocResults(k).initialTime=segTraj.trajT(1);
     iocResultsSaver.iocResults(k).initialJointAngle=segTraj.q(1,:);
@@ -140,17 +138,19 @@ for k=1:size(segIntervalIndex,1)
     iocResultsSaver.iocResults(k).finalTime=segTraj.trajT(end);
     iocResultsSaver.iocResults(k).finalJointAngle=segTraj.q(end,:);
     iocResultsSaver.iocResults(k).finalJointVelocity=segTraj.dq(end,:);
+    iocResultsSaver.iocResults(k).candidateFeatures=trialInfo.candidateFeatures;
     iocResultsSaver.iocResults(k).weights=weightsVec(end,:);
-    fprintf("Press any key to proceed the next segment\n");
-%     pause;
+    save(,'iocResultsSaver')
+    fprintf("Saving data completed!");
+
+
+disp('pause')
+pause;
+
 end
 
-fprintf("Now.....Saving Data\n");
-pause(1)
-savePath=fullfile(savePath,trialInfo.runName);
-save(savePath,'iocResultsSaver')
-fprintf("Saving data completed!\n");
-
+%----------------------------save the results-----------------------------
+% save('iocResults.mat','iocResults')
 end
 
 function VisualizerCutter(model,traj,cutSavePath,clearFlag)

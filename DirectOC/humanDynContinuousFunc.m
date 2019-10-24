@@ -19,8 +19,8 @@ function phaseout = humanDynContinuousFunc(input, weights, iocObject)
  
     
     %Compute features
-    normFeatures = iocObject.calcFeatures(x, u)/1;
+%     normFeatures = iocObject.calcFeatures(x, u)/1;
 %      normFeatures = features ./ max(features(:));
-    phaseout.integrand = sum(w.*normFeatures,2);
-%     phaseout.integrand=u(:,1).^2+100*u(:,2).^2;
+%     phaseout.integrand = sum(w.*normFeatures,2);
+     phaseout.integrand=100*u(:,1).^2+1*u(:,2).^2;
 end

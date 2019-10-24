@@ -23,14 +23,14 @@ function setup = defineGPOPSOptimization(config, continuousFunc)
     
 
     %% Provide Guess of Solution by defining range of values 
-    guess.phase(iphase).state=[config.guess.jointAngles, config.guess.angularVelocities];
-    guess.phase(iphase).control  = config.guess.control;
-    guess.phase(iphase).time     = config.guess.time';
-    guess.phase(iphase).integral = 0;
-%     guess.phase(iphase).state=3*rand(size([config.guess.jointAngles, config.guess.angularVelocities]));
-%     guess.phase(iphase).control  = 10*rand(size(config.guess.control));
+%     guess.phase(iphase).state=[config.guess.jointAngles, config.guess.angularVelocities];
+%     guess.phase(iphase).control  = config.guess.control;
 %     guess.phase(iphase).time     = config.guess.time';
 %     guess.phase(iphase).integral = 0;
+    guess.phase(iphase).state=3*rand(size([config.guess.jointAngles, config.guess.angularVelocities]));
+    guess.phase(iphase).control  = 10*rand(size(config.guess.control));
+    guess.phase(iphase).time     = config.guess.time';
+    guess.phase(iphase).integral = 0;
 
 
 
@@ -40,8 +40,8 @@ function setup = defineGPOPSOptimization(config, continuousFunc)
     mesh.maxiterations   = 10;
     mesh.colpointsmin    = 2;
     mesh.colpointsmax    = 100;
-    mesh.phase.colpoints = [ 50 20 ];
-    mesh.phase.fraction  = [ 0.5 0.5];
+    mesh.phase.colpoints = 100;
+    mesh.phase.fraction  = 1;
 
 
     %% Assemble Information into Problem Structure 
