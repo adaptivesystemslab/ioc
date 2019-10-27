@@ -216,13 +216,13 @@ classdef IOCInstance < handle
         end
         
         function filtData = numDiff(obj, preDiff, minWinLen, lenTime, lenWidth)
-            if obj.filterFeature && lenTime >= obj.winSize
+            if obj.filterFeature && lenTime > obj.winSize
                 % want to filter + window large enough to filter
                 rawData = calcDerivVert(preDiff, obj.dt);
                 filtDataTemp = filter_bw_lpf(rawData(2:end, :), obj.filtFreq, obj.filtOrder); % don't include the zero in the front from the diff
                 filtData = [zeros(1, lenWidth); ... 
                     filtDataTemp]; % insert the zero back in so the vector is the correct width
-            elseif lenTime >= minWinLen
+            elseif lenTime > minWinLen
                 % window not large enough to filter
                 filtData = calcDerivVert(preDiff, obj.dt);
             else

@@ -15,8 +15,8 @@ clc
 
 
 %% -----------------cut the orginal trajectory manually----------------
-cutSavePath=fullfile('..\Data\IOC_Seg\CuttedData\Squat_IIT\',trialInfo.runName(1:6),'up');  
-% cutSavePath=fullfile('..\Data\IOC_Seg\CuttedData\KneeHipFlexion\',trialInfo.runName(1:6),'up');  
+% cutSavePath=fullfile('..\Data\IOC_Seg\CuttedData\Squat_IIT\',trialInfo.runName(1:6),'up');  
+cutSavePath=fullfile('..\Data\IOC_Seg\CuttedData\KneeHipFlexion\',trialInfo.runName(1:6),'up');  
 % cutSavePath=fullfile('..\Data\IOC_Seg\CuttedData\HipFlexion\',trialInfo.runName(1:6),'up');  
 % cutSavePath=fullfile('..\Data\IOC_Seg\CuttedData\Squat\',trialInfo.runName(1:6),'up');  
 % cutSavePath=fullfile('..\Data\IOC_Seg\CuttedData\Sit\',trialInfo.runName(1:6),'up');  
@@ -75,16 +75,19 @@ for k=1:size(segIntervalIndex,1)
     H1=[];
     H2=[];
     % IOC using the beginning segment of the trajectory
-    for i=1:length(segFrame)
+    pre_len=3;
+    for i=pre_len:length(segFrame)-1
         % print
         clc
         sprintf('Data: %s', trialInfo.runName)
         sprintf('Prcentage: %.1f%%', i/length(segFrame)*100)
-        currX=segTraj.trajX(i,:);
-        currU=segTraj.trajU(i,:);
+        currX=segTraj.trajX(i-pre_len+1:i,:);
+        currU=segTraj.trajU(i-pre_len+2:i+1,:);
+        nextU=segTraj.trajU(i+2-pre_len:i+1,:);
+    	prevX=segTraj.trajX(i-pre_len+1:i,:);
         %compute the deriviatives(jacobian matrix) for the system
-        Jx=ioc.getDynamicsStateDerivatives(currX,currU);
-        Ju=ioc.getDynamicsControlDerivatives(currX,currU);
+        Jx=ioc.getDynamicsStateDerivatives(currX,nextU);
+        Ju=ioc.getDynamicsControlDerivatives(prevX,currU);
         %compute the deriviatives(jacobina matrix) for the features
         Px=ioc.getFeaturesStateDerivatives(currX,currU);
         Pu=ioc.getFeaturesControlDerivatives(currX,currU);

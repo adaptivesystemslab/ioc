@@ -2,7 +2,7 @@
 
 clear all;
 close all;
-% clc;
+clc;
 tic;
 
 %% Define internal settings
@@ -33,7 +33,7 @@ setPaths();
 configFile = jsondecode(fileread(configFilePath));
 n = length(configFile.Files);
 
-for i=3
+for i=1
     runParam = [];
     configFileI = configFile.Files(i);
 
