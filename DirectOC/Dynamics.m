@@ -9,9 +9,7 @@ function dz = Dynamics(x, u, iocObject)
     dq = x(:,dofs+1:end);
            
     for i = 1:size(q,1)     
-        % Set arm state
-        iocObject.dynamicModel.updateState(q(i,:), dq(i,:));
-        ddq(i,:) = iocObject.dynamicModel.forwardDynamics(u(i,:));
+        ddq(i,:) = iocObject.dynamicModel.forwardDynamicsQDqTau(q(i,:), dq(i,:), u(i,:));
     end
     
     dz = [dq, ddq]';

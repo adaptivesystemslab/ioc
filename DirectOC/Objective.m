@@ -1,6 +1,6 @@
 function f = Objective(t, x, u, weights, iocObject)
 
-    w = weights'; w = w/sum(w);
+    w = weights; w = w/sum(w);
         
     % Compute current time increase and update value in iocInstance
     dt = t(2) - t(1);

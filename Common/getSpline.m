@@ -8,17 +8,19 @@ function [angles, velocities, control, time] = getSpline(model,...
         dt = 0.01;
     end
     
-    y = [initialState.jointAngles';
-        finalState.jointAngles'];
+    dofs = model.getModelDof();
     
-    dy = [initialState.angularVelocities';
-          finalState.angularVelocities'];
+    y = [initialState(1:dofs);
+        finalState(1:dofs)];
     
-    ddy = zeros(2,length(initialState.jointAngles));
+    dy = [initialState(dofs+1:end);
+          finalState(dofs+1:end)];
+    
+    ddy = zeros(2,dofs);
     
     x = [1 100];
     
-    [angles, velocities, accelerations, time] = quinticSpline(deg2rad(y),...
+    [angles, velocities, accelerations, time] = quinticSpline(y,...
         dy, ddy, x, dt);
     
     control = zeros(size(angles));
@@ -29,13 +31,11 @@ function [angles, velocities, control, time] = getSpline(model,...
         currQ = angles(i, :);
         currDq = velocities(i, :);
         currDdq = accelerations(i, :);
-    
-        model.updateState(currQ(1:end), currDq(1:end));
-        control(i, :) = model.inverseDynamics(currDdq);
+        
+        control(i, :) = model.inverseDynamicsQDqDdq(currQ, currDq, currDdq);
     end
   
     model.updateState(previousState(1,:), previousState(2,:));
-    angles = rad2deg(angles);
     
 %     figure; 
 %     subplot(221);
