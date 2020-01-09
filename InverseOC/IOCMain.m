@@ -24,7 +24,7 @@ configFilePath = '../Data_json/LinConfig/IOC_IITFatigue_test.json';
 %% Create and/or look for folder where solutions are going to be saved
 % currentDate = datestr(datetime("now"),"yyyy_mm_dd_HH_MM_SS");
 % currentDate = 'expressiveTest';
-currentDate = '20191023_comparingMaxLengths';
+currentDate = '20200109_TestGammaSize';
 savePath = sprintf('../Data/IOC/%s/', currentDate);
 
 overwriteFiles = 1;
