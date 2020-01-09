@@ -53,14 +53,8 @@ classdef ModelRL < handle
             controls = tau;
             
             if ~isempty(trialInfo.runInds)
-                if trialInfo.runInds(1) > 0 && trialInfo.runInds(2) > 0
-                    startInd = trialInfo.runInds(1);
-                    endInd = trialInfo.runInds(2);
-                else
-                    startInd = length(time)-abs(trialInfo.runInds(1));
-                    endInd = length(time)-abs(trialInfo.runInds(2));
-                end
-                frameInds = startInd:endInd;
+                if trialInfo.runInds(1) > 0 && trailInfo.runInds(2) > 0
+                frameInds = trialInfo.runInds(1):trialInfo.runInds(2);
             else
                 frameInds = 1:length(time);
             end
