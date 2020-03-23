@@ -69,6 +69,10 @@ classdef ModelRL < handle
                 frameInds = frameInds(1):length(time);
             end
             
+            if min(frameInds) < 1
+                frameInds = 1:frameInds(end);
+            end
+            
             traj.q=q;
             traj.dq=dq;
             traj.tau=tau;

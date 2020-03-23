@@ -52,12 +52,16 @@ function IOCRun(trialInfo, savePath)
         precalcAllFrames = precalcAllFrames(1):size(trajX, 1);
     end
     
+    if min(precalcAllFrames) < 1
+        precalcAllFrames = 1:precalcAllFrames(end);
+    end
+    
     trialInfo.lenDof = size(trajX, 2)/2;
     trialInfo.hWant = (size(trajX, 2) + trialInfo.numWeights) * trialInfo.dimWeights;
     
     % calculating the features/dynamics for storage prurposes
-    iocFeatures = ioc.calcFeatures(trajX(precalcAllFrames, :), trajU(precalcAllFrames, :));
-    iocDynamics = ioc.calcDynamics(trajX(precalcAllFrames, :), trajU(precalcAllFrames, :));
+    iocFeatures(precalcAllFrames, :) = ioc.calcFeatures(trajX(precalcAllFrames, :), trajU(precalcAllFrames, :));
+    iocDynamics(precalcAllFrames, :) = ioc.calcDynamics(trajX(precalcAllFrames, :), trajU(precalcAllFrames, :));
  
     if trialInfo.saveIntermediate > 0 % save a mat file based on the value here, to limit the size of the overall mat file
         saveInds = [];
@@ -76,7 +80,8 @@ function IOCRun(trialInfo, savePath)
     trialInfo
     
     % precalc singular H1 and H2 matrix
-    precalcGradient = precalculateGradient_initialize(trajX, trajU, ioc, 1:trialInfo.maxWinLen, trialInfo);
+    framesToPrecalc = frameInds(1) + (1:trialInfo.maxWinLen) - 1;
+    precalcGradient = precalculateGradient_initialize(trajX, trajU, ioc, framesToPrecalc, trialInfo);
     
     progressVar = [];
     progressVar(frameInds(end)).weights = [];
@@ -390,8 +395,8 @@ function precalcGradient = precalculateGradient_initialize(trajX, trajU, ioc, fr
     precalcGradient(frameInds(end)+trialInfo.maxWinLen).dp_dx = [];
     precalcGradient(frameInds(end)+trialInfo.maxWinLen).dp_du = [];
     
+    fprintf('Pre-calculating %uth to the %uth H1/H2... \n', frameInds(1), frameInds(end));
     for i = frameInds
-        fprintf('Pre-calculating %uth H1/H2... \n', i);
         [tempGrad.df_dx, tempGrad.df_du, tempGrad.dp_dx, tempGrad.dp_du] = ...
             getGradient(trajX, trajU, i, ioc);
         
