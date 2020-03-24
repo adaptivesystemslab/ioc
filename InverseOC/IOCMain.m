@@ -46,6 +46,8 @@ for i=1:n
     % if the source matfile is not found in the json path, search these
     % following locations as well, such as for Sharcnet deployment
     potentialBasePaths = {'/project/6001934/data/', ...
+        'D:/aslab/data_IK', ...
+        'D:/aslab_svn/data_IK', ...
         configFileI.basepath, ...
         'H:/data'};
     
@@ -53,9 +55,9 @@ for i=1:n
     fprintf("Processing %s file \n", configFileI.runName);
     trialInfo = loadTrialInfo(configFileI, configFile, potentialBasePaths, configFilePath);
     
-%     if strcmpi(trialInfo.templateName, '3DOF_8CF_Forward') 
-%         continue;
-%     end
+    if ~strcmpi(trialInfo.runName(11:end), '3DOF_3CF_START') 
+        continue;
+    end
     
     % does the target folder already exist? 
     subsavePath = fullfile(savePath, trialInfo.runName);

@@ -9,6 +9,7 @@ addpath(genpath('../Libraries/Robotics_Corke/'));
 addpath(genpath('../Libraries/rl'));
 addpath(genpath('../Libraries/brewermap/'));
 addpath(genpath('../Libraries/kakearney-boundedline-pkg-50f7e4b/'));
+addpath(genpath('../Libraries/genhurst/'));
 
 % addpath(genpath('../../kalmanfilter/General_FKEKF/DynamicsModelMatlab/MatlabWrapper'));
 % addpath(genpath('../../kalmanfilter/ik_framework/instance_iit'));

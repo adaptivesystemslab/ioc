@@ -18,8 +18,8 @@ function IOCAnalysis()
     
     nowstr = datestr(now, 'yyyymmddHHMMSS');
 %     basePath = 'D:\aslab_gitlab\expressive-ioc\Data\IOC\';
-    basePath = 'C:\Users\jf2lin\Downloads\TransferXL-00vJWj5xkLvbgc\20200316_fatigueEdges\';
-    outputPath = ['D:\aslab_gitlab\expressive-ioc\Data\IOC\plot_' nowstr];
+    basePath = 'D:\results\fatigue_ioc01_weightsIndividual\20200316_fatigueEdges\';
+    outputPath = ['D:\results\fatigue_ioc02_weightsAssembled\plot_' nowstr];
     masterPathCsv = [outputPath '\a_summary.csv'];
     checkMkdir(outputPath);
     
@@ -40,18 +40,23 @@ function IOCAnalysis()
             end
             
             matData = assembleData(currSubPath); 
-            suffix = [matData.trialInfo.runName '_' matData.trialInfo.templateName]
-
+%             suffix = [matData.trialInfo.runName '_' matData.trialInfo.templateName]
+            suffix = [matData.trialInfo.runName];
+    
             matData.t = (1:length(matData.t)) * 0.01;
             
 %             try
                 % plot results
 %                 fprintf('%s\n', suffix);
-                outputPathFig1 = fullfile(basePath, ['fig_results_individual_' suffix]);
-                outputPathFig2 = fullfile(outputPath, ['fig_results_cumulativeAllPass_' suffix]);
+                outputPathFig1 = fullfile(outputPath, ['fig_weiInd_' suffix]);
+                outputPathFig2 = fullfile(outputPath, ['fig_weiCum_' suffix]);
                 outputPathFig3 = fullfile(outputPath, ['fig_results_cumulativeRankPass_' suffix]);
-                outputPathMat2 = fullfile(outputPath, ['mat_results_individualAllPass_' suffix]);
-                outputPathMat1 = fullfile(outputPath, ['mat_results_cumulativeAllPass_' suffix]);
+                
+                outputPathMat0 = fullfile(outputPath, ['mat_dataInd_' suffix]);
+                outputPathMat1 = fullfile(outputPath, ['mat_weiCum_' suffix]);
+                outputPathMat2 = fullfile(outputPath, ['mat_weiInd_' suffix]);
+                
+                save(outputPathMat0, 'matData');
                 outputPathCsv = fullfile(outputPath, ['csv_' suffix]);
 %                 csv_populate(matData, masterPathCsv);
                 plotting_individual(matData, outputPathFig1, outputPathCsv, masterPathCsv, outputPathMat2);
@@ -77,13 +82,13 @@ function IOCAnalysis()
 %                     end
 %                 end
                 
-                figFileName = fullfile(outputPath, ['a_fig_perturb_combinedGridWeight_' suffix]);
-                plotWeights_Grid(figFileName, perturbAmount, residualThreshold, maxAcross, maxDown, faceColours,  ...
-                    t, weights_cum_cum, residual_keep_cumulative, [], weight_labels);
-                
-                figFileName = fullfile(outputPath, ['a_fig_perturb_combinedGridRemoval_' suffix]);
-                plotWeights_Grid(figFileName, perturbAmount, residualThreshold, maxAcross, maxDown, faceColours,  ...
-                    t, [], residual_keep_cumulative, weights_blocks, weight_labels);
+%                 figFileName = fullfile(outputPath, ['a_fig_perturb_combinedGridWeight_' suffix]);
+%                 plotWeights_Grid(figFileName, perturbAmount, residualThreshold, maxAcross, maxDown, faceColours,  ...
+%                     t, weights_cum_cum, residual_keep_cumulative, [], weight_labels);
+%                 
+%                 figFileName = fullfile(outputPath, ['a_fig_perturb_combinedGridRemoval_' suffix]);
+%                 plotWeights_Grid(figFileName, perturbAmount, residualThreshold, maxAcross, maxDown, faceColours,  ...
+%                     t, [], residual_keep_cumulative, weights_blocks, weight_labels);
                        
 %             catch err
 %                 err
@@ -593,10 +598,10 @@ function matData = assembleData(currSubPath)
         load(datPath);
         matData.t(currInds) = outputVar_data.t;
         matData.q(currInds, :) = outputVar_data.q;
-%         matData.dq(currInds, :) = outputVar_data.dq;
-%         matData.tau(currInds, :) = outputVar_data.tau;
-%         matData.features(currInds, :) = outputVar_data.features;
-%         matData.dynamics(currInds, :) = outputVar_data.dynamics;
+        matData.dq(currInds, :) = outputVar_data.dq;
+        matData.tau(currInds, :) = outputVar_data.tau;
+        matData.features(currInds, :) = outputVar_data.features;
+        matData.dynamics(currInds, :) = outputVar_data.dynamics;
 
         currFileName = strrep(dirInnerPath(i).name, 'weights', 'supp');
         datPath = fullfile(currSubPath, currFileName);
@@ -620,10 +625,10 @@ function matData = assembleData(currSubPath)
         load(datPath);
         matData.t(currInds) = outputVar_data.t;
         matData.q(currInds, :) = outputVar_data.q;
-%         matData.dq(currInds, :) = outputVar_data.dq;
-%         matData.tau(currInds, :) = outputVar_data.tau;
-%         matData.features(currInds, :) = outputVar_data.features;
-%         matData.dynamics(currInds, :) = outputVar_data.dynamics;
+        matData.dq(currInds, :) = outputVar_data.dq;
+        matData.tau(currInds, :) = outputVar_data.tau;
+        matData.features(currInds, :) = outputVar_data.features;
+        matData.dynamics(currInds, :) = outputVar_data.dynamics;
 
         currFileName = strrep(dirInnerPath(i).name, 'weights', 'supp');
         datPath = fullfile(currSubPath, currFileName);
@@ -695,6 +700,7 @@ function [matSave] = plotting_cumulative(matData, outputPathFig_all, outputPathF
 
     weightLabels = matData.featureLabels;
 
+%     matSave = matData;
     matSave.t = t;
     matSave.q = q;
     matSave.weights = weights_all;
@@ -784,6 +790,10 @@ function [weights_mean_all, weights_var_all, winCount_all] = cumWeights(t, progr
     
     % the weight at each timestep is the sum of every window that overlaps with iterate
     for i = 1:length(t)
+        if mod(i, 1000) ==  0
+            fprintf('[%u/%u] Processing weights\n', i, length(t));
+        end
+        
         weightAtI = [];
         for j = 1:length(progressVar)
             if isempty(progressVar(j).winInds)
@@ -880,6 +890,7 @@ function h = plotting_individual(matData, outputPathFig, outputPathCsv, masterPa
     lgd = legend(weightLabels,'AutoUpdate','off');
     lgd.NumColumns = 1;
     ylabel('Weights [0:1]');
+    ylim([0 1]);
     
 %     ax(3) = subplot(413);
 %     area(t, rank);
@@ -902,7 +913,7 @@ function h = plotting_individual(matData, outputPathFig, outputPathCsv, masterPa
     maximum = data(:, 2);
 %     h = figure;
     
-    ax(2) = subplot(212);
+%     ax(2) = subplot(212);
 %     aH = axes;
 
 %     bH = bar(t, maximum);
