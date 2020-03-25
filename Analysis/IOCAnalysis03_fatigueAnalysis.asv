@@ -18,10 +18,11 @@ function IOCAnalysis()
         end
 
         % load and plot stuff
+        filepathCsv = fullfile(basePath, 'analysis.csv');
         filepathCurrDataInd = fullfile(basePath, currFileName);
         filepathCurrWeiCum = strrep(filepathCurrDataInd, 'mat_dataInd', 'mat_weiCum');
         filepathCurrWeiInd = strrep(filepathCurrDataInd, 'mat_dataInd', 'mat_weiInd');
-        calculateMetrics(filepathCurrDataInd, filepathCurrWeiCum, filepathCurrWeiInd, filepathSegments, outputPath);
+        calculateMetrics(filepathCurrDataInd, filepathCurrWeiCum, filepathCurrWeiInd, filepathSegments, outputPath, filepathCsv);
     end
 end
 
@@ -30,17 +31,24 @@ function loadAndPlotStuff(filepath)
     
 end
 
-function calculateMetrics(filepathCurrDataInd, filepathCurrWeiCum, filepathCurrWeiInd, filepathSegments, outputPath)
+function calculateMetrics(filepathCurrDataInd, filepathCurrWeiCum, filepathCurrWeiInd, filepathSegments, outputPath, filepathCsv)
     outFileSpec = filepathCurrWeiCum(end-27:end-10);
     outputPath = [outputPath outFileSpec '\'];
+    
+    outCsv = [outputPath filepathCsv];
 
     if exist(outputPath, 'dir')
         fprintf('%s detected, skipping\n', outputPath);
         return;
     end
-
+    
+    if ~exist(filepathCurrDataInd, 'file') ||  ~exist(filepathCurrWeiCum, 'file')
+        fprintf('Missing %s or %s, skipping\n', filepathCurrDataInd, filepathCurrWeiCum);
+        return;
+    end
+    
     checkMkdir(outputPath);
-
+    
     load(filepathCurrDataInd);
     load(filepathCurrWeiCum);
     
@@ -60,24 +68,24 @@ function calculateMetrics(filepathCurrDataInd, filepathCurrWeiCum, filepathCurrW
     
     for i = 1:size(traj.q, 2)
         featureLabel = ['q_' num2str(i) '_' allJointNames{i}];
-        featureCalc1(featureLabel, traj.trajT, traj.q(:, i), segmentInfo, outputPath, ['feat_q_' num2str(i)]);
+        featureCalc1(trialInfo, featureLabel, traj.trajT, traj.q(:, i), segmentInfo, outputPath, outCsv, ['feat_q_' num2str(i)]);
     end
     for i = 1:size(traj.dq, 2)
         featureLabel = ['dq_' num2str(i) '_' allJointNames{i}];
-        featureCalc1(featureLabel, traj.trajT, traj.dq(:, i), segmentInfo, outputPath, ['feat_dq_' num2str(i)]);
+        featureCalc1(trialInfo, featureLabel, traj.trajT, traj.dq(:, i), segmentInfo, outputPath, outCsv, ['feat_dq_' num2str(i)]);
     end
     for i = 1:size(traj.tau, 2)
         featureLabel = ['tau_' num2str(i) '_' allJointNames{i}];
-        featureCalc1(featureLabel, traj.trajT, traj.tau(:, i), segmentInfo, outputPath, ['feat_tau_' num2str(i)]);
+        featureCalc1(trialInfo, featureLabel, traj.trajT, traj.tau(:, i), segmentInfo, outputPath, outCsv, ['feat_tau_' num2str(i)]);
     end
     
     for i = 1:size(matSave.weights, 2)
         featureLabel = ['weights_' matData.featureLabels{i}];
-        featureCalc1(featureLabel, matSave.t, matSave.weights(:, i), segmentInfo, outputPath, ['feat_weights_' featureLabel]);
+        featureCalc1(featureLabel, matSave.t, matSave.weights(:, i), segmentInfo, outputPath, outCsv, ['feat_weights_' featureLabel]);
     end
 end
 
-function stats = featureCalc1(name, t, feature, segData, outputPath, figFile)
+function stats = featureCalc1(name, t, feature, segData, outputPath, outCsv, figFile)
 %     segmentInfo = struct2table(segData);
 %     mask = ismember(segDataTable{:,'state'}, 'Seg');
 %     segmentInfo = segData(mask);
@@ -86,13 +94,18 @@ function stats = featureCalc1(name, t, feature, segData, outputPath, figFile)
     ind_seg = 0;
 
     % calculate metrics
-     for i = 1:length(segData)
-         fprintf
+     for i = 1:length(segData) 
         currStartTime = segData(i).timeStart;
         currEndTime = segData(i).timeEnd;
         currState = segData(i).state{1};
         [~, currStartInd] = findClosestValue(currStartTime, t);
         [~, currEndInd] = findClosestValue(currEndTime, t);
+        
+        if isnan(currStartTime)
+            continue
+        end
+        
+        fprintf('Processing %f to %f - %s\n', currStartTime, currEndTime, currState);
         
         if currStartInd < 0
             currStartInd = 1;
@@ -140,14 +153,20 @@ function stats = featureCalc1(name, t, feature, segData, outputPath, figFile)
      stats.segmentStatsSeg = segmentStatsSeg;
      stats.segmentStatsRest = segmentStatsRest;
      
-     h = plotData(stats);
+     [h, Rsq2_seg, Rsq2_rest] = plotData(stats);
      figPath = [outputPath, figFile];
      saveas(h, figPath, 'png');
      saveas(h, figPath, 'fig');
      close(h);
+     
+     if ~exist(outCsv, 'file')
+         header = 'Subject,';
+     else
+         header = '';
+     end
 end
 
-function h = plotData(stats)
+function [h, Rsq2_seg, Rsq2_rest] = plotData(stats)
     h = figure('Position', [-1919 69 1920 964.8000]);
     
     segDataTable = struct2table(stats.segData);

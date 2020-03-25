@@ -21,7 +21,8 @@ function IOCAnalysis()
         filepathCurrDataInd = fullfile(basePath, currFileName);
         filepathCurrWeiCum = strrep(filepathCurrDataInd, 'mat_dataInd', 'mat_weiCum');
         filepathCurrWeiInd = strrep(filepathCurrDataInd, 'mat_dataInd', 'mat_weiInd');
-        calculateMetrics(filepathCurrDataInd, filepathCurrWeiCum, filepathCurrWeiInd, filepathSegments, outputPath);
+        filepathCsv = fullfile(outputPath, 'analysis.csv');
+        calculateMetrics(filepathCurrDataInd, filepathCurrWeiCum, filepathCurrWeiInd, filepathSegments, outputPath, filepathCsv);
     end
 end
 
@@ -30,9 +31,11 @@ function loadAndPlotStuff(filepath)
     
 end
 
-function calculateMetrics(filepathCurrDataInd, filepathCurrWeiCum, filepathCurrWeiInd, filepathSegments, outputPath)
+function calculateMetrics(filepathCurrDataInd, filepathCurrWeiCum, filepathCurrWeiInd, filepathSegments, outputPath, filepathCsv)
     outFileSpec = filepathCurrWeiCum(end-27:end-10);
     outputPath = [outputPath outFileSpec '\'];
+    
+    outCsv = [filepathCsv];
 
     if exist(outputPath, 'dir')
         fprintf('%s detected, skipping\n', outputPath);
@@ -65,24 +68,24 @@ function calculateMetrics(filepathCurrDataInd, filepathCurrWeiCum, filepathCurrW
     
     for i = 1:size(traj.q, 2)
         featureLabel = ['q_' num2str(i) '_' allJointNames{i}];
-        featureCalc1(featureLabel, traj.trajT, traj.q(:, i), segmentInfo, outputPath, ['feat_q_' num2str(i)]);
+        featureCalc1(trialInfo, featureLabel, traj.trajT, traj.q(:, i), segmentInfo, outputPath, outCsv, ['feat_q_' num2str(i)]);
     end
     for i = 1:size(traj.dq, 2)
         featureLabel = ['dq_' num2str(i) '_' allJointNames{i}];
-        featureCalc1(featureLabel, traj.trajT, traj.dq(:, i), segmentInfo, outputPath, ['feat_dq_' num2str(i)]);
+        featureCalc1(trialInfo, featureLabel, traj.trajT, traj.dq(:, i), segmentInfo, outputPath, outCsv, ['feat_dq_' num2str(i)]);
     end
     for i = 1:size(traj.tau, 2)
         featureLabel = ['tau_' num2str(i) '_' allJointNames{i}];
-        featureCalc1(featureLabel, traj.trajT, traj.tau(:, i), segmentInfo, outputPath, ['feat_tau_' num2str(i)]);
+        featureCalc1(trialInfo, featureLabel, traj.trajT, traj.tau(:, i), segmentInfo, outputPath, outCsv, ['feat_tau_' num2str(i)]);
     end
     
     for i = 1:size(matSave.weights, 2)
         featureLabel = ['weights_' matData.featureLabels{i}];
-        featureCalc1(featureLabel, matSave.t, matSave.weights(:, i), segmentInfo, outputPath, ['feat_weights_' featureLabel]);
+        featureCalc1(trialInfo, featureLabel, matSave.t, matSave.weights(:, i), segmentInfo, outputPath, outCsv, ['feat_weights_' featureLabel]);
     end
 end
 
-function stats = featureCalc1(name, t, feature, segData, outputPath, figFile)
+function stats = featureCalc1(trialInfo, name, t, feature, segData, outputPath, outCsv, figFile)
 %     segmentInfo = struct2table(segData);
 %     mask = ismember(segDataTable{:,'state'}, 'Seg');
 %     segmentInfo = segData(mask);
@@ -150,14 +153,43 @@ function stats = featureCalc1(name, t, feature, segData, outputPath, figFile)
      stats.segmentStatsSeg = segmentStatsSeg;
      stats.segmentStatsRest = segmentStatsRest;
      
-     h = plotData(stats);
+     featureParams = {'mean', 'stddev', 'rms', 'skewness', ...
+        'kurtosis', 'hurst', 'entropy', 'hjorth_activity', 'hjorth_mobility', 'hjorth_complexity', 'peakFreq'};
+     
+     [h, Rsq2_seg, Rsq2_rest] = plotData(stats, featureParams);
      figPath = [outputPath, figFile];
      saveas(h, figPath, 'png');
      saveas(h, figPath, 'fig');
      close(h);
+     
+     if ~exist(outCsv, 'file')
+         header = 'Subject,feature';
+         for i = 1:length(featureParams)
+            header = [header ',Rsq2_seq_' featureParams{i}];
+         end
+         for i = 1:length(featureParams)
+            header = [header ',Rsq2_rest_' featureParams{i}];
+         end
+         header = [header '\n'];
+     else
+         header = '';
+     end
+     
+     fid = fopen(outCsv, 'a');
+     fprintf(fid, [header]);
+     
+     fprintf(fid, '%s,%s', trialInfo.runName, name);
+     for i = 1:length(featureParams)
+         fprintf(fid, ',%f',Rsq2_seg(i));
+     end
+     for i = 1:length(featureParams)
+         fprintf(fid, ',%f',Rsq2_rest(i));
+     end
+     fprintf(fid, '\n');
+     fclose(fid);
 end
 
-function h = plotData(stats)
+function [h, Rsq2_seg, Rsq2_rest] = plotData(stats, featureParams)
     h = figure('Position', [-1919 69 1920 964.8000]);
     
     segDataTable = struct2table(stats.segData);
@@ -169,8 +201,7 @@ function h = plotData(stats)
 
     title(stats.name);
     
-    featureParams = {'mean', 'stddev', 'rms', 'skewness', ...
-        'kurtosis', 'hurst', 'entropy', 'hjorth_activity', 'hjorth_mobility', 'hjorth_complexity', 'peakFreq'};
+    
     
     for i = 1:length(featureParams)
         ax(i+1) = subplot(4, 3, i+1);
@@ -179,12 +210,12 @@ function h = plotData(stats)
         segT = [stats.segmentStatsSeg.t];
         segRaw = [stats.segmentStatsSeg.(featureParam)];
         segNorm = segRaw / max(abs(segRaw));
-        [b_seg, Rsq2_seg] = linearFit(segT', segNorm');
+        [b_seg, Rsq2_seg(i)] = linearFit(segT', segNorm');
         
         restT = [stats.segmentStatsRest.t];
         restRaw = [stats.segmentStatsRest.(featureParam)];
         restNorm = restRaw / max(abs(restRaw));
-        [b_rest, Rsq2_rest] = linearFit(restT', restNorm');
+        [b_rest, Rsq2_rest(i)] = linearFit(restT', restNorm');
        
 %         yCalc2 = X*b;
 %         plot(x,yCalc2,'--')
@@ -192,19 +223,19 @@ function h = plotData(stats)
         
         yyaxis left
         plAx(1) = plot(segT, segNorm, '-o', 'MarkerSize', 16); hold on
-        ylabel(['R2_Seg = ' num2str(Rsq2_seg, '%0.2f')]);
+        ylabel(['R2_Seg = ' num2str(Rsq2_seg(i), '%0.2f')]);
         
         yyaxis right
         plAx(2) = plot(restT,	restNorm, '-o', 'MarkerSize', 16);
-        ylabel(['R2_Res = ' num2str(Rsq2_rest, '%0.2f')]);
+        ylabel(['R2_Res = ' num2str(Rsq2_rest(i), '%0.2f')]);
         
         R_thres = 0.7;
-        if Rsq2_seg > R_thres && Rsq2_rest > R_thres
-            title([featureParam, ' (R2_Res = ' num2str(Rsq2_rest, '%0.2f') ', R2_Seg = ' num2str(Rsq2_seg, '%0.2f') ')']);
-        elseif Rsq2_seg > R_thres
-            title([featureParam, ' (R2_Seg = ' num2str(Rsq2_seg, '%0.2f') ')']);
-        elseif Rsq2_rest > R_thres
-            title([featureParam, ' (R2_Res = ' num2str(Rsq2_rest, '%0.2f') ')']);
+        if Rsq2_seg(i) > R_thres && Rsq2_rest(i) > R_thres
+            title([featureParam, ' (R2_Res = ' num2str(Rsq2_rest(i), '%0.2f') ', R2_Seg = ' num2str(Rsq2_seg(i), '%0.2f') ')']);
+        elseif Rsq2_seg(i) > R_thres
+            title([featureParam, ' (R2_Seg = ' num2str(Rsq2_seg(i), '%0.2f') ')']);
+        elseif Rsq2_rest(i) > R_thres
+            title([featureParam, ' (R2_Res = ' num2str(Rsq2_rest(i), '%0.2f') ')']);
         else
             title(featureParam);
         end
