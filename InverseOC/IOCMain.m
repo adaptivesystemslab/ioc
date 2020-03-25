@@ -4,6 +4,8 @@
 clc;
 tic;
 
+overwriteFiles = 0;
+
 %% Define internal settings
 % Jonathan's Configurations
 % configFilePath = '../Data_json/CarrenoConfig/IOC_ExpressiveData_test.json';
@@ -12,6 +14,9 @@ tic;
 configFilePath = '../Data_json/LinConfig/IOC_IITFatigue_SubjAll_startend.json';
 % configFilePath = '../Data_json/LinConfig/IOC_Healthy1.json';
 % configFilePath = '../Data_json/LinConfig/IOC_Jumping2D.json';
+
+currentDate = '20200316_fatigueEdges';
+savePath = sprintf('D:/results/fatigue_ioc01_weightsIndividual/%s/', currentDate);
 
 % Wanxin's Configurations
 % configFilePath = '../Data_json/JinConfig/Squat_IIT/IOC_IITFatigue_Test_Sub1.json';
@@ -22,14 +27,6 @@ configFilePath = '../Data_json/LinConfig/IOC_IITFatigue_SubjAll_startend.json';
 % configFilePath='../Data_json/JinConfig/KneeHipFlexion/IOC_KneeHipFlexion_Sub1.json';
 % configFilePath='../Data_json/JinConfig/SitToStand/IOC_SitToStand_Sub1.json';
 % configFilePath='../Data_json/JinConfig/Squat/IOC_Squat_Sub1.json';
-
-%% Create and/or look for folder where solutions are going to be saved
-% currentDate = datestr(datetime("now"),"yyyy_mm_dd_HH_MM_SS");
-% currentDate = 'expressiveTest';
-currentDate = '20200316_fatigueEdges';
-savePath = sprintf('../Data/IOC/%s/', currentDate);
-
-overwriteFiles = 0;
 
 %% Set up internal parameters
 % Add paths to directories with model definition and util functions
@@ -55,9 +52,9 @@ for i=1:n
     fprintf("Processing %s file \n", configFileI.runName);
     trialInfo = loadTrialInfo(configFileI, configFile, potentialBasePaths, configFilePath);
     
-    if ~strcmpi(trialInfo.runName(11:end), '3DOF_3CF_START') 
-        continue;
-    end
+%     if ~strcmpi(trialInfo.runName(11:end), '3DOF_3CF_START') 
+%         continue;
+%     end
     
     % does the target folder already exist? 
     subsavePath = fullfile(savePath, trialInfo.runName);

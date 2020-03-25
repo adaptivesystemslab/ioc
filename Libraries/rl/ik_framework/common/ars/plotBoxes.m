@@ -7,11 +7,11 @@ function [minY, maxY, h_line] = plotBoxes(segmentInfo, colorToUse, offset, minY,
     ylimVal = ylim;
     
     if ~exist('minY', 'var')
-%         minY = ylimVal(1) * 1.0005;
-%         maxY = ylimVal(2)* 1.0005;
-        maxYLim = max(abs(ylimVal))*1.0005;
-        
-        minY = -maxYLim;
+        minYLim = ylimVal(1) * 1.0005;
+        maxYLim = ylimVal(2) * 1.0005;
+%         minYLim = min(abs(ylimVal))*1.0005;
+%         maxYLim = max(abs(ylimVal))*1.0005;
+        minY =  minYLim;
         maxY =  maxYLim;
     end
     

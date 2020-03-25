@@ -1,10 +1,13 @@
 function IOCAnalysis()
     setPaths();
-    
+%     nowstr = datestr(now, 'yyyymmddHHMMSS');
+    nowstr = 'test';
+      
     basePath = 'D:\results\fatigue_ioc02_weightsAssembled\plot_20200324120157\';
     searchString = 'mat_dataInd_*.mat';
     filepathSegments = 'ManualSeg.xlsx';
-    outputPath = 'D:\results\fatigue_ioc02_weightsAssembled';
+    outputPath = ['D:\results\fatigue_ioc03_weightsPattern\plot_' nowstr '\'];
+    checkMkdir(outputPath);
     
     currBasePathDir = dir([basePath searchString]);
     for j = 1:length(currBasePathDir)
@@ -18,7 +21,7 @@ function IOCAnalysis()
         filepathCurrDataInd = fullfile(basePath, currFileName);
         filepathCurrWeiCum = strrep(filepathCurrDataInd, 'mat_dataInd', 'mat_weiCum');
         filepathCurrWeiInd = strrep(filepathCurrDataInd, 'mat_dataInd', 'mat_weiInd');
-        calculateMetrics(filepathCurrDataInd, filepathCurrWeiCum, filepathCurrWeiInd, filepathSegments);
+        calculateMetrics(filepathCurrDataInd, filepathCurrWeiCum, filepathCurrWeiInd, filepathSegments, outputPath);
     end
 end
 
@@ -27,29 +30,72 @@ function loadAndPlotStuff(filepath)
     
 end
 
-function calculateMetrics(filepathCurrDataInd, filepathCurrWeiCum, filepathCurrWeiInd, filepathSegments)
+function calculateMetrics(filepathCurrDataInd, filepathCurrWeiCum, filepathCurrWeiInd, filepathSegments, outputPath)
     load(filepathCurrDataInd);
     load(filepathCurrWeiCum);
     
     % load seg info
     trialInfo = matData.trialInfo;
     [segData, segOnlyDataTable, restOnlyDataTable] = loadSegmentInfo(filepathSegments, trialInfo);
+    segmentInfo = segData;
     
-    segmentInfo = segOnlyDataTable;
-    t = matData.t;
-    feature = matData.q(:, 1);
-    featureCalc1('q', t, feature, segmentInfo);
+    % replace trialInfo's load path
+    oldLoadPath = trialInfo.path;
+    newLoadPath = strrep(oldLoadPath, 'D:\aslab_svn\data_IK\FullBody_IIT_2017', 'D:\results\fatigue_ioc00_ik');
+    trialInfo.path = newLoadPath;
+    
+    model = getModel(trialInfo); % now need to run FK/FD to get dq and tau
+    traj = model.loadData(trialInfo);
+    allJointNames = {model.model.joints.name};
+    
+    for i = 1:size(traj.q, 2)
+        featureLabel = ['q_' num2str(i) '_' allJointNames{i}];
+        featureCalc1(featureLabel, traj.trajT, traj.q(:, i), segmentInfo, outputPath, ['feat_q_' num2str(i)]);
+    end
+    for i = 1:size(traj.dq, 2)
+        featureLabel = ['dq_' num2str(i) '_' allJointNames{i}];
+        featureCalc1(featureLabel, traj.trajT, traj.dq(:, i), segmentInfo, outputPath, ['feat_dq_' num2str(i)]);
+    end
+    for i = 1:size(traj.tau, 2)
+        featureLabel = ['tau_' num2str(i) '_' allJointNames{i}];
+        featureCalc1(featureLabel, traj.trajT, traj.tau(:, i), segmentInfo, outputPath, ['feat_tau_' num2str(i)]);
+    end
+    
+    for i = 1:size(matSave.weights, 2)
+        featureLabel = ['weights_' matData.featureLabels{i}];
+        featureCalc1(featureLabel, matSave.t, matSave.weights(:, i), segmentInfo, outputPath, ['feat_weights_' featureLabel]);
+    end
 end
 
-function stats = featureCalc1(name, t, feature, segmentInfo)
+function stats = featureCalc1(name, t, feature, segData, outputPath, figFile)
+%     segmentInfo = struct2table(segData);
+%     mask = ismember(segDataTable{:,'state'}, 'Seg');
+%     segmentInfo = segData(mask);
+
+    ind_rest = 0;
+    ind_seg = 0;
+
     % calculate metrics
-     for i = 1:length(segmentInfo)
-        currStartTime = segmentInfo(i).timeStart;
-        currEndTime = segmentInfo(i).timeEnd;
+     for i = 1:length(segData)
+        currStartTime = segData(i).timeStart;
+        currEndTime = segData(i).timeEnd;
+        currState = segData(i).state{1};
         [~, currStartInd] = findClosestValue(currStartTime, t);
         [~, currEndInd] = findClosestValue(currEndTime, t);
+        
+        if currStartInd < 0
+            currStartInd = 1;
+        end
+        
+        if currEndInd > length(feature)
+            currEndInd = length(feature);
+        end
+        
         currFeature = feature(currStartInd:currEndInd, :);
          
+        segmentStats.t = (currStartTime+currEndTime)/2;
+%         segmentStats.t = i;
+        
         segmentStats.mean = mean(currFeature);
         segmentStats.stddev = std(currFeature);
         segmentStats.rms = rms(currFeature);
@@ -63,40 +109,143 @@ function stats = featureCalc1(name, t, feature, segmentInfo)
         segmentStats.hjorth_mobility = mobility;
         segmentStats.hjorth_complexity = complexity;
         
-%         segmentStats.freq = peakFreq(currFeature);
-        segmentStatsOut(i) = segmentStats;
+        segmentStats.peakFreq = peakFreq(currFeature);
+        
+        switch currState
+            case 'Seg'
+                ind_seg = ind_seg + 1;
+                segmentStatsSeg(ind_seg) = segmentStats;
+                
+            case 'Rest'
+                ind_rest = ind_rest + 1;
+                segmentStatsRest(ind_rest) = segmentStats;
+        end
      end
     
      stats.name = name;
      stats.t = t;
      stats.feature = feature;
-     stats.segment = segmentInfo;
+     stats.segData = segData;
+     stats.segmentStatsSeg = segmentStatsSeg;
+     stats.segmentStatsRest = segmentStatsRest;
+     
+     h = plotData(stats);
+     figPath = [outputPath, figFile];
+     saveas(h, figPath, 'png');
+     saveas(h, figPath, 'fig');
+     close(h);
 end
 
-function plotData(stats)
+function h = plotData(stats)
+    h = figure('Position', [-1919 69 1920 964.8000]);
+    
+    segDataTable = struct2table(stats.segData);
+    mask = ismember(segDataTable{:,'state'}, 'Seg');
+    segOnlyDataTable = stats.segData(mask);
+   
+    mask = ismember(segDataTable{:,'state'}, 'Rest');
+    restOnlyDataTable = stats.segData(mask);
 
+    title(stats.name);
+    
+    featureParams = {'mean', 'stddev', 'rms', 'skewness', ...
+        'kurtosis', 'hurst', 'entropy', 'hjorth_activity', 'hjorth_mobility', 'hjorth_complexity', 'peakFreq'};
+    
+    for i = 1:length(featureParams)
+        ax(i+1) = subplot(4, 3, i+1);
+        featureParam = featureParams{i};
+        
+        segT = [stats.segmentStatsSeg.t];
+        segRaw = [stats.segmentStatsSeg.(featureParam)];
+        segNorm = segRaw / max(abs(segRaw));
+        [b_seg, Rsq2_seg] = linearFit(segT', segNorm');
+        
+        restT = [stats.segmentStatsRest.t];
+        restRaw = [stats.segmentStatsRest.(featureParam)];
+        restNorm = restRaw / max(abs(restRaw));
+        [b_rest, Rsq2_rest] = linearFit(restT', restNorm');
+       
+%         yCalc2 = X*b;
+%         plot(x,yCalc2,'--')
+%         legend('Data','Slope','Slope & Intercept','Location','best');
+        
+        yyaxis left
+        plAx(1) = plot(segT, segNorm, '-o', 'MarkerSize', 16); hold on
+        ylabel(['R2_Seg = ' num2str(Rsq2_seg, '%0.2f')]);
+        
+        yyaxis right
+        plAx(2) = plot(restT,	restNorm, '-o', 'MarkerSize', 16);
+        ylabel(['R2_Res = ' num2str(Rsq2_rest, '%0.2f')]);
+        
+        R_thres = 0.7;
+        if Rsq2_seg > R_thres && Rsq2_rest > R_thres
+            title([featureParam, ' (R2_Res = ' num2str(Rsq2_rest, '%0.2f') ', R2_Seg = ' num2str(Rsq2_seg, '%0.2f') ')']);
+        elseif Rsq2_seg > R_thres
+            title([featureParam, ' (R2_Seg = ' num2str(Rsq2_seg, '%0.2f') ')']);
+        elseif Rsq2_rest > R_thres
+            title([featureParam, ' (R2_Res = ' num2str(Rsq2_rest, '%0.2f') ')']);
+        else
+            title(featureParam);
+        end
+        
+%         ylim([-1 1]);
+    end
+    
+    ax(1) = subplot(4, 3, 1);
+    plot(stats.t, stats.feature);
+    plotBoxes(segOnlyDataTable, plAx(1).Color);
+    plotBoxes(restOnlyDataTable, plAx(2).Color);
+    
+    linkaxes(ax, 'x');
 end
 
-% function frqs = peakFreq(currFeature)
-% Fs = 100;
-% L = length(currFeature);             % Length of signal
-% 
-% X = currFeature;
-% Y = fft(X);
-% 
-% P2 = abs(Y/L);
-% P1 = P2(1:L/2+1);
-% P1(2:end-1) = 2*P1(2:end-1);
-% 
-% f = Fs*(0:(L/2))/L;
-% plot(f,P1) 
-% title('Single-Sided Amplitude Spectrum of X(t)')
-% xlabel('f (Hz)')
-% ylabel('|P1(f)|')
-% 
-%     freq = fft(abs(currFeature));
-%     [pks,frqs] = findpeaks(abs(currFeature),freq);
-% end
+function [b, Rsq2] = linearFit(x, y)
+    X = [ones(length(x),1) x];
+    b = X\y;
+    yCalc2 = X*b;
+    Rsq2 = 1 - sum((y - yCalc2).^2)/sum((y - mean(y)).^2);
+end
+
+function frqs = peakFreq(signal)
+%     FTsignal = fft(signal - mean(signal))/length(signal);
+%     [maxpeak, maxpeakindes] = max(abs(FTsignal)*2);
+
+    F=signal;                % Data Channel
+    Ts = 0.01;                  % Sampling Interval (s)
+    Fs = 1/Ts;                  % Sampling Frequency (Hz)
+    Fn = Fs/2;                  % Nyquist Frequency
+    F(isnan(F))=[];             % Eliminate ‘NaN’ Values First
+    LF = size(F,1);             % Length of Data Vector
+    T = linspace(0,1,LF)*Ts;    % Create Time Vector
+ 
+%     figure(1)                   % Plot Data
+%     plot(T, F)
+%     grid
+    FF = fft(F)/LF;             % Fourier Series of Data, Freq Vector
+    Fv = linspace(0,1,fix(LF/2)+1)*Fn;
+    Iv = 1:length(Fv);          % Index Vector
+   
+%     figure(2)                   % Plot FFT
+%     plot(Fv, abs(FF(Iv)))
+%     grid
+%     xlabel('Frequency (Hz)')
+%     ylabel('Amplitude')
+%     axis([0  1500    ylim])
+    x = abs(FF);
+  
+%     figure()
+    [pks, locs]=findpeaks(x(Iv));
+%     plot(Fv(locs), pks, 'or')
+    
+if ~isempty(locs)
+    frqs = Fv(locs(1));
+else
+    frqs = 0;
+end
+%     hold on;
+%     plot(x)
+%     [pks, locs]=findpeaks(x, 'MinPeakDistance',50, 'minpeakheight',0.002);
+end
 
 function [activity, mobility, complexity] = hjorthParam(currFeature)
         %% Hjorth parameters

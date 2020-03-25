@@ -24,11 +24,11 @@ function [segData, segOnlyDataTable, restOnlyDataTable] = loadSegmentInfo(filepa
 %     title(savePath);
  
     segDataTable = struct2table(segData);
-    mask = ismember(segDataTable{:,'state'}, 'Rest');
+    mask = ismember(segDataTable{:,'state'}, 'Seg');
     segOnlyDataTable = segData(mask);
 %     plotBoxes(segOnlyDataTable, [0 1 0], 0.1);
     
-%     mask = ismember(segDataTable{:,'state'}, 'Seg');
+    mask = ismember(segDataTable{:,'state'}, 'Rest');
     restOnlyDataTable = segData(mask);
 %     plotBoxes(segOnlyDataTable, [1 0 0], 0.1);
     
