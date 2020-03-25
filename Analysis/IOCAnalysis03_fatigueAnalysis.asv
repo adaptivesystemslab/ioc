@@ -1,12 +1,12 @@
 function IOCAnalysis()
     setPaths();
 %     nowstr = datestr(now, 'yyyymmddHHMMSS');
-    nowstr = 'test';
+    nowstr = '20200316_fatigueEdges';
       
-    basePath = 'D:\results\fatigue_ioc02_weightsAssembled\plot_20200324120157\';
+    basePath = ['D:\results\fatigue_ioc02_weightsAssembled\' nowstr '\'];
     searchString = 'mat_dataInd_*.mat';
     filepathSegments = 'ManualSeg.xlsx';
-    outputPath = ['D:\results\fatigue_ioc03_weightsPattern\plot_' nowstr '\'];
+    outputPath = ['D:\results\fatigue_ioc03_weightsPattern\' nowstr '\'];
     checkMkdir(outputPath);
     
     currBasePathDir = dir([basePath searchString]);
@@ -31,6 +31,16 @@ function loadAndPlotStuff(filepath)
 end
 
 function calculateMetrics(filepathCurrDataInd, filepathCurrWeiCum, filepathCurrWeiInd, filepathSegments, outputPath)
+    outFileSpec = filepathCurrWeiCum(end-27:end-10);
+    outputPath = [outputPath outFileSpec '\'];
+
+    if exist(outputPath, 'dir')
+        fprintf('%s detected, skipping\n', outputPath);
+        return;
+    end
+
+    checkMkdir(outputPath);
+
     load(filepathCurrDataInd);
     load(filepathCurrWeiCum);
     
@@ -77,6 +87,7 @@ function stats = featureCalc1(name, t, feature, segData, outputPath, figFile)
 
     % calculate metrics
      for i = 1:length(segData)
+         fprintf
         currStartTime = segData(i).timeStart;
         currEndTime = segData(i).timeEnd;
         currState = segData(i).state{1};
@@ -177,14 +188,16 @@ function h = plotData(stats)
         plAx(2) = plot(restT,	restNorm, '-o', 'MarkerSize', 16);
         ylabel(['R2_Res = ' num2str(Rsq2_rest, '%0.2f')]);
         
-        if Rsq2_seg > 0.5 && Rsq2_rest > 0.5
-             title([featureParam, ' (R2_Res,Red = ' num2str(Rsq2_rest, '%0.2f') ', ')']);
-        elseif Rsq2_seg > 0.5
-        elseif Rsq2_rest > 0.5
-            
+        R_thres = 0.7;
+        if Rsq2_seg > R_thres && Rsq2_rest > R_thres
+            title([featureParam, ' (R2_Res = ' num2str(Rsq2_rest, '%0.2f') ', R2_Seg = ' num2str(Rsq2_seg, '%0.2f') ')']);
+        elseif Rsq2_seg > R_thres
+            title([featureParam, ' (R2_Seg = ' num2str(Rsq2_seg, '%0.2f') ')']);
+        elseif Rsq2_rest > R_thres
+            title([featureParam, ' (R2_Res = ' num2str(Rsq2_rest, '%0.2f') ')']);
         else
-                title([featureParam]);
-            end
+            title(featureParam);
+        end
         
 %         ylim([-1 1]);
     end

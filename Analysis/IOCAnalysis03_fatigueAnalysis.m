@@ -3,7 +3,7 @@ function IOCAnalysis()
 %     nowstr = datestr(now, 'yyyymmddHHMMSS');
     nowstr = '20200316_fatigueEdges';
       
-    basePath = 'D:\results\fatigue_ioc02_weightsAssembled\plot_20200324120157\';
+    basePath = ['D:\results\fatigue_ioc02_weightsAssembled\' nowstr '\'];
     searchString = 'mat_dataInd_*.mat';
     filepathSegments = 'ManualSeg.xlsx';
     outputPath = ['D:\results\fatigue_ioc03_weightsPattern\' nowstr '\'];
@@ -38,9 +38,14 @@ function calculateMetrics(filepathCurrDataInd, filepathCurrWeiCum, filepathCurrW
         fprintf('%s detected, skipping\n', outputPath);
         return;
     end
-
+    
+    if ~exist(filepathCurrDataInd, 'file') ||  ~exist(filepathCurrWeiCum, 'file')
+        fprintf('Missing %s or %s, skipping\n', filepathCurrDataInd, filepathCurrWeiCum);
+        return;
+    end
+    
     checkMkdir(outputPath);
-
+    
     load(filepathCurrDataInd);
     load(filepathCurrWeiCum);
     
@@ -86,12 +91,18 @@ function stats = featureCalc1(name, t, feature, segData, outputPath, figFile)
     ind_seg = 0;
 
     % calculate metrics
-     for i = 1:length(segData)
+     for i = 1:length(segData) 
         currStartTime = segData(i).timeStart;
         currEndTime = segData(i).timeEnd;
         currState = segData(i).state{1};
         [~, currStartInd] = findClosestValue(currStartTime, t);
         [~, currEndInd] = findClosestValue(currEndTime, t);
+        
+        if isnan(currStartTime)
+            continue
+        end
+        
+        fprintf('Processing %f to %f - %s\n', currStartTime, currEndTime, currState);
         
         if currStartInd < 0
             currStartInd = 1;

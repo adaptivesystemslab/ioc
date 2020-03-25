@@ -43,20 +43,25 @@ function IOCAnalysis()
             matData = assembleData(currSubPath); 
 %             suffix = [matData.trialInfo.runName '_' matData.trialInfo.templateName]
             suffix = [matData.trialInfo.runName];
-    
             matData.t = (1:length(matData.t)) * 0.01;
+            
+            outputPathFig1 = fullfile(outputPath, ['fig_weiInd_' suffix]);
+            outputPathFig2 = fullfile(outputPath, ['fig_weiCum_' suffix]);
+            outputPathFig3 = fullfile(outputPath, ['fig_results_cumulativeRankPass_' suffix]);
+            
+            outputPathMat0 = fullfile(outputPath, ['mat_dataInd_' suffix]);
+            outputPathMat1 = fullfile(outputPath, ['mat_weiCum_' suffix]);
+            outputPathMat2 = fullfile(outputPath, ['mat_weiInd_' suffix]);
+            
+            if exist([outputPathMat1 '.mat'], 'file')
+                fprintf('%s detected, skipping\n', outputPathMat1);
+                continue;
+            end            
             
 %             try
                 % plot results
 %                 fprintf('%s\n', suffix);
-                outputPathFig1 = fullfile(outputPath, ['fig_weiInd_' suffix]);
-                outputPathFig2 = fullfile(outputPath, ['fig_weiCum_' suffix]);
-                outputPathFig3 = fullfile(outputPath, ['fig_results_cumulativeRankPass_' suffix]);
-                
-                outputPathMat0 = fullfile(outputPath, ['mat_dataInd_' suffix]);
-                outputPathMat1 = fullfile(outputPath, ['mat_weiCum_' suffix]);
-                outputPathMat2 = fullfile(outputPath, ['mat_weiInd_' suffix]);
-                
+              
                 save(outputPathMat0, 'matData');
                 outputPathCsv = fullfile(outputPath, ['csv_' suffix]);
 %                 csv_populate(matData, masterPathCsv);
@@ -679,11 +684,6 @@ function csv_populate(matData, masterPathCsv)
 end
 
 function [matSave] = plotting_cumulative(matData, outputPathFig_all, outputPathFig_rank, outputPathCsv, masterPathCsv, faceColours, outputPathMat1)
-    if exist(outputPathMat1, 'file')
-        fprintf('%s detected, skipping\n', outputPathMat1);
-        return;
-    end
-
     outputPathFig_all_overall = [outputPathFig_all '_overall'];
     outputPathFig_all_variance = [outputPathFig_all '_variance'];
     
@@ -854,11 +854,6 @@ function [weights_mean_rank, weights_var_rank, winCount_rank] = cumWeights_rankF
 end
 
 function h = plotting_individual(matData, outputPathFig, outputPathCsv, masterPathCsv, outputPathMat2)
-    if exist(outputPathMat2, 'file')
-        fprintf('%s detected, skipping\n', outputPathMat2);
-        return;
-    end
-
     % load and process data
     progressVar = matData.progress;
     minLenThres = matData.minLenThres;
