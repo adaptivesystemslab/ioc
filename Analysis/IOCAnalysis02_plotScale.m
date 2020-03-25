@@ -16,10 +16,11 @@ function IOCAnalysis()
     
     faceColours = brewermap(8, 'paired');
     
-    nowstr = datestr(now, 'yyyymmddHHMMSS');
+%     nowstr = datestr(now, 'yyyymmddHHMMSS');
+    nowstr = '20200316_fatigueEdges';
 %     basePath = 'D:\aslab_gitlab\expressive-ioc\Data\IOC\';
     basePath = 'D:\results\fatigue_ioc01_weightsIndividual\20200316_fatigueEdges\';
-    outputPath = ['D:\results\fatigue_ioc02_weightsAssembled\plot_' nowstr];
+    outputPath = ['D:\results\fatigue_ioc02_weightsAssembled\' nowstr];
     masterPathCsv = [outputPath '\a_summary.csv'];
     checkMkdir(outputPath);
     
@@ -678,6 +679,11 @@ function csv_populate(matData, masterPathCsv)
 end
 
 function [matSave] = plotting_cumulative(matData, outputPathFig_all, outputPathFig_rank, outputPathCsv, masterPathCsv, faceColours, outputPathMat1)
+    if exist(outputPathMat1, 'file')
+        fprintf('%s detected, skipping\n', outputPathMat1);
+        return;
+    end
+
     outputPathFig_all_overall = [outputPathFig_all '_overall'];
     outputPathFig_all_variance = [outputPathFig_all '_variance'];
     
@@ -848,6 +854,11 @@ function [weights_mean_rank, weights_var_rank, winCount_rank] = cumWeights_rankF
 end
 
 function h = plotting_individual(matData, outputPathFig, outputPathCsv, masterPathCsv, outputPathMat2)
+    if exist(outputPathMat2, 'file')
+        fprintf('%s detected, skipping\n', outputPathMat2);
+        return;
+    end
+
     % load and process data
     progressVar = matData.progress;
     minLenThres = matData.minLenThres;

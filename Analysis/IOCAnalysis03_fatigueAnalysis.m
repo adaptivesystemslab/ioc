@@ -1,12 +1,12 @@
 function IOCAnalysis()
     setPaths();
 %     nowstr = datestr(now, 'yyyymmddHHMMSS');
-    nowstr = 'test';
+    nowstr = '20200316_fatigueEdges';
       
     basePath = 'D:\results\fatigue_ioc02_weightsAssembled\plot_20200324120157\';
     searchString = 'mat_dataInd_*.mat';
     filepathSegments = 'ManualSeg.xlsx';
-    outputPath = ['D:\results\fatigue_ioc03_weightsPattern\plot_' nowstr '\'];
+    outputPath = ['D:\results\fatigue_ioc03_weightsPattern\' nowstr '\'];
     checkMkdir(outputPath);
     
     currBasePathDir = dir([basePath searchString]);
@@ -31,6 +31,16 @@ function loadAndPlotStuff(filepath)
 end
 
 function calculateMetrics(filepathCurrDataInd, filepathCurrWeiCum, filepathCurrWeiInd, filepathSegments, outputPath)
+    outFileSpec = filepathCurrWeiCum(end-27:end-10);
+    outputPath = [outputPath outFileSpec '\'];
+
+    if exist(outputPath, 'dir')
+        fprintf('%s detected, skipping\n', outputPath);
+        return;
+    end
+
+    checkMkdir(outputPath);
+
     load(filepathCurrDataInd);
     load(filepathCurrWeiCum);
     
