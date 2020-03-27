@@ -2,11 +2,12 @@ function IOCAnalysis()
     setPaths();
 %     nowstr = datestr(now, 'yyyymmddHHMMSS');
     nowstr = '20200316_fatigueEdges';
+    nowstr2 = '20200316_fatigueEdges';
       
     basePath = ['D:\results\fatigue_ioc02_weightsAssembled\' nowstr '\'];
     searchString = 'mat_dataInd_*.mat';
     filepathSegments = 'ManualSeg.xlsx';
-    outputPath = ['D:\results\fatigue_ioc03_weightsPattern\' nowstr '\'];
+    outputPath = ['D:\results\fatigue_ioc03_weightsPattern\' nowstr2 '\'];
     checkMkdir(outputPath);
     
     currBasePathDir = dir([basePath searchString]);
@@ -33,12 +34,14 @@ end
 
 function calculateMetrics(filepathCurrDataInd, filepathCurrWeiCum, filepathCurrWeiInd, filepathSegments, outputPath, filepathCsv)
     outFileSpec = filepathCurrWeiCum(end-27:end-10);
-    outputPath = [outputPath outFileSpec '\'];
+%     outputPath = [outputPath outFileSpec '\'];
     
+    outMat = [outputPath, 'mat_', outFileSpec, '.mat'];
     outCsv = [filepathCsv];
+    checkExistDir = dir([outputPath '\' outFileSpec]);
 
-    if exist(outputPath, 'dir')
-        fprintf('%s detected, skipping\n', outputPath);
+    if length(checkExistDir) > 0
+        fprintf('%s detected, skipping\n', outFileSpec);
         return;
     end
     
@@ -68,190 +71,371 @@ function calculateMetrics(filepathCurrDataInd, filepathCurrWeiCum, filepathCurrW
     
     for i = 1:size(traj.q, 2)
         featureLabel = ['q_' num2str(i) '_' allJointNames{i}];
-        featureCalc1(trialInfo, featureLabel, traj.trajT, traj.q(:, i), segmentInfo, outputPath, outCsv, ['feat_q_' num2str(i)]);
+        stats_q(i) = featureCalc1(trialInfo, featureLabel, traj.trajT, traj.q(:, i), segmentInfo, outputPath, outCsv, outFileSpec);
     end
     for i = 1:size(traj.dq, 2)
         featureLabel = ['dq_' num2str(i) '_' allJointNames{i}];
-        featureCalc1(trialInfo, featureLabel, traj.trajT, traj.dq(:, i), segmentInfo, outputPath, outCsv, ['feat_dq_' num2str(i)]);
+        stats_dq(i) = featureCalc1(trialInfo, featureLabel, traj.trajT, traj.dq(:, i), segmentInfo, outputPath, outCsv, outFileSpec);
     end
     for i = 1:size(traj.tau, 2)
         featureLabel = ['tau_' num2str(i) '_' allJointNames{i}];
-        featureCalc1(trialInfo, featureLabel, traj.trajT, traj.tau(:, i), segmentInfo, outputPath, outCsv, ['feat_tau_' num2str(i)]);
+        stats_tau(i) = featureCalc1(trialInfo, featureLabel, traj.trajT, traj.tau(:, i), segmentInfo, outputPath, outCsv, outFileSpec);
     end
     
     for i = 1:size(matSave.weights, 2)
         featureLabel = ['weights_' matData.featureLabels{i}];
-        featureCalc1(trialInfo, featureLabel, matSave.t, matSave.weights(:, i), segmentInfo, outputPath, outCsv, ['feat_weights_' featureLabel]);
+        stats_weights(i) = featureCalc1(trialInfo, featureLabel, matSave.t, matSave.weights(:, i), segmentInfo, outputPath, outCsv, outFileSpec);
     end
+    
+    save(outMat, 'trialInfo', 'segmentInfo', 'stats_q', 'stats_dq', 'stats_tau', 'stats_weights');
 end
 
-function stats = featureCalc1(trialInfo, name, t, feature, segData, outputPath, outCsv, figFile)
-%     segmentInfo = struct2table(segData);
-%     mask = ismember(segDataTable{:,'state'}, 'Seg');
-%     segmentInfo = segData(mask);
+function stats = featureCalc1(trialInfo, name, t, feature, segData, outputPath, outCsv, outFileSpec)
+    figFileSingleWindowSeg =  [name '_singleWindowSeg_' outFileSpec];
+    figFileSingleWindowRest =  [name '_singleWindowRest_' outFileSpec];
+    figFileMultiWindow =  [name '_multiWindow_' outFileSpec];
 
-    ind_rest = 0;
-    ind_seg = 0;
-
-    % calculate metrics
-     for i = 1:length(segData) 
-        currStartTime = segData(i).timeStart;
-        currEndTime = segData(i).timeEnd;
-        currState = segData(i).state{1};
-        [~, currStartInd] = findClosestValue(currStartTime, t);
-        [~, currEndInd] = findClosestValue(currEndTime, t);
-        
-        if isnan(currStartTime)
-            continue
-        end
-        
-        fprintf('Processing %f to %f - %s\n', currStartTime, currEndTime, currState);
-        
-        if currStartInd < 0
-            currStartInd = 1;
-        end
-        
-        if currEndInd > length(feature)
-            currEndInd = length(feature);
-        end
-        
-        currFeature = feature(currStartInd:currEndInd, :);
-         
-        segmentStats.t = (currStartTime+currEndTime)/2;
-%         segmentStats.t = i;
-        
-        segmentStats.mean = mean(currFeature);
-        segmentStats.stddev = std(currFeature);
-        segmentStats.rms = rms(currFeature);
-        segmentStats.skewness = skewness(currFeature);
-        segmentStats.kurtosis = kurtosis(currFeature);
-        segmentStats.hurst = genhurst(currFeature);
-        segmentStats.entropy = wentropy(currFeature,'shannon');
-        
-        [activity, mobility, complexity] = hjorthParam(currFeature);
-        segmentStats.hjorth_activity = activity;
-        segmentStats.hjorth_mobility = mobility;
-        segmentStats.hjorth_complexity = complexity;
-        
-        segmentStats.peakFreq = peakFreq(currFeature);
-        
-        switch currState
-            case 'Seg'
-                ind_seg = ind_seg + 1;
-                segmentStatsSeg(ind_seg) = segmentStats;
-                
-            case 'Rest'
-                ind_rest = ind_rest + 1;
-                segmentStatsRest(ind_rest) = segmentStats;
-        end
-     end
+    stats.name = name;
+    stats.t = t;
+    stats.feature = feature;
+    stats.segData = segData;
     
-     stats.name = name;
-     stats.t = t;
-     stats.feature = feature;
-     stats.segData = segData;
-     stats.segmentStatsSeg = segmentStatsSeg;
-     stats.segmentStatsRest = segmentStatsRest;
-     
-     featureParams = {'mean', 'stddev', 'rms', 'skewness', ...
-        'kurtosis', 'hurst', 'entropy', 'hjorth_activity', 'hjorth_mobility', 'hjorth_complexity', 'peakFreq'};
-     
-     [h, Rsq2_seg, Rsq2_rest] = plotData(stats, featureParams);
-     figPath = [outputPath, figFile];
-     saveas(h, figPath, 'png');
-     saveas(h, figPath, 'fig');
-     close(h);
-     
-     if ~exist(outCsv, 'file')
-         header = 'Subject,feature';
-         for i = 1:length(featureParams)
-            header = [header ',Rsq2_seq_' featureParams{i}];
-         end
-         for i = 1:length(featureParams)
-            header = [header ',Rsq2_rest_' featureParams{i}];
-         end
-         header = [header '\n'];
-     else
-         header = '';
-     end
+    % calculate metrics on single window level
+    [segmentStatsSeg_SingleWindow, segmentStatsRest_SingleWindow] = featureCalc_singleWindow(segData, t, feature);
+    
+    stats.segmentStatsSeg = segmentStatsSeg_SingleWindow;
+    stats.segmentStatsRest = segmentStatsRest_SingleWindow;
+    
+    [h_seg, h_rest, regression_seg, regression_rest] = plotData_SingleWindow(stats);
+    figPath = [outputPath, figFileSingleWindowSeg];
+    saveas(h_seg, figPath, 'png');
+    saveas(h_seg, figPath, 'fig');
+    close(h_seg);
+    figPath = [outputPath, figFileSingleWindowRest];
+    saveas(h_rest, figPath, 'png');
+    saveas(h_rest, figPath, 'fig');
+    close(h_rest);
+    
+    stats.regression_seg = regression_seg;
+    stats.regression_rest = regression_rest;
+    
+%     % calculate between window correlations
+%     [segmentStatsSeg_MultiWindow, segmentStatsRest_MultiWindow] = featureCalc_multipleWindow(segData, t, feature);
+%     
+%     stats.segmentStatsSeg_MultiWindow = segmentStatsSeg_MultiWindow;
+%     stats.segmentStatsRest_MultiWindow = segmentStatsRest_MultiWindow;
+%     
+%     featureParams_MultiWindow = {'corrcoef'};
+%     
+%     [h, Rsq2_seg_multiWindow, Rsq2_rest_multiWindow] = plotData_MultiWindow(stats, featureParams_MultiWindow);
+%     figPath = [outputPath, figFileMultiWindow];
+%     saveas(h, figPath, 'png');
+%     saveas(h, figPath, 'fig');
+%     close(h);
+    
+    if ~exist(outCsv, 'file')
+        header = 'Subject,feature';
+        for i = 1:length(regression_seg)
+            header = [header ',b_seq_' regression_seg(i).name];
+        end
+        for i = 1:length(regression_rest)
+            header = [header ',b_rest_' regression_rest(i).name];
+        end
+        for i = 1:length(regression_seg)
+            header = [header ',Rsq2_seq_' regression_seg(i).name];
+        end
+        for i = 1:length(regression_rest)
+            header = [header ',Rsq2_rest_' regression_rest(i).name];
+        end
+%         for i = 1:length(featureParams_MultiWindow)
+%             header = [header ',Rsq2_seq_' featureParams_MultiWindow{i}];
+%         end
+%         for i = 1:length(featureParams_MultiWindow)
+%             header = [header ',Rsq2_rest_' featureParams_MultiWindow{i}];
+%         end
+        header = [header '\n'];
+    else
+        header = '';
+    end
      
      fid = fopen(outCsv, 'a');
      fprintf(fid, [header]);
      
      fprintf(fid, '%s,%s', trialInfo.runName, name);
-     for i = 1:length(featureParams)
-         fprintf(fid, ',%f',Rsq2_seg(i));
+     for i = 1:length(regression_seg)
+         fprintf(fid, ',%f',regression_seg(i).b(2));
      end
-     for i = 1:length(featureParams)
-         fprintf(fid, ',%f',Rsq2_rest(i));
+     for i = 1:length(regression_rest)
+         fprintf(fid, ',%f',regression_rest(i).b(2));
+     end
+     for i = 1:length(regression_seg)
+         fprintf(fid, ',%f',regression_seg(i).Rsq2);
+     end
+     for i = 1:length(regression_rest)
+         fprintf(fid, ',%f',regression_rest(i).Rsq2);
      end
      fprintf(fid, '\n');
      fclose(fid);
 end
 
-function [h, Rsq2_seg, Rsq2_rest] = plotData(stats, featureParams)
-    h = figure('Position', [-1919 69 1920 964.8000]);
+function [segmentStatsSeg, segmentStatsRest] = featureCalc_multipleWindow(segData, t, feature)
+    comparisonInds = [];
+    comparisonLabels = {};
     
+    ind_rest = 0;
+    ind_seg = 0;
+    
+    for i = 1:length(segData)-1
+        for j = i+1:length(segData)
+            stateI = segData(i).state{1};
+            stateJ = segData(j).state{1};
+            
+            if isnan(segData(i).timeStart) || isnan(segData(j).timeStart)
+                continue
+            end
+        
+            switch stateI
+                case 'Seg'
+                    switch stateJ
+                        case 'Seg'
+                            comparisonInds = [comparisonInds; i j];
+                            comparisonLabels = [comparisonLabels 'Seg'];
+                    end
+                    
+                case 'Rest'
+                    switch stateJ
+                        case 'Rest'
+                            comparisonInds = [comparisonInds; i j];
+                            comparisonLabels = [comparisonLabels 'Rest'];
+                    end
+            end
+        end
+    end
+        
+    for i = 1:size(comparisonInds)
+        currIndPair = comparisonInds(i, :);
+        currStartTimeWin1 = segData(currIndPair(1)).timeStart;
+        currEndTimeWin1 = segData(currIndPair(1)).timeEnd;
+        currStartTimeWin2 = segData(currIndPair(2)).timeStart;
+        currEndTimeWin2 = segData(currIndPair(2)).timeEnd;
+        currState = comparisonLabels{i};
+        
+        [~, currStart1Ind] = findClosestValue(currStartTimeWin1, t);
+        [~, currEnd1Ind] = findClosestValue(currEndTimeWin1, t);
+        [~, currStart2Ind] = findClosestValue(currStartTimeWin2, t);
+        [~, currEnd2Ind] = findClosestValue(currEndTimeWin2, t);
+
+        fprintf('Processing %f to %f vs %f to %f - %s\n', currStartTimeWin1, currEndTimeWin1, currStartTimeWin2, currEndTimeWin2, currState);
+
+        if currStart1Ind < 0
+            currStart1Ind = 1;
+        end
+
+        if currEnd2Ind > length(feature)
+            currEnd2Ind = length(feature);
+        end
+
+        currFeature1Tmp = feature(currStart1Ind:currEnd1Ind, :);
+        currFeature2Tmp = feature(currStart2Ind:currEnd2Ind, :);
+        currT1Tmp = t(currStart1Ind:currEnd1Ind);
+        currT2Tmp = t(currStart2Ind:currEnd2Ind);
+        lenT1 = length(currT1Tmp)-1;
+        lenT2 = length(currT2Tmp)-1;
+        dt = mean(diff(currT1Tmp));
+        
+        % resample length to 5000
+        targetLen = 5000;
+        newDt1 = lenT1*dt/targetLen;
+        newDt2 = lenT2*dt/targetLen;
+        newT1 = [1:(targetLen-1)]*newDt1 + currT1Tmp(1);
+        newT2 = [1:(targetLen-1)]*newDt2 + currT2Tmp(1);
+        currFeature1 = interp1(currT1Tmp, currFeature1Tmp, newT1);
+        currFeature2 = interp1(currT2Tmp, currFeature2Tmp, newT2);
+        
+        segmentStats2.t1 = (currStartTimeWin1+currEndTimeWin1)/2;
+        segmentStats2.t2 = (currStartTimeWin2+currEndTimeWin2)/2;
+
+        [R, P] = corrcoef(currFeature1, currFeature2);
+        segmentStats2.corrcoef = R(2, 1);
+        
+%         pdfType = 'norm';
+%         pdf1 = pdf(pdfType, currFeature1);
+%         pdf2 = pdf(pdfType, currFeature2);
+%         kl = KLDiv(pdf1, pdf2);
+%         segmentStats2.kl = kl;
+        
+        switch currState
+            case 'Seg'
+                ind_seg = ind_seg + 1;
+                segmentStatsSeg(ind_seg) = segmentStats2; 
+
+            case 'Rest'
+                ind_rest = ind_rest + 1;
+                segmentStatsRest(ind_rest) = segmentStats2;
+        end
+    end
+end
+
+function [segmentStatsSeg, segmentStatsRest] = featureCalc_singleWindow(segData, t, feature)
+    ind_rest = 0;
+    ind_seg = 0;
+    
+    for i = 1:length(segData)
+        currStartTime = segData(i).timeStart;
+        currEndTime = segData(i).timeEnd;
+        currState = segData(i).state{1};
+        [~, currStartInd] = findClosestValue(currStartTime, t);
+        [~, currEndInd] = findClosestValue(currEndTime, t);
+
+        if isnan(currStartTime)
+            continue
+        end
+
+        fprintf('Processing %f to %f - %s\n', currStartTime, currEndTime, currState);
+
+        if currStartInd < 0
+            currStartInd = 1;
+        end
+
+        if currEndInd > length(feature)
+            currEndInd = length(feature);
+        end
+
+        currFeature = feature(currStartInd:currEndInd, :);
+        currStatsT = (currStartTime+currEndTime)/2;
+        
+        [hjorth_activity, hjorth_mobility, hjorth_complexity] = hjorthParam(currFeature);
+        
+        segmentStats(1).name = 'mean';
+        segmentStats(1).t = currStatsT;
+        segmentStats(1).val = mean(currFeature);
+        
+        segmentStats(2).name = 'stddev';
+        segmentStats(2).t = currStatsT;
+        segmentStats(2).val = std(currFeature);
+        
+        segmentStats(3).name = 'length';
+        segmentStats(3).t = currStatsT;
+        segmentStats(3).val = length(currFeature);
+        
+        segmentStats(4).name = 'skewness';
+        segmentStats(4).t = currStatsT;
+        segmentStats(4).val = skewness(currFeature);
+        
+        segmentStats(4).name = 'kurtosis';
+        segmentStats(4).t = currStatsT;
+        segmentStats(4).val = kurtosis(currFeature);
+        
+        segmentStats(5).name = 'hurst';
+        segmentStats(5).t = currStatsT;
+        segmentStats(5).val = genhurst(currFeature);
+        
+        segmentStats(6).name = 'entropy';
+        segmentStats(6).t = currStatsT;
+        segmentStats(6).val = wentropy(currFeature,'shannon');
+        
+        segmentStats(7).name = 'hjorth_activity';
+        segmentStats(7).t = currStatsT;
+        segmentStats(7).val = hjorth_activity;
+        
+        segmentStats(8).name = 'hjorth_mobility';
+        segmentStats(8).t = currStatsT;
+        segmentStats(8).val = hjorth_mobility;
+        
+        segmentStats(9).name = 'hjorth_complexity';
+        segmentStats(9).t = currStatsT;
+        segmentStats(9).val = hjorth_complexity;
+        
+        segmentStats(10).name = 'peakFreq';
+        segmentStats(10).t = currStatsT;
+        segmentStats(10).val = peakFreq(currFeature);
+
+        switch currState
+            case 'Seg'
+                ind_seg = ind_seg + 1;
+                segmentStatsSeg{ind_seg} = segmentStats; 
+
+            case 'Rest'
+                ind_rest = ind_rest + 1;
+                segmentStatsRest{ind_rest} = segmentStats;
+        end
+    end
+end
+
+function [h_seg, h_rest, regression_seg, regression_rest] = plotData_SingleWindow(stats)
+    R_thres = 0.7;
+        
     segDataTable = struct2table(stats.segData);
     mask = ismember(segDataTable{:,'state'}, 'Seg');
     segOnlyDataTable = stats.segData(mask);
    
     mask = ismember(segDataTable{:,'state'}, 'Rest');
     restOnlyDataTable = stats.segData(mask);
-
-    title(stats.name);
-    
-    
-    
-    for i = 1:length(featureParams)
+   
+    h_seg = figure('Position', [-1919 69 1920 964.8000]);
+    for i = 1:length(stats.segmentStatsSeg{1})
         ax(i+1) = subplot(4, 3, i+1);
-        featureParam = featureParams{i};
+        featureParam = stats.segmentStatsSeg{1}(i).name;
         
-        segT = [stats.segmentStatsSeg.t];
-        segRaw = [stats.segmentStatsSeg.(featureParam)];
-        segNorm = segRaw / max(abs(segRaw));
-        [b_seg, Rsq2_seg(i)] = linearFit(segT', segNorm');
+        segT = [];
+        segRaw = [];
+        for j = 1:length(stats.segmentStatsSeg)
+            segT = [segT stats.segmentStatsSeg{j}(i).t];
+            segRaw = [segRaw stats.segmentStatsSeg{j}(i).val];
+        end
+        regression_seg(i).name = featureParam;
+        [regression_seg(i).b, regression_seg(i).Rsq2, X_seg, yCalc2_seg] = linearFit(segT', segRaw');
+     
+        plAx(1) = plot(segT, segRaw, 'o', 'MarkerSize', 16); hold on
+        plot(segT, yCalc2_seg);
+        bSegStr = ['b_Seg = ' num2str(regression_seg(i).b(2), '%0.2f') ', R2_Seg = ' num2str(regression_seg(i).Rsq2, '%0.2f')];
+        ylabel(bSegStr);
         
-        restT = [stats.segmentStatsRest.t];
-        restRaw = [stats.segmentStatsRest.(featureParam)];
-        restNorm = restRaw / max(abs(restRaw));
-        [b_rest, Rsq2_rest(i)] = linearFit(restT', restNorm');
-       
-%         yCalc2 = X*b;
-%         plot(x,yCalc2,'--')
-%         legend('Data','Slope','Slope & Intercept','Location','best');
-        
-        yyaxis left
-        plAx(1) = plot(segT, segNorm, '-o', 'MarkerSize', 16); hold on
-        ylabel(['R2_Seg = ' num2str(Rsq2_seg(i), '%0.2f')]);
-        
-        yyaxis right
-        plAx(2) = plot(restT,	restNorm, '-o', 'MarkerSize', 16);
-        ylabel(['R2_Res = ' num2str(Rsq2_rest(i), '%0.2f')]);
-        
-        R_thres = 0.7;
-        if Rsq2_seg(i) > R_thres && Rsq2_rest(i) > R_thres
-            title([featureParam, ' (R2_Res = ' num2str(Rsq2_rest(i), '%0.2f') ', R2_Seg = ' num2str(Rsq2_seg(i), '%0.2f') ')']);
-        elseif Rsq2_seg(i) > R_thres
-            title([featureParam, ' (R2_Seg = ' num2str(Rsq2_seg(i), '%0.2f') ')']);
-        elseif Rsq2_rest(i) > R_thres
-            title([featureParam, ' (R2_Res = ' num2str(Rsq2_rest(i), '%0.2f') ')']);
+        if regression_seg(i).Rsq2 > R_thres
+            title([featureParam, ', ' bSegStr]);
         else
             title(featureParam);
         end
-        
-%         ylim([-1 1]);
     end
-    
     ax(1) = subplot(4, 3, 1);
     plot(stats.t, stats.feature);
     plotBoxes(segOnlyDataTable, plAx(1).Color);
-    plotBoxes(restOnlyDataTable, plAx(2).Color);
+    title([stats.name '_seg']);
+    linkaxes(ax, 'x');
     
+    h_rest = figure('Position', [-1919 69 1920 964.8000]);
+    for i = 1:length(stats.segmentStatsRest{1})
+        ax(i+1) = subplot(4, 3, i+1);
+        featureParam = stats.segmentStatsSeg{1}(i).name;
+        
+        restT = [];
+        restRaw = [];
+        for j = 1:length(stats.segmentStatsRest)
+            restT = [segT stats.segmentStatsRest{j}(i).t];
+            restRaw = [segRaw stats.segmentStatsRest{j}(i).val];
+        end
+        regression_rest(i).name = featureParam;
+        [regression_rest(i).b, regression_rest(i).Rsq2, X_rest, yCalc2_rest] = linearFit(restT', restRaw');
+       
+        plAx(2) = plot(restT,	restRaw, 'o', 'MarkerSize', 16); hold on
+        plot(restT,yCalc2_rest)
+        bRestStr = ['b_Res = ' num2str(regression_rest(i).b(2), '%0.2f') ', R2_Rest = ' num2str(regression_rest(i).Rsq2, '%0.2f')];
+        ylabel(bRestStr);
+        
+        if regression_rest(i).Rsq2 > R_thres
+            title([featureParam, ', ' bRestStr]);
+        else
+            title(featureParam);
+        end
+    end
+    ax(1) = subplot(4, 3, 1);
+    plot(stats.t, stats.feature);
+    plotBoxes(restOnlyDataTable, plAx(1).Color);
+    title([stats.name '_rest']);
     linkaxes(ax, 'x');
 end
 
-function [b, Rsq2] = linearFit(x, y)
+function [b, Rsq2, X, yCalc2] = linearFit(x, y)
     X = [ones(length(x),1) x];
     b = X\y;
     yCalc2 = X*b;
