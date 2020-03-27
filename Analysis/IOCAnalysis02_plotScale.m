@@ -58,6 +58,8 @@ function IOCAnalysis()
                 continue;
             end            
             
+            fprintf('Processing %s\n', outputPathMat1);
+            
 %             try
                 % plot results
 %                 fprintf('%s\n', suffix);
