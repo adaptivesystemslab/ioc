@@ -32,7 +32,12 @@ function IOCAnalysis()
     
     % now assemble everything into a 3D array
     for ind_subject = 1:length(cumStats)
-%         currSubj = cumStats{ind_subject};
+        currSubj = cumStats{ind_subject};
+        
+        if isempty(currSubj)
+            continue
+        end
+        
         for ind_dof = 1:length(allDofs)
 %             currStats = cumStats{ind_subject}(ind_dof);
             currFeatureTable = cumStats{ind_subject}(ind_dof).segStats_SingleWindow;
@@ -65,6 +70,10 @@ function IOCAnalysis()
                 currColour = subjectColours(ind_subjects, :);
                 currTime = featureTableSegTime{ind_dof, ind_features, ind_subjects};
                 currData = featureTableSegData{ind_dof, ind_features, ind_subjects};
+                
+                if isempty(currTime)
+                    continue
+                end
                 
                 [b(:, ind_subjects), Rsq2(ind_subjects), X, yCalc2] = linearFit(currTime, currData);
                 
