@@ -36,7 +36,7 @@ function calculateMetrics(filepathCurrDataInd, filepathCurrWeiCum, filepathCurrW
     outFileSpec = filepathCurrWeiCum(end-27:end-10);
 %     outputPath = [outputPath outFileSpec '\'];
     
-    outMat = [outputPath, 'mat_', outFileSpec, '.mat'];
+    outMat = [outputPath, '\mat\', 'mat_', outFileSpec, '.mat'];
     outCsv = [filepathCsv];
     checkExistDir = dir([outputPath '\' outFileSpec]);
 
@@ -51,6 +51,7 @@ function calculateMetrics(filepathCurrDataInd, filepathCurrWeiCum, filepathCurrW
     end
     
     checkMkdir(outputPath);
+    checkMkdir(outMat);
     
     load(filepathCurrDataInd);
     load(filepathCurrWeiCum);
@@ -95,29 +96,34 @@ function stats = featureCalc1(trialInfo, name, t, feature, segData, outputPath, 
     figFileSingleWindowRest =  [name '_singleWindowRest_' outFileSpec];
     figFileMultiWindow =  [name '_multiWindow_' outFileSpec];
 
+    figSegPath = [outputPath, '\fig\', figFileSingleWindowSeg];
+    figRestPath = [outputPath, '\fig\', figFileSingleWindowRest];
+    
+    checkMkdir(figSegPath);
+    
     stats.name = name;
     stats.t = t;
     stats.feature = feature;
     stats.segData = segData;
     
     % calculate metrics on single window level
-    [segmentStatsSeg_SingleWindow, segmentStatsRest_SingleWindow] = featureCalc_singleWindow(segData, t, feature);
+    segStats_SingleWindow= featureCalc_singleWindow(segData, t, feature);
+    stats.segStats_SingleWindow = segStats_SingleWindow;
     
-    stats.segmentStatsSeg = segmentStatsSeg_SingleWindow;
-    stats.segmentStatsRest = segmentStatsRest_SingleWindow;
+    [h_seg, h_rest, regression_singleWindow] = plotData_SingleWindow(stats);
     
-    [h_seg, h_rest, regression_seg, regression_rest] = plotData_SingleWindow(stats);
-    figPath = [outputPath, figFileSingleWindowSeg];
-    saveas(h_seg, figPath, 'png');
-    saveas(h_seg, figPath, 'fig');
-    close(h_seg);
-    figPath = [outputPath, figFileSingleWindowRest];
-    saveas(h_rest, figPath, 'png');
-    saveas(h_rest, figPath, 'fig');
+    saveas(h_seg, figSegPath, 'png');
+    saveas(h_seg, figSegPath, 'fig');
+    close(h_seg); 
+    
+    saveas(h_rest, figRestPath, 'png');
+    saveas(h_rest, figRestPath, 'fig');
     close(h_rest);
     
-    stats.regression_seg = regression_seg;
-    stats.regression_rest = regression_rest;
+    stats.regression_singleWindow = regression_singleWindow;
+    
+    % separate into seg window and rest window
+    [segOnlyDataTable, restOnlyDataTable, segMask, restMask] = sepSegRest(stats.regression_singleWindow);
     
 %     % calculate between window correlations
 %     [segmentStatsSeg_MultiWindow, segmentStatsRest_MultiWindow] = featureCalc_multipleWindow(segData, t, feature);
@@ -135,17 +141,17 @@ function stats = featureCalc1(trialInfo, name, t, feature, segData, outputPath, 
     
     if ~exist(outCsv, 'file')
         header = 'Subject,feature';
-        for i = 1:length(regression_seg)
-            header = [header ',b_seq_' regression_seg(i).name];
+        for i = 1:size(segOnlyDataTable, 1)
+            header = [header ',b_seq_' segOnlyDataTable.statType{i}];
         end
-        for i = 1:length(regression_rest)
-            header = [header ',b_rest_' regression_rest(i).name];
+        for i = 1:size(segOnlyDataTable, 1)
+            header = [header ',Rsq2_seq_' segOnlyDataTable.statType{i}];
         end
-        for i = 1:length(regression_seg)
-            header = [header ',Rsq2_seq_' regression_seg(i).name];
+        for i = 1:size(restOnlyDataTable, 1)
+            header = [header ',b_rest_' restOnlyDataTable.statType{i}];
         end
-        for i = 1:length(regression_rest)
-            header = [header ',Rsq2_rest_' regression_rest(i).name];
+        for i = 1:size(restOnlyDataTable, 1)
+            header = [header ',Rsq2_rest_' restOnlyDataTable.statType{i}];
         end
 %         for i = 1:length(featureParams_MultiWindow)
 %             header = [header ',Rsq2_seq_' featureParams_MultiWindow{i}];
@@ -162,17 +168,17 @@ function stats = featureCalc1(trialInfo, name, t, feature, segData, outputPath, 
      fprintf(fid, [header]);
      
      fprintf(fid, '%s,%s', trialInfo.runName, name);
-     for i = 1:length(regression_seg)
-         fprintf(fid, ',%f',regression_seg(i).b(2));
+     for i = 1:size(segOnlyDataTable, 1)
+         fprintf(fid, ',%f',segOnlyDataTable.b_2(i));
      end
-     for i = 1:length(regression_rest)
-         fprintf(fid, ',%f',regression_rest(i).b(2));
+     for i = 1:size(segOnlyDataTable, 1)
+         fprintf(fid, ',%f',segOnlyDataTable.Rsq2(i));
      end
-     for i = 1:length(regression_seg)
-         fprintf(fid, ',%f',regression_seg(i).Rsq2);
+     for i = 1:size(restOnlyDataTable, 1)
+         fprintf(fid, ',%f',restOnlyDataTable.b_2(i));
      end
-     for i = 1:length(regression_rest)
-         fprintf(fid, ',%f',regression_rest(i).Rsq2);
+     for i = 1:size(restOnlyDataTable, 1)
+         fprintf(fid, ',%f',restOnlyDataTable.Rsq2(i));
      end
      fprintf(fid, '\n');
      fclose(fid);
@@ -276,10 +282,7 @@ function [segmentStatsSeg, segmentStatsRest] = featureCalc_multipleWindow(segDat
     end
 end
 
-function [segmentStatsSeg, segmentStatsRest] = featureCalc_singleWindow(segData, t, feature)
-    ind_rest = 0;
-    ind_seg = 0;
-    
+function returnTable = featureCalc_singleWindow(segData, t, feature)    
     for i = 1:length(segData)
         currStartTime = segData(i).timeStart;
         currEndTime = segData(i).timeEnd;
@@ -303,143 +306,119 @@ function [segmentStatsSeg, segmentStatsRest] = featureCalc_singleWindow(segData,
 
         currFeature = feature(currStartInd:currEndInd, :);
         currStatsT = (currStartTime+currEndTime)/2;
-        
         [hjorth_activity, hjorth_mobility, hjorth_complexity] = hjorthParam(currFeature);
         
-        segmentStats(1).name = 'mean';
-        segmentStats(1).t = currStatsT;
-        segmentStats(1).val = mean(currFeature);
+        stateCell{1} = currState;
+        table_state = table(stateCell, 'VariableNames', {'segType'});
+        table_time = table(currStatsT, 'VariableNames', {'time'});
+        table_startTime = table(currStartTime, 'VariableNames', {'startTime'});
+        table_endTime = table(currEndTime, 'VariableNames', {'endTime'});
+        feature_mean = table(mean(currFeature), 'VariableNames', {'mean'});
+        feature_std = table(std(currFeature), 'VariableNames', {'stddev'});
+        feature_length = table(length(currFeature), 'VariableNames', {'length'});
+        feature_skewness = table(skewness(currFeature), 'VariableNames', {'skewness'});
+        feature_kurtosis = table(kurtosis(currFeature), 'VariableNames', {'kurtosis'});
+        feature_hurst = table(genhurst(currFeature), 'VariableNames', {'hurst'});
+        feature_entropyShannon = table(wentropy(currFeature,'shannon'), 'VariableNames', {'entropy'});
+        feature_hjorthActivity = table(hjorth_activity, 'VariableNames', {'hjorth_activity'});
+        feature_hjorthMobility = table(hjorth_mobility, 'VariableNames', {'hjorth_mobility'});
+        feature_hjorthComplexity = table(hjorth_complexity, 'VariableNames', {'hjorth_complexity'});
+        feature_freqPeak = table(peakFreq(currFeature), 'VariableNames', {'peakFreq'});
         
-        segmentStats(2).name = 'stddev';
-        segmentStats(2).t = currStatsT;
-        segmentStats(2).val = std(currFeature);
-        
-        segmentStats(3).name = 'length';
-        segmentStats(3).t = currStatsT;
-        segmentStats(3).val = length(currFeature);
-        
-        segmentStats(4).name = 'skewness';
-        segmentStats(4).t = currStatsT;
-        segmentStats(4).val = skewness(currFeature);
-        
-        segmentStats(4).name = 'kurtosis';
-        segmentStats(4).t = currStatsT;
-        segmentStats(4).val = kurtosis(currFeature);
-        
-        segmentStats(5).name = 'hurst';
-        segmentStats(5).t = currStatsT;
-        segmentStats(5).val = genhurst(currFeature);
-        
-        segmentStats(6).name = 'entropy';
-        segmentStats(6).t = currStatsT;
-        segmentStats(6).val = wentropy(currFeature,'shannon');
-        
-        segmentStats(7).name = 'hjorth_activity';
-        segmentStats(7).t = currStatsT;
-        segmentStats(7).val = hjorth_activity;
-        
-        segmentStats(8).name = 'hjorth_mobility';
-        segmentStats(8).t = currStatsT;
-        segmentStats(8).val = hjorth_mobility;
-        
-        segmentStats(9).name = 'hjorth_complexity';
-        segmentStats(9).t = currStatsT;
-        segmentStats(9).val = hjorth_complexity;
-        
-        segmentStats(10).name = 'peakFreq';
-        segmentStats(10).t = currStatsT;
-        segmentStats(10).val = peakFreq(currFeature);
-
-        switch currState
-            case 'Seg'
-                ind_seg = ind_seg + 1;
-                segmentStatsSeg{ind_seg} = segmentStats; 
-
-            case 'Rest'
-                ind_rest = ind_rest + 1;
-                segmentStatsRest{ind_rest} = segmentStats;
+        newTableRow = [table_state table_startTime table_endTime table_time feature_mean feature_std feature_length ...
+            feature_skewness feature_kurtosis feature_hurst feature_entropyShannon ...
+            feature_hjorthActivity feature_hjorthMobility feature_hjorthComplexity feature_freqPeak];
+   
+        if i == 1
+            returnTable = newTableRow;
+        else
+            returnTable = [returnTable; newTableRow];
         end
     end
 end
 
-function [h_seg, h_rest, regression_seg, regression_rest] = plotData_SingleWindow(stats)
+function [h_seg, h_rest, returnTable] = plotData_SingleWindow(stats)
     R_thres = 0.7;
         
-    segDataTable = struct2table(stats.segData);
-    mask = ismember(segDataTable{:,'state'}, 'Seg');
-    segOnlyDataTable = stats.segData(mask);
-   
-    mask = ismember(segDataTable{:,'state'}, 'Rest');
-    restOnlyDataTable = stats.segData(mask);
+    featureLabels = stats.segStats_SingleWindow.Properties.VariableNames(5:end);
+    
+    % figure out the indices of seg vs rest
+    [segOnlyDataTable, restOnlyDataTable, segMask, restMask] = sepSegRest(stats.segStats_SingleWindow);
    
     h_seg = figure('Position', [-1919 69 1920 964.8000]);
-    for i = 1:length(stats.segmentStatsSeg{1})
+    for i = 1:length(featureLabels)
         ax(i+1) = subplot(4, 3, i+1);
-        featureParam = stats.segmentStatsSeg{1}(i).name;
+        featureLabel = featureLabels{i};
         
-        segT = [];
-        segRaw = [];
-        for j = 1:length(stats.segmentStatsSeg)
-            segT = [segT stats.segmentStatsSeg{j}(i).t];
-            segRaw = [segRaw stats.segmentStatsSeg{j}(i).val];
+        segT = segOnlyDataTable.time;
+        segRaw = segOnlyDataTable.(featureLabel);
+        [b, Rsq2, X_seg, yCalc2_seg] = linearFit(segT, segRaw);
+        
+        table_state = table({'Seg'}, 'VariableName', {'segType'});
+        table_feature = table({featureLabel}, 'VariableName', {'statType'});
+        table_b1 = table(b(1), 'VariableName', {'b_1'});
+        table_b2 = table(b(2), 'VariableName', {'b_2'});
+        table_rsq2 = table(Rsq2, 'VariableName', {'Rsq2'});
+
+        newTableRow = [table_state table_feature table_b1 table_b2 table_rsq2];
+   
+        if i == 1
+            returnTable = newTableRow;
+        else
+            returnTable = [returnTable; newTableRow];
         end
-        regression_seg(i).name = featureParam;
-        [regression_seg(i).b, regression_seg(i).Rsq2, X_seg, yCalc2_seg] = linearFit(segT', segRaw');
-     
+        
         plAx(1) = plot(segT, segRaw, 'o', 'MarkerSize', 16); hold on
         plot(segT, yCalc2_seg);
-        bSegStr = ['b_Seg = ' num2str(regression_seg(i).b(2), '%0.2f') ', R2_Seg = ' num2str(regression_seg(i).Rsq2, '%0.2f')];
+        bSegStr = ['b_Seg = ' num2str(b(2), '%0.2f') ', R2_Seg = ' num2str(Rsq2, '%0.2f')];
         ylabel(bSegStr);
         
-        if regression_seg(i).Rsq2 > R_thres
-            title([featureParam, ', ' bSegStr]);
+        if Rsq2 > R_thres
+            title([featureLabel, ', ' bSegStr]);
         else
-            title(featureParam);
+            title(featureLabel);
         end
     end
     ax(1) = subplot(4, 3, 1);
     plot(stats.t, stats.feature);
-    plotBoxes(segOnlyDataTable, plAx(1).Color);
+    plotBoxes(stats.segData(segMask), plAx(1).Color);
     title([stats.name '_seg']);
     linkaxes(ax, 'x');
     
     h_rest = figure('Position', [-1919 69 1920 964.8000]);
-    for i = 1:length(stats.segmentStatsRest{1})
+    for i = 1:length(featureLabels)
         ax(i+1) = subplot(4, 3, i+1);
-        featureParam = stats.segmentStatsSeg{1}(i).name;
         
-        restT = [];
-        restRaw = [];
-        for j = 1:length(stats.segmentStatsRest)
-            restT = [segT stats.segmentStatsRest{j}(i).t];
-            restRaw = [segRaw stats.segmentStatsRest{j}(i).val];
-        end
-        regression_rest(i).name = featureParam;
-        [regression_rest(i).b, regression_rest(i).Rsq2, X_rest, yCalc2_rest] = linearFit(restT', restRaw');
-       
+        featureLabel = featureLabels{i};
+        restT = restOnlyDataTable.time;
+        restRaw = restOnlyDataTable.(featureLabel);
+        [b, Rsq2, X_rest, yCalc2_rest] = linearFit(restT, restRaw);
+        
+        table_state = table({'Rest'}, 'VariableName', {'segType'});
+        table_feature = table({featureLabel}, 'VariableName', {'statType'});
+        table_b1 = table(b(1), 'VariableName', {'b_1'});
+        table_b2 = table(b(2), 'VariableName', {'b_2'});
+        table_rsq2 = table(Rsq2, 'VariableName', {'Rsq2'});
+
+        newTableRow = [table_state table_feature table_b1 table_b2 table_rsq2];
+        returnTable = [returnTable; newTableRow];
+        
         plAx(2) = plot(restT,	restRaw, 'o', 'MarkerSize', 16); hold on
         plot(restT,yCalc2_rest)
-        bRestStr = ['b_Res = ' num2str(regression_rest(i).b(2), '%0.2f') ', R2_Rest = ' num2str(regression_rest(i).Rsq2, '%0.2f')];
+        bRestStr = ['b_Res = ' num2str(b(2), '%0.2f') ', R2_Rest = ' num2str(Rsq2, '%0.2f')];
         ylabel(bRestStr);
         
-        if regression_rest(i).Rsq2 > R_thres
-            title([featureParam, ', ' bRestStr]);
+        if Rsq2 > R_thres
+            title([featureLabel, ', ' bRestStr]);
         else
-            title(featureParam);
+            title(featureLabel);
         end
     end
     ax(1) = subplot(4, 3, 1);
     plot(stats.t, stats.feature);
-    plotBoxes(restOnlyDataTable, plAx(1).Color);
+    plotBoxes(stats.segData(restMask), plAx(1).Color);
     title([stats.name '_rest']);
     linkaxes(ax, 'x');
-end
-
-function [b, Rsq2, X, yCalc2] = linearFit(x, y)
-    X = [ones(length(x),1) x];
-    b = X\y;
-    yCalc2 = X*b;
-    Rsq2 = 1 - sum((y - yCalc2).^2)/sum((y - mean(y)).^2);
 end
 
 function frqs = peakFreq(signal)

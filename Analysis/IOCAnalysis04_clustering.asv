@@ -4,11 +4,10 @@ function IOCAnalysis()
     nowstr = '20200316_fatigueEdges';
     nowstr2 = '20200316_fatigueEdges';
       
-    basePath = ['D:\results\fatigue_ioc03_weightsPattern\' nowstr '\'];
+    basePath = ['D:\results\fatigue_ioc03_weightsPattern\' nowstr '\mat\'];
     searchString = 'mat_*_3DOF_3CF*.mat';
     outputPath = ['D:\results\fatigue_ioc04_weightsCluster\' nowstr2 '\'];
     checkMkdir(outputPath);
-    
     
     currBasePathDir = dir([basePath searchString]);
     for j = 1:length(currBasePathDir)
@@ -27,14 +26,92 @@ function IOCAnalysis()
         cumStats{subjectNum} = combinedStats;
     end
     
-    % now plot everything
-    for i = 1:length(cumStats{1})
-        h = figure('Position', [-1919 69 1920 964.8000]);
-        hold on
-        
-        for j = 1:length(cumStats)
-            currStats = cumStats{j}(i);
-            plot(
+    nSubject = length(cumStats);
+    allDofs = {cumStats{1}.name};
+    allFeatures = cumStats{1}(1).segStats_SingleWindow.Properties.VariableNames(5:end);
+    
+    % now assemble everything into a 3D array
+    for ind_subject = 1:length(cumStats)
+%         currSubj = cumStats{ind_subject};
+        for ind_dof = 1:length(allDofs)
+%             currStats = cumStats{ind_subject}(ind_dof);
+            currFeatureTable = cumStats{ind_subject}(ind_dof).segStats_SingleWindow;
+            currRegressionTable = cumStats{ind_subject}(ind_dof).regression_singleWindow;
+            [currFeatureTableSeg, currFeatureTableRest, segMask, restMask] = sepSegRest(currFeatureTable);
+            [currRegressionTableSeg, currRegressionTableRest, segMask, restMask] = sepSegRest(currRegressionTable);
+            
+            for ind_features = 1:length(allFeatures)
+                featureTableSegTime{ind_dof, ind_features, ind_subject} = currFeatureTableSeg.time;
+                featureTableSegData{ind_dof, ind_features, ind_subject} = currFeatureTableSeg.(allFeatures{ind_features});
+                
+                featureTableRestTime{ind_dof, ind_features, ind_subject} = currFeatureTableRest.time;
+                featureTableRestData{ind_dof, ind_features, ind_subject} = currFeatureTableRest.(allFeatures{ind_features});
+            end
         end
     end
+    
+    subjectColours = distinguishable_colors(nSubject);
+    
+    % then plot everything
+    for ind_dof = 1:length(allDofs)
+        for ind_features = 1:length(allFeatures)
+            figName = [allDofs{ind_dof} '_' allFeatures{ind_features} '_seg'];
+            figSavePath = fullfile(outputPath, figName);
+            
+            h = figure('Position', [-1919 69 1920 964.8000]);
+            hold on; 
+            
+            for ind_subjects = 1:nSubject
+                currColour = subjectColours(ind_subjects, :);
+                currTime = featureTableSegTime{ind_dof, ind_features, ind_subjects};
+                currData = featureTableSegData{ind_dof, ind_features, ind_subjects};
+                
+                [b(:, ind_subjects), Rsq2(ind_subjects), X, yCalc2] = linearFit(currTime, currData);
+                
+                currLabel = ['S' num2str(ind_subjects) ', b=' num2str(b(2, ind_subjects), '%0.2f'), ', R2=', num2str(Rsq2(ind_subjects), '%0.2f')];
+                
+                plot(currTime, currData, 'DisplayName', currLabel, 'Color', currColour, 'MarkerSize', 14, 'Marker', 'o', 'LineStyle', 'none');
+                ph = plot(currTime, yCalc2, 'Color', currColour);
+                ph.Annotation.LegendInformation.IconDisplayStyle = 'off';
+            end
+            
+            % what is the mean/std slope and Rsq value? 
+            meanB = mean(b(2, :));
+            stdB = std(b(2, :));
+            meanRsq = mean(Rsq2);
+            stdRsq = std(Rsq2);
+            
+            titleStr = [allDofs{ind_dof} '_' allFeatures{ind_features}, ...
+                ', b=' num2str(meanB, '%0.2f') '\pm' num2str(stdB, '%0.2f'), ...
+                ', R2=', num2str(meanRsq, '%0.2f') '\pm' num2str(stdRsq, '%0.2f')];
+            title(titleStr);
+            
+            legend('show');
+            
+            saveas(h, figSavePath, 'png');
+            saveas(h, figSavePath, 'fig');
+            close(h);
+        end
+    end
+ 
+    
+%      h = figure('Position', [-1919 69 1920 964.8000]);
+%         hold on
+    
+%     for ind_dof = 1:length(cumStats{1})
+%        
+%         
+%         data = [];
+%         for ind_subject = 1:length(cumStats)
+%             c
+% 
+%             for ind_segment = 1:length(currStats.segmentStatsSeg)
+%                 data = [data currStats.segmentStatsSeg{ind_segment}.];
+%             end
+%             
+%         end
+%     end
 end
+
+
+

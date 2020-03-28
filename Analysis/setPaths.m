@@ -1,5 +1,6 @@
 % set up the environmental pathing
 addpath(genpath('../InverseOC/'));
+addpath(genpath('Common/'));
 
 addpath(genpath('../Common/'));
 addpath(genpath('../Utils/')); 
