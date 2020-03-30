@@ -5,9 +5,9 @@ function IOCAnalysis()
     nowstr2 = '20200316_fatigueEdges';
       
     basePath = ['D:\results\fatigue_ioc03_weightsPattern\' nowstr '\mat\'];
-    searchString = 'mat_*_3DOF_3CF*.mat';
+    searchString = 'mat_*_3DOF_4CF*.mat';
     outputPath = ['D:\results\fatigue_ioc04_weightsCluster\' nowstr2 '\'];
-    outCsv = [outputPath 'analysis.csv'];
+    outCsv = [outputPath 'analysis_4CF.csv'];
     checkMkdir(outputPath);
     
     currBasePathDir = dir([basePath searchString]);
@@ -69,7 +69,7 @@ function IOCAnalysis()
             h = figure('Position', [-1919 69 1920 964.8000]);
             hold on; 
             
-            bSign = zeros(2, 1);
+            bSign = zeros(3, 1);
             
             for ind_subjects = 1:nSubject
                 currColour = subjectColours(ind_subjects, :);
@@ -82,12 +82,14 @@ function IOCAnalysis()
                 
                 [b(:, ind_subjects), Rsq2(ind_subjects), X, yCalc2] = linearFit(currTime, currData);
                 
-                if sign(b(2, ind_subjects)) > 0
+                signageB = sign(b(2, ind_subjects));
+                if signageB > 0
                     bSign(1) = bSign(1) + 1;
-                else
+                elseif signageB < 0
                     bSign(2) = bSign(2) + 1;
+                elseif isnan(b(2, ind_subjects))
+                    bSign(3) = bSign(3) + 1;
                 end
-                
                 
                 currLabel = ['S' num2str(ind_subjects) ', b=' num2str(b(2, ind_subjects), '%0.4f'), ', R2=', num2str(Rsq2(ind_subjects), '%0.4f')];
                 
@@ -115,7 +117,7 @@ function IOCAnalysis()
             close(h);
             
             if ~exist(outCsv, 'file')
-                header = 'dof,feature,b_mean,b_std,bsign_plus,bsign_minus,R2_mean,R2_std';
+                header = 'dof,feature,b_mean,b_std,bsign_plus,bsign_minus,bsign_nan,R2_mean,R2_std';
                 header = [header '\n'];
             else
                 header = '';
@@ -126,7 +128,7 @@ function IOCAnalysis()
             
             fprintf(fid, '%s,%s', currDof, currFeature);
             fprintf(fid, ',%f,%f', meanB, stdB);
-            fprintf(fid, ',%f,%f', bSign(1), bSign(2));
+            fprintf(fid, ',%f,%f,%f', bSign(1), bSign(2), bSign(3));
             fprintf(fid, ',%f,%f', meanRsq, stdRsq);
             
             fprintf(fid, '\n');
