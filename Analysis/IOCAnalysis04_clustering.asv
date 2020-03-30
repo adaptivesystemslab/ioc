@@ -7,6 +7,7 @@ function IOCAnalysis()
     basePath = ['D:\results\fatigue_ioc03_weightsPattern\' nowstr '\mat\'];
     searchString = 'mat_*_3DOF_3CF*.mat';
     outputPath = ['D:\results\fatigue_ioc04_weightsCluster\' nowstr2 '\'];
+    outCsv = [outputPath 'analysis.csv'];
     checkMkdir(outputPath);
     
     currBasePathDir = dir([basePath searchString]);
@@ -32,7 +33,12 @@ function IOCAnalysis()
     
     % now assemble everything into a 3D array
     for ind_subject = 1:length(cumStats)
-%         currSubj = cumStats{ind_subject};
+        currSubj = cumStats{ind_subject};
+        
+        if isempty(currSubj)
+            continue
+        end
+        
         for ind_dof = 1:length(allDofs)
 %             currStats = cumStats{ind_subject}(ind_dof);
             currFeatureTable = cumStats{ind_subject}(ind_dof).segStats_SingleWindow;
@@ -61,14 +67,27 @@ function IOCAnalysis()
             h = figure('Position', [-1919 69 1920 964.8000]);
             hold on; 
             
+            bSign = zeros(2, 1);
+            
             for ind_subjects = 1:nSubject
                 currColour = subjectColours(ind_subjects, :);
                 currTime = featureTableSegTime{ind_dof, ind_features, ind_subjects};
                 currData = featureTableSegData{ind_dof, ind_features, ind_subjects};
                 
+                if isempty(currTime)
+                    continue
+                end
+                
                 [b(:, ind_subjects), Rsq2(ind_subjects), X, yCalc2] = linearFit(currTime, currData);
                 
-                currLabel = ['S' num2str(ind_subjects) ', b=' num2str(b(2, ind_subjects), '%0.2f'), ', R2=', num2str(Rsq2(ind_subjects), '%0.2f')];
+                if sign(b(2, ind_subjects)) > 0
+                    bSign(1) = bSign(1) + 1;
+                else
+                    bSign(2) = bSign(2) + 1;
+                end
+                
+                
+                currLabel = ['S' num2str(ind_subjects) ', b=' num2str(b(2, ind_subjects), '%0.4f'), ', R2=', num2str(Rsq2(ind_subjects), '%0.4f')];
                 
                 plot(currTime, currData, 'DisplayName', currLabel, 'Color', currColour, 'MarkerSize', 14, 'Marker', 'o', 'LineStyle', 'none');
                 ph = plot(currTime, yCalc2, 'Color', currColour);
@@ -82,8 +101,9 @@ function IOCAnalysis()
             stdRsq = std(Rsq2);
             
             titleStr = [allDofs{ind_dof} '_' allFeatures{ind_features}, ...
-                ', b=' num2str(meanB, '%0.2f') '\pm' num2str(stdB, '%0.2f'), ...
-                ', R2=', num2str(meanRsq, '%0.2f') '\pm' num2str(stdRsq, '%0.2f')];
+                ', b=' num2str(meanB, '%0.4f') '\pm' num2str(stdB, '%0.4f'), ...
+                ', bsign=(+)' num2str(bSign(1), '%0.4f') ', (-)' num2str(bSign(2), '%0.4f'), ...
+                ', R2=', num2str(meanRsq, '%0.4f') '\pm' num2str(stdRsq, '%0.2f')];
             title(titleStr);
             
             legend('show');
@@ -91,6 +111,52 @@ function IOCAnalysis()
             saveas(h, figSavePath, 'png');
             saveas(h, figSavePath, 'fig');
             close(h);
+            
+            
+            
+            if ~exist(outCsv, 'file')
+        header = 'Subject,feature';
+        for i = 1:size(segOnlyDataTable, 1)
+            header = [header ',b_seq_' segOnlyDataTable.statType{i}];
+        end
+        for i = 1:size(segOnlyDataTable, 1)
+            header = [header ',Rsq2_seq_' segOnlyDataTable.statType{i}];
+        end
+        for i = 1:size(restOnlyDataTable, 1)
+            header = [header ',b_rest_' restOnlyDataTable.statType{i}];
+        end
+        for i = 1:size(restOnlyDataTable, 1)
+            header = [header ',Rsq2_rest_' restOnlyDataTable.statType{i}];
+        end
+%         for i = 1:length(featureParams_MultiWindow)
+%             header = [header ',Rsq2_seq_' featureParams_MultiWindow{i}];
+%         end
+%         for i = 1:length(featureParams_MultiWindow)
+%             header = [header ',Rsq2_rest_' featureParams_MultiWindow{i}];
+%         end
+        header = [header '\n'];
+    else
+        header = '';
+    end
+     
+     fid = fopen(outCsv, 'a');
+     fprintf(fid, [header]);
+     
+     fprintf(fid, '%s,%s', trialInfo.runName, name);
+     for i = 1:size(segOnlyDataTable, 1)
+         fprintf(fid, ',%f',segOnlyDataTable.b_2(i));
+     end
+     for i = 1:size(segOnlyDataTable, 1)
+         fprintf(fid, ',%f',segOnlyDataTable.Rsq2(i));
+     end
+     for i = 1:size(restOnlyDataTable, 1)
+         fprintf(fid, ',%f',restOnlyDataTable.b_2(i));
+     end
+     for i = 1:size(restOnlyDataTable, 1)
+         fprintf(fid, ',%f',restOnlyDataTable.Rsq2(i));
+     end
+     fprintf(fid, '\n');
+     fclose(fid);
         end
     end
  
@@ -112,6 +178,4 @@ function IOCAnalysis()
 %         end
 %     end
 end
-
-
 

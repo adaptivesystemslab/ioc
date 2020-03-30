@@ -7,6 +7,7 @@ function IOCAnalysis()
     basePath = ['D:\results\fatigue_ioc03_weightsPattern\' nowstr '\mat\'];
     searchString = 'mat_*_3DOF_3CF*.mat';
     outputPath = ['D:\results\fatigue_ioc04_weightsCluster\' nowstr2 '\'];
+    outCsv = [outputPath 'analysis.csv'];
     checkMkdir(outputPath);
     
     currBasePathDir = dir([basePath searchString]);
@@ -60,11 +61,15 @@ function IOCAnalysis()
     % then plot everything
     for ind_dof = 1:length(allDofs)
         for ind_features = 1:length(allFeatures)
-            figName = [allDofs{ind_dof} '_' allFeatures{ind_features} '_seg'];
+            currDof = allDofs{ind_dof};
+            currFeature = allFeatures{ind_features};
+            figName = [currDof '_' currFeature '_seg'];
             figSavePath = fullfile(outputPath, figName);
             
             h = figure('Position', [-1919 69 1920 964.8000]);
             hold on; 
+            
+            bSign = zeros(2, 1);
             
             for ind_subjects = 1:nSubject
                 currColour = subjectColours(ind_subjects, :);
@@ -76,6 +81,13 @@ function IOCAnalysis()
                 end
                 
                 [b(:, ind_subjects), Rsq2(ind_subjects), X, yCalc2] = linearFit(currTime, currData);
+                
+                if sign(b(2, ind_subjects)) > 0
+                    bSign(1) = bSign(1) + 1;
+                else
+                    bSign(2) = bSign(2) + 1;
+                end
+                
                 
                 currLabel = ['S' num2str(ind_subjects) ', b=' num2str(b(2, ind_subjects), '%0.4f'), ', R2=', num2str(Rsq2(ind_subjects), '%0.4f')];
                 
@@ -90,8 +102,9 @@ function IOCAnalysis()
             meanRsq = mean(Rsq2);
             stdRsq = std(Rsq2);
             
-            titleStr = [allDofs{ind_dof} '_' allFeatures{ind_features}, ...
+            titleStr = [currDof '_' currFeature, ...
                 ', b=' num2str(meanB, '%0.4f') '\pm' num2str(stdB, '%0.4f'), ...
+                ', bsign=(+)' num2str(bSign(1), '%0.4f') ', (-)' num2str(bSign(2), '%0.4f'), ...
                 ', R2=', num2str(meanRsq, '%0.4f') '\pm' num2str(stdRsq, '%0.2f')];
             title(titleStr);
             
@@ -100,6 +113,24 @@ function IOCAnalysis()
             saveas(h, figSavePath, 'png');
             saveas(h, figSavePath, 'fig');
             close(h);
+            
+            if ~exist(outCsv, 'file')
+                header = 'dof,feature,b_mean,b_std,bsign_plus,bsign_minus,R2_mean,R2_std';
+                header = [header '\n'];
+            else
+                header = '';
+            end
+            
+            fid = fopen(outCsv, 'a');
+            fprintf(fid, [header]);
+            
+            fprintf(fid, '%s,%s', currDof, currFeature);
+            fprintf(fid, ',%f,%f', meanB, stdB);
+            fprintf(fid, ',%f,%f', bSign(1), bSign(2));
+            fprintf(fid, ',%f,%f', meanRsq, stdRsq);
+            
+            fprintf(fid, '\n');
+            fclose(fid);
         end
     end
  
@@ -121,6 +152,4 @@ function IOCAnalysis()
 %         end
 %     end
 end
-
-
 
