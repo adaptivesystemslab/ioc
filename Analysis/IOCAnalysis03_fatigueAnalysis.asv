@@ -141,7 +141,6 @@ function stats = featureCalc1(trialInfo, name, t, feature, segData, outputPath, 
     stats.segStats_MultipleWindow = segStats_MultipleWindow;
     
     [h_segMultiple, h_restMultiple, regression_multipleWindow] = plotData_MultipleWindow(stats);
-    stats.regression_multipleWindow = regression_multipleWindow;
     saveas(h_segMultiple, figSegMultiplePath, 'png');
     saveas(h_segMultiple, figSegMultiplePath, 'fig');
     close(h_segMultiple);
@@ -154,7 +153,6 @@ function stats = featureCalc1(trialInfo, name, t, feature, segData, outputPath, 
     stats.segStats_SingleWindow = segStats_SingleWindow;
     
     [h_segSingle, h_restSingle, regression_singleWindow] = plotData_SingleWindow(stats);
-    stats.regression_singleWindow = regression_singleWindow;
     saveas(h_segSingle, figSegSinglePath, 'png');
     saveas(h_segSingle, figSegSinglePath, 'fig');
     close(h_segSingle); 
@@ -162,7 +160,7 @@ function stats = featureCalc1(trialInfo, name, t, feature, segData, outputPath, 
     saveas(h_restSingle, figRestSinglePath, 'fig');
     close(h_restSingle);
     
-    
+    stats.regression_singleWindow = regression_singleWindow;
     
     % separate into seg window and rest window
     [segOnlySingleDataTable, restOnlySingleDataTable, segMask, restMask] = sepSegRest(stats.regression_singleWindow);
@@ -447,7 +445,7 @@ function [h_seg, h_rest, returnTable] = plotData_SingleWindow(stats)
    
     h_seg = figure('Position', [-1919 69 1920 964.8000]);
     for i = 1:length(featureLabels)
-        ax(i+1) = subplot(4, 5, i+1);
+        ax(i+1) = subplot(4, 4, i+1);
         featureLabel = featureLabels{i};
         
         segT = segOnlyDataTable.time;
@@ -479,7 +477,7 @@ function [h_seg, h_rest, returnTable] = plotData_SingleWindow(stats)
             title(featureLabel);
         end
     end
-    ax(1) = subplot(4, 5, 1);
+    ax(1) = subplot(4, 4, 1);
     plot(stats.t, stats.feature);
     plotBoxes(stats.segData(segMask), plAx(1).Color);
     title([stats.name '_seg']);
@@ -487,7 +485,7 @@ function [h_seg, h_rest, returnTable] = plotData_SingleWindow(stats)
     
     h_rest = figure('Position', [-1919 69 1920 964.8000]);
     for i = 1:length(featureLabels)
-        ax(i+1) = subplot(4, 5, i+1);
+        ax(i+1) = subplot(4, 3, i+1);
         
         featureLabel = featureLabels{i};
         restT = restOnlyDataTable.time;
@@ -514,7 +512,7 @@ function [h_seg, h_rest, returnTable] = plotData_SingleWindow(stats)
             title(featureLabel);
         end
     end
-    ax(1) = subplot(4, 5, 1);
+    ax(1) = subplot(4, 3, 1);
     plot(stats.t, stats.feature);
     plotBoxes(stats.segData(restMask), plAx(1).Color);
     title([stats.name '_rest']);
@@ -568,11 +566,11 @@ function [h_seg, h_rest, returnTable] = plotData_MultipleWindow(stats)
     segDataFirst.timeStart = segOnlyDataTable.startTime1(1);
     segDataFirst.timeEnd = segOnlyDataTable.endTime1(1);
     for i = 1:length(segMask)
-        segDataSecond(i).timeStart = segOnlyDataTable.startTime2(i);
-        segDataSecond(i).timeEnd = segOnlyDataTable.endTime2(i);
+        segDataSecond(i).timeStart = segOnlyDataTable.startTime2(1);
+        segDataSecond(i).timeEnd = segOnlyDataTable.endTime2(1);
     end
     plotBoxes(segDataFirst, plAx(1).Color);
-    plotBoxes(segDataSecond, [1 0 0]);
+    plotBoxes(segDataFirst, [1 0 0]);
     title([stats.name '_seg']);
     linkaxes(ax, 'x');
     
@@ -607,14 +605,7 @@ function [h_seg, h_rest, returnTable] = plotData_MultipleWindow(stats)
     end
     ax(1) = subplot(4, 3, 1);
     plot(stats.t, stats.feature);
-    segDataFirst.timeStart = restOnlyDataTable.startTime1(1);
-    segDataFirst.timeEnd = restOnlyDataTable.endTime1(1);
-    for i = 1:length(restMask)
-        segDataSecond(i).timeStart = restOnlyDataTable.startTime2(i);
-        segDataSecond(i).timeEnd = restOnlyDataTable.endTime2(i);
-    end
-    plotBoxes(segDataFirst, plAx(1).Color);
-    plotBoxes(segDataSecond, [1 0 0]);
+    plotBoxes(stats.segData(restMask), plAx(1).Color);
     title([stats.name '_rest']);
     linkaxes(ax, 'x');
 end

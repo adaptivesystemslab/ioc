@@ -61,7 +61,9 @@ function IOCAnalysis()
     % then plot everything
     for ind_dof = 1:length(allDofs)
         for ind_features = 1:length(allFeatures)
-            figName = [allDofs{ind_dof} '_' allFeatures{ind_features} '_seg'];
+            currDof = allDofs{ind_dof};
+            currFeature = allFeatures{ind_features};
+            figName = [currDof '_' currFeature '_seg'];
             figSavePath = fullfile(outputPath, figName);
             
             h = figure('Position', [-1919 69 1920 964.8000]);
@@ -80,6 +82,7 @@ function IOCAnalysis()
                 
                 [b(:, ind_subjects), Rsq2(ind_subjects), X, yCalc2] = linearFit(currTime, currData);
                 
+                signageB = sign(b(2, ind_subjects))
                 if sign(b(2, ind_subjects)) > 0
                     bSign(1) = bSign(1) + 1;
                 else
@@ -100,7 +103,7 @@ function IOCAnalysis()
             meanRsq = mean(Rsq2);
             stdRsq = std(Rsq2);
             
-            titleStr = [allDofs{ind_dof} '_' allFeatures{ind_features}, ...
+            titleStr = [currDof '_' currFeature, ...
                 ', b=' num2str(meanB, '%0.4f') '\pm' num2str(stdB, '%0.4f'), ...
                 ', bsign=(+)' num2str(bSign(1), '%0.4f') ', (-)' num2str(bSign(2), '%0.4f'), ...
                 ', R2=', num2str(meanRsq, '%0.4f') '\pm' num2str(stdRsq, '%0.2f')];
@@ -112,51 +115,23 @@ function IOCAnalysis()
             saveas(h, figSavePath, 'fig');
             close(h);
             
-            
-            
             if ~exist(outCsv, 'file')
-        header = 'Subject,feature';
-        for i = 1:size(segOnlyDataTable, 1)
-            header = [header ',b_seq_' segOnlyDataTable.statType{i}];
-        end
-        for i = 1:size(segOnlyDataTable, 1)
-            header = [header ',Rsq2_seq_' segOnlyDataTable.statType{i}];
-        end
-        for i = 1:size(restOnlyDataTable, 1)
-            header = [header ',b_rest_' restOnlyDataTable.statType{i}];
-        end
-        for i = 1:size(restOnlyDataTable, 1)
-            header = [header ',Rsq2_rest_' restOnlyDataTable.statType{i}];
-        end
-%         for i = 1:length(featureParams_MultiWindow)
-%             header = [header ',Rsq2_seq_' featureParams_MultiWindow{i}];
-%         end
-%         for i = 1:length(featureParams_MultiWindow)
-%             header = [header ',Rsq2_rest_' featureParams_MultiWindow{i}];
-%         end
-        header = [header '\n'];
-    else
-        header = '';
-    end
-     
-     fid = fopen(outCsv, 'a');
-     fprintf(fid, [header]);
-     
-     fprintf(fid, '%s,%s', trialInfo.runName, name);
-     for i = 1:size(segOnlyDataTable, 1)
-         fprintf(fid, ',%f',segOnlyDataTable.b_2(i));
-     end
-     for i = 1:size(segOnlyDataTable, 1)
-         fprintf(fid, ',%f',segOnlyDataTable.Rsq2(i));
-     end
-     for i = 1:size(restOnlyDataTable, 1)
-         fprintf(fid, ',%f',restOnlyDataTable.b_2(i));
-     end
-     for i = 1:size(restOnlyDataTable, 1)
-         fprintf(fid, ',%f',restOnlyDataTable.Rsq2(i));
-     end
-     fprintf(fid, '\n');
-     fclose(fid);
+                header = 'dof,feature,b_mean,b_std,bsign_plus,bsign_minus,R2_mean,R2_std';
+                header = [header '\n'];
+            else
+                header = '';
+            end
+            
+            fid = fopen(outCsv, 'a');
+            fprintf(fid, [header]);
+            
+            fprintf(fid, '%s,%s', currDof, currFeature);
+            fprintf(fid, ',%f,%f', meanB, stdB);
+            fprintf(fid, ',%f,%f', bSign(1), bSign(2));
+            fprintf(fid, ',%f,%f', meanRsq, stdRsq);
+            
+            fprintf(fid, '\n');
+            fclose(fid);
         end
     end
  

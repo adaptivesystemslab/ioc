@@ -82,9 +82,10 @@ function IOCAnalysis()
                 
                 [b(:, ind_subjects), Rsq2(ind_subjects), X, yCalc2] = linearFit(currTime, currData);
                 
-                if sign(b(2, ind_subjects)) > 0
+                signageB = sign(b(2, ind_subjects))
+                if signageB > 0
                     bSign(1) = bSign(1) + 1;
-                else
+                elseif signageB < 0
                     bSign(2) = bSign(2) + 1;
                 end
                 
