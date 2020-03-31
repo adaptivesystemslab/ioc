@@ -2,7 +2,7 @@ function IOCAnalysis()
     setPaths();
 %     nowstr = datestr(now, 'yyyymmddHHMMSS');
     nowstr = '20200316_fatigueEdges';
-    nowstr2 = '20200316_fatigueEdges';
+    nowstr2 = '20200316_fatigueEdges_4CF';
       
     basePath = ['D:\results\fatigue_ioc03_weightsPattern\' nowstr '\mat\'];
     searchString = 'mat_*_3DOF_4CF*.mat';
@@ -23,14 +23,13 @@ function IOCAnalysis()
         load(currFullPath);
         
         subjectNum = str2num(trialInfo.runName(8:9));
-        combinedStats = [stats_q stats_dq stats_tau stats_weights];
+        combinedStats = [stats_q stats_dq stats_tau stats_dtau stats_weights stats_dweights];
         cumStats{subjectNum} = combinedStats;
     end
     
     nSubject = length(cumStats);
     allDofs = {cumStats{1}.name};
-    allFeatures = cumStats{1}(1).segStats_SingleWindow.Properties.VariableNames(5:end);
-    
+    allFeaturesSingle = cumStats{1}(1).segStats_SingleWindow.Properties.VariableNames(5:end);
     % now assemble everything into a 3D array
     for ind_subject = 1:length(cumStats)
         currSubj = cumStats{ind_subject};
@@ -46,24 +45,59 @@ function IOCAnalysis()
             [currFeatureTableSeg, currFeatureTableRest, segMask, restMask] = sepSegRest(currFeatureTable);
             [currRegressionTableSeg, currRegressionTableRest, segMask, restMask] = sepSegRest(currRegressionTable);
             
-            for ind_features = 1:length(allFeatures)
-                featureTableSegTime{ind_dof, ind_features, ind_subject} = currFeatureTableSeg.time;
-                featureTableSegData{ind_dof, ind_features, ind_subject} = currFeatureTableSeg.(allFeatures{ind_features});
+            for ind_features = 1:length(allFeaturesSingle)
+                featureTableSegTimeSingle{ind_dof, ind_features, ind_subject} = currFeatureTableSeg.time;
+                featureTableSegDataSingle{ind_dof, ind_features, ind_subject} = currFeatureTableSeg.(allFeaturesSingle{ind_features});
                 
-                featureTableRestTime{ind_dof, ind_features, ind_subject} = currFeatureTableRest.time;
-                featureTableRestData{ind_dof, ind_features, ind_subject} = currFeatureTableRest.(allFeatures{ind_features});
+                featureTableRestTimeSingle{ind_dof, ind_features, ind_subject} = currFeatureTableRest.time;
+                featureTableRestDataSingle{ind_dof, ind_features, ind_subject} = currFeatureTableRest.(allFeaturesSingle{ind_features});
             end
         end
     end
     
+    allFeaturesMultiple = cumStats{1}(1).segStats_MultipleWindow.Properties.VariableNames(8:end);
+    % now assemble everything into a 3D array
+    for ind_subject = 1:length(cumStats)
+        currSubj = cumStats{ind_subject};
+        
+        if isempty(currSubj)
+            continue
+        end
+        
+        for ind_dof = 1:length(allDofs)
+            %             currStats = cumStats{ind_subject}(ind_dof);
+            currFeatureTable = cumStats{ind_subject}(ind_dof).segStats_MultipleWindow;
+            currRegressionTable = cumStats{ind_subject}(ind_dof).segStats_MultipleWindow;
+            [currFeatureTableSeg, currFeatureTableRest, segMask, restMask] = sepSegRest(currFeatureTable);
+            [currRegressionTableSeg, currRegressionTableRest, segMask, restMask] = sepSegRest(currRegressionTable);
+            
+            for ind_features = 1:length(allFeaturesMultiple)
+                featureTableSegTimeMultiple{ind_dof, ind_features, ind_subject} = currFeatureTableSeg.time2;
+                featureTableSegDataMultiple{ind_dof, ind_features, ind_subject} = currFeatureTableSeg.(allFeaturesMultiple{ind_features});
+                
+                featureTableRestTimeMultiple{ind_dof, ind_features, ind_subject} = currFeatureTableRest.time2;
+                featureTableRestDataMultiple{ind_dof, ind_features, ind_subject} = currFeatureTableRest.(allFeaturesMultiple{ind_features});
+            end
+        end
+    end
+    
+    
+    
+    plotStuff('SingleSeg', allDofs, allFeaturesSingle, nSubject, featureTableSegTimeSingle, featureTableSegDataSingle, outCsv, outputPath);
+    plotStuff('SingleRest', allDofs, allFeaturesSingle, nSubject, featureTableRestTimeSingle, featureTableRestDataSingle, outCsv, outputPath);
+    plotStuff('MultipleSeg', allDofs, allFeaturesMultiple, nSubject, featureTableSegTimeMultiple, featureTableSegDataMultiple, outCsv, outputPath);
+    plotStuff('MultipleRest', allDofs, allFeaturesMultiple, nSubject, featureTableRestTimeMultiple, featureTableRestDataMultiple, outCsv, outputPath);
+end
+
+function plotStuff(typeLabel, allDofs, allFeaturesSingle, nSubject, featureTableSegTime, featureTableSegData, outCsv, outputPath) 
     subjectColours = distinguishable_colors(nSubject);
     
     % then plot everything
     for ind_dof = 1:length(allDofs)
-        for ind_features = 1:length(allFeatures)
+        for ind_features = 1:length(allFeaturesSingle)
             currDof = allDofs{ind_dof};
-            currFeature = allFeatures{ind_features};
-            figName = [currDof '_' currFeature '_seg'];
+            currFeature = allFeaturesSingle{ind_features};
+            figName = [typeLabel '_' currDof '_' currFeature];
             figSavePath = fullfile(outputPath, figName);
             
             h = figure('Position', [-1919 69 1920 964.8000]);
@@ -104,7 +138,7 @@ function IOCAnalysis()
             meanRsq = mean(Rsq2);
             stdRsq = std(Rsq2);
             
-            titleStr = [currDof '_' currFeature, ...
+            titleStr = [typeLabel '_' currDof '_' currFeature, ...
                 ', b=' num2str(meanB, '%0.4f') '\pm' num2str(stdB, '%0.4f'), ...
                 ', bsign=(+)' num2str(bSign(1), '%0.4f') ', (-)' num2str(bSign(2), '%0.4f'), ...
                 ', R2=', num2str(meanRsq, '%0.4f') '\pm' num2str(stdRsq, '%0.2f')];
@@ -117,7 +151,7 @@ function IOCAnalysis()
             close(h);
             
             if ~exist(outCsv, 'file')
-                header = 'dof,feature,b_mean,b_std,bsign_plus,bsign_minus,bsign_nan,R2_mean,R2_std';
+                header = 'typeLabel,dof,feature,b_mean,b_std,bsign_plus,bsign_minus,bsign_nan,R2_mean,R2_std';
                 header = [header '\n'];
             else
                 header = '';
@@ -126,7 +160,7 @@ function IOCAnalysis()
             fid = fopen(outCsv, 'a');
             fprintf(fid, [header]);
             
-            fprintf(fid, '%s,%s', currDof, currFeature);
+            fprintf(fid, '%s,%s,%s', typeLabel, currDof, currFeature);
             fprintf(fid, ',%f,%f', meanB, stdB);
             fprintf(fid, ',%f,%f,%f', bSign(1), bSign(2), bSign(3));
             fprintf(fid, ',%f,%f', meanRsq, stdRsq);
@@ -134,24 +168,6 @@ function IOCAnalysis()
             fprintf(fid, '\n');
             fclose(fid);
         end
-    end
- 
-    
-%      h = figure('Position', [-1919 69 1920 964.8000]);
-%         hold on
-    
-%     for ind_dof = 1:length(cumStats{1})
-%        
-%         
-%         data = [];
-%         for ind_subject = 1:length(cumStats)
-%             c
-% 
-%             for ind_segment = 1:length(currStats.segmentStatsSeg)
-%                 data = [data currStats.segmentStatsSeg{ind_segment}.];
-%             end
-%             
-%         end
-%     end
+    end    
 end
 

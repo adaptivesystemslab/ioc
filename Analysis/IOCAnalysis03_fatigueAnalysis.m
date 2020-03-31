@@ -40,9 +40,9 @@ function calculateMetrics(filepathCurrDataInd, filepathCurrWeiCum, filepathCurrW
     outFileSpec = filepathCurrWeiCum(end-27:end-10);
 %     outputPath = [outputPath outFileSpec '\'];
     
-    outMat = [outputPath, '\mat\', 'mat_', outFileSpec, '.mat'];
+    outMat = [outputPath, 'mat\', 'mat_', outFileSpec, '.mat'];
     outCsv = [filepathCsv];
-    checkExistDir = dir([outputPath '\' outFileSpec]);
+    checkExistDir = dir(outMat);
 
     if length(checkExistDir) > 0
         fprintf('%s detected, skipping\n', outFileSpec);
@@ -54,6 +54,8 @@ function calculateMetrics(filepathCurrDataInd, filepathCurrWeiCum, filepathCurrW
         return;
     end
     
+    fprintf('PROCESSING %s\n', outMat);
+    
     checkMkdir(outputPath);
     checkMkdir(outMat);
     
@@ -64,6 +66,10 @@ function calculateMetrics(filepathCurrDataInd, filepathCurrWeiCum, filepathCurrW
     trialInfo = matData.trialInfo;
     [segData, segOnlyDataTable, restOnlyDataTable] = loadSegmentInfo(filepathSegments, trialInfo);
     segmentInfo = segData;
+    
+    if isnan(segmentInfo(1).timeStart)
+        return
+    end
     
     % replace trialInfo's load path
     oldLoadPath = trialInfo.path;
