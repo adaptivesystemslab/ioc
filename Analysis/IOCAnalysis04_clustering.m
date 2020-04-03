@@ -1,13 +1,13 @@
 function IOCAnalysis()
     setPaths();
-%     nowstr = datestr(now, 'yyyymmddHHMMSS');
+    nownowstr = datestr(now, 'yyyymmddHHMMSS');
     nowstr = '20200316_fatigueEdges';
     nowstr2 = '20200316_fatigueEdges_8CF';
       
     basePath = ['D:\results\fatigue_ioc03_weightsPattern\' nowstr '\mat\'];
-    searchString = 'mat_*_3DOF_8CF*.mat';
+    searchString = 'mat_*_3DOF_3CF*.mat';
     outputPath = ['D:\results\fatigue_ioc04_weightsCluster\' nowstr2 '\'];
-    outCsv = [outputPath 'analysis_8CF.csv'];
+    outCsv = [outputPath 'analysis_' nownowstr '.csv'];
     checkMkdir(outputPath);
     
     currBasePathDir = dir([basePath searchString]);
@@ -81,8 +81,6 @@ function IOCAnalysis()
         end
     end
     
-    
-    
     plotStuff('SingleSeg', allDofs, allFeaturesSingle, nSubject, featureTableSegTimeSingle, featureTableSegDataSingle, outCsv, outputPath);
     plotStuff('SingleRest', allDofs, allFeaturesSingle, nSubject, featureTableRestTimeSingle, featureTableRestDataSingle, outCsv, outputPath);
     plotStuff('MultipleSeg', allDofs, allFeaturesMultiple, nSubject, featureTableSegTimeMultiple, featureTableSegDataMultiple, outCsv, outputPath);
@@ -151,7 +149,13 @@ function plotStuff(typeLabel, allDofs, allFeaturesSingle, nSubject, featureTable
             close(h);
             
             if ~exist(outCsv, 'file')
-                header = 'typeLabel,dof,feature,b_mean,b_std,bsign_plus,bsign_minus,bsign_nan,R2_mean,R2_std';
+                header = 'typeLabel,dof,feature,b_mean,b_std,R2_mean,R2_std,bsign_plus,bsign_minus,bsign_nan';
+                for ind_subjects = 1:nSubject
+                    header = [header ',bmag_s' num2str(ind_subjects)];
+                end
+                for ind_subjects = 1:nSubject
+                    header = [header ',r2_s' num2str(ind_subjects)];
+                end
                 header = [header '\n'];
             else
                 header = '';
@@ -162,8 +166,15 @@ function plotStuff(typeLabel, allDofs, allFeaturesSingle, nSubject, featureTable
             
             fprintf(fid, '%s,%s,%s', typeLabel, currDof, currFeature);
             fprintf(fid, ',%f,%f', meanB, stdB);
-            fprintf(fid, ',%f,%f,%f', bSign(1), bSign(2), bSign(3));
             fprintf(fid, ',%f,%f', meanRsq, stdRsq);
+            fprintf(fid, ',%f,%f,%f', bSign(1), bSign(2), bSign(3));
+            
+            for ind_subjects = 1:nSubject
+                fprintf(fid, ',%f', b(2, ind_subjects));
+            end
+            for ind_subjects = 1:nSubject
+                fprintf(fid, ',%f', Rsq2(ind_subjects));
+            end
             
             fprintf(fid, '\n');
             fclose(fid);
