@@ -4,18 +4,24 @@ function [segData, segOnlyDataTable, restOnlyDataTable] = loadSegmentInfo(filepa
     
     startColStr = ['S' trialInfo.runName(8:9) '_START'];
     endColStr = ['S' trialInfo.runName(8:9) '_END'];
+    scoreColStr = ['S' trialInfo.runName(8:9) '_SCORE'];
     
-    for i = 1:14
-        segData(i).state = manSegTab.State(i);
-        segData(i).direction = manSegTab.Direction(i);
-        segData(i).count = manSegTab.Count(i);
-        
-        if ~isempty(manSegTab.(startColStr)(i))
-            segData(i).timeStart = manSegTab.(startColStr)(i);
-            segData(i).timeEnd = manSegTab.(endColStr)(i);
-        else
-            segData(i).timeStart = 0;
-            segData(i).timeEnd = 0;
+    tableInd = 0;
+    for i = 1:size(manSegTab, 1)
+        if ~isnan(manSegTab.(startColStr)(i))
+            tableInd = tableInd + 1;
+            segData(tableInd).state = manSegTab.State(i);
+%             segData(tableInd).direction = manSegTab.Direction(i);
+            segData(tableInd).count = manSegTab.Count(i);
+            segData(tableInd).timeStart = manSegTab.(startColStr)(i);
+            segData(tableInd).timeEnd = manSegTab.(endColStr)(i);
+            
+            if isnan(manSegTab.(scoreColStr)(i))
+                segData(tableInd).fatigueScore = manSegTab.(scoreColStr)(i-1);
+            else
+                segData(tableInd).fatigueScore = manSegTab.(scoreColStr)(i);
+            end
+            
         end
     end
     

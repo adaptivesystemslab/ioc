@@ -17,6 +17,11 @@ function IOCRun(trialInfo, savePath)
         model.plotTrajectory(q);
     end
     
+    if 0
+        figure; 
+        plot(trajT, q);
+    end
+    
     trialInfo.frameInds = frameInds;
     trialInfo.numWeights = length(trialInfo.candidateFeatures);
     trialInfo.numDofs = model.getModelDof;

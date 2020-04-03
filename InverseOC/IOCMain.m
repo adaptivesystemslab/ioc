@@ -4,7 +4,7 @@
 clc;
 tic;
 
-overwriteFiles = 0;
+overwriteFiles = 1;
 
 %% Define internal settings
 % Jonathan's Configurations
@@ -56,6 +56,10 @@ for i=1:n
 %         continue;
 %     end
     
+    if ~strcmpi(trialInfo.runName, 'Subject04_3DOF_3CF_START') 
+        continue;
+    end
+
     % does the target folder already exist? 
     subsavePath = fullfile(savePath, trialInfo.runName);
     [status, alreadyExist] = checkMkdir(subsavePath);
