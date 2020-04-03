@@ -2,12 +2,12 @@ function IOCAnalysis()
     setPaths();
 %     nowstr = datestr(now, 'yyyymmddHHMMSS');
     nowstr = '20200316_fatigueEdges';
-    nowstr2 = '20200316_fatigueEdges_4CF';
+    nowstr2 = '20200316_fatigueEdges_8CF';
       
     basePath = ['D:\results\fatigue_ioc03_weightsPattern\' nowstr '\mat\'];
-    searchString = 'mat_*_3DOF_4CF*.mat';
+    searchString = 'mat_*_3DOF_8CF*.mat';
     outputPath = ['D:\results\fatigue_ioc04_weightsCluster\' nowstr2 '\'];
-    outCsv = [outputPath 'analysis_4CF.csv'];
+    outCsv = [outputPath 'analysis_8CF.csv'];
     checkMkdir(outputPath);
     
     currBasePathDir = dir([basePath searchString]);

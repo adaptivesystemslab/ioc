@@ -2,7 +2,7 @@ function IOCAnalysis()
     setPaths();
 %     nowstr = datestr(now, 'yyyymmddHHMMSS');
     nowstr = '20200316_fatigueEdges';
-    nowstr2 = '20200316_fatigueEdges';
+    nowstr2 = '20200316_fatigueEdges2';
       
     basePath = ['D:\results\fatigue_ioc02_weightsAssembled\' nowstr '\'];
     searchString = 'mat_dataInd_*.mat';
@@ -648,7 +648,7 @@ power = abs(y).^2/n;    % power of the DFT
         xSearch(maxInd(i)) = 0;
     end
 
-    peakFreq = sort(f(maxInd));
+    peakFreq = f(maxInd);
     
 % % %     F=signal;                % Data Channel
 % % %     Ts = 0.01;                  % Sampling Interval (s)
