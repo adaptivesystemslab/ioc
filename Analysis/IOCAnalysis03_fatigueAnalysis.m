@@ -2,10 +2,10 @@ function IOCAnalysis()
     setPaths();
 %     nowstr = datestr(now, 'yyyymmddHHMMSS');
     nowstr = '20200316_fatigueEdges';
-    nowstr2 = '20200316_fatigueEdges2';
+    nowstr2 = '20200316_fatigueEdges3';
       
     basePath = ['D:\results\fatigue_ioc02_weightsAssembled\' nowstr '\'];
-    searchString = 'mat_dataInd_*.mat';
+    searchString = 'mat_dataInd_*_3CF_*.mat'; % mat_dataInd_Subject01_3DOF_3CF_START
     filepathSegments = 'ManualSeg.xlsx';
     outputPath = ['D:\results\fatigue_ioc03_weightsPattern\' nowstr2 '\'];
     checkMkdir(outputPath);
@@ -67,7 +67,7 @@ function calculateMetrics(filepathCurrDataInd, filepathCurrWeiCum, filepathCurrW
     [segData, segOnlyDataTable, restOnlyDataTable] = loadSegmentInfo(filepathSegments, trialInfo);
     segmentInfo = segData;
     
-    if isnan(segmentInfo(1).timeStart)
+    if isempty(segmentInfo)
         return
     end
     

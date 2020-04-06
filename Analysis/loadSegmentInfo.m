@@ -21,8 +21,14 @@ function [segData, segOnlyDataTable, restOnlyDataTable] = loadSegmentInfo(filepa
             else
                 segData(tableInd).fatigueScore = manSegTab.(scoreColStr)(i);
             end
-            
         end
+    end
+    
+    if ~exist('segData', 'var')
+        segData = [];
+        segOnlyDataTable = [];
+        restOnlyDataTable = [];
+        return
     end
     
 %     figure;

@@ -1,8 +1,8 @@
 function IOCAnalysis()
     setPaths();
     nownowstr = datestr(now, 'yyyymmddHHMMSS');
-    nowstr = '20200316_fatigueEdges';
-    nowstr2 = '20200316_fatigueEdges_8CF';
+    nowstr = '20200316_fatigueEdges3';
+    nowstr2 = '20200316_fatigueEdges3_3CF';
       
     basePath = ['D:\results\fatigue_ioc03_weightsPattern\' nowstr '\mat\'];
     searchString = 'mat_*_3DOF_3CF*.mat';
