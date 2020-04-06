@@ -1,13 +1,16 @@
 function IOCAnalysis()
     setPaths();
 %     nowstr = datestr(now, 'yyyymmddHHMMSS');
-    nowstr = '20200316_fatigueEdges';
-    nowstr2 = '20200316_fatigueEdges3';
+    sourceSuffix = '20200316_fatigueEdges';
+    targetSuffix = '20200316_fatigueEdges_04';
       
-    basePath = ['D:\results\fatigue_ioc02_weightsAssembled\' nowstr '\'];
-    searchString = 'mat_dataInd_*_3CF_*.mat'; % mat_dataInd_Subject01_3DOF_3CF_START
+    basePath = ['D:\results\fatigue_ioc02_weightsAssembled\' sourceSuffix '\'];
+    outputPath = ['D:\results\fatigue_ioc03_weightsPattern\' targetSuffix '\'];
+    
+%     searchString = 'mat_dataInd_*_3CF_*.mat'; % mat_dataInd_Subject01_3DOF_3CF_START
+    searchString = 'mat_dataInd_*.mat'; % mat_dataInd_Subject01_3DOF_3CF_START
     filepathSegments = 'ManualSeg.xlsx';
-    outputPath = ['D:\results\fatigue_ioc03_weightsPattern\' nowstr2 '\'];
+    
     checkMkdir(outputPath);
     
     currBasePathDir = dir([basePath searchString]);
