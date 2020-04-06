@@ -56,9 +56,9 @@ for i=1:n
 %         continue;
 %     end
     
-    if ~strcmpi(trialInfo.runName, 'Subject04_3DOF_3CF_START') 
-        continue;
-    end
+%     if ~strcmpi(trialInfo.runName, 'Subject15_3DOF_3CF_START') 
+%         continue;
+%     end
 
     % does the target folder already exist? 
     subsavePath = fullfile(savePath, trialInfo.runName);

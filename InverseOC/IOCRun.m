@@ -18,8 +18,16 @@ function IOCRun(trialInfo, savePath)
     end
     
     if 0
+        close all;
         figure; 
         plot(trajT, q);
+        
+        filepathSegments = 'D:\aslab_github\ioc\Analysis\ManualSeg.xlsx';
+        [segData, segOnlyDataTable, restOnlyDataTable] = loadSegmentInfo(filepathSegments, trialInfo);
+        
+        plotBoxes(restOnlyDataTable, [0 1 0], 0.1);
+        plotBoxes(segOnlyDataTable, [1 0 0], 0.1);
+        return;
     end
     
     trialInfo.frameInds = frameInds;

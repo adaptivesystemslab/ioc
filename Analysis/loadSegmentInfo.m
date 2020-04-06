@@ -6,21 +6,35 @@ function [segData, segOnlyDataTable, restOnlyDataTable] = loadSegmentInfo(filepa
     endColStr = ['S' trialInfo.runName(8:9) '_END'];
     scoreColStr = ['S' trialInfo.runName(8:9) '_SCORE'];
     
+    % look for the starting and ending rest
+    restCount = 0;
+    
     tableInd = 0;
     for i = 1:size(manSegTab, 1)
-        if ~isnan(manSegTab.(startColStr)(i))
             tableInd = tableInd + 1;
             segData(tableInd).state = manSegTab.State(i);
 %             segData(tableInd).direction = manSegTab.Direction(i);
             segData(tableInd).count = manSegTab.Count(i);
             segData(tableInd).timeStart = manSegTab.(startColStr)(i);
             segData(tableInd).timeEnd = manSegTab.(endColStr)(i);
-            
-            if isnan(manSegTab.(scoreColStr)(i))
-                segData(tableInd).fatigueScore = manSegTab.(scoreColStr)(i-1);
-            else
-                segData(tableInd).fatigueScore = manSegTab.(scoreColStr)(i);
+            segData(tableInd).fatigueScore = manSegTab.(scoreColStr)(i);
+%             
+            if strcmpi(manSegTab.State(i), 'rest') && segData(tableInd).fatigueScore == 8
+                   break;
             end
+%             if isnan(manSegTab.(scoreColStr)(i))
+%                 segData(tableInd).fatigueScore = manSegTab.(scoreColStr)(i-1);
+%             else
+%                 segData(tableInd).fatigueScore = manSegTab.(scoreColStr)(i);
+%             end
+    end
+    
+    for i = 1:length(segData)
+        if strcmpi(segData(i).state, 'rest') ...
+                && isnan(segData(i).timeStart) && isnan(segData(i).timeEnd)
+            segData(i).timeStart = segData(i-1).timeEnd;
+            segData(i).timeEnd = segData(i+1).timeStart;
+            segData(i).fatigueScore = segData(i-1).fatigueScore;
         end
     end
     
