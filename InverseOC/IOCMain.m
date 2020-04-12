@@ -10,13 +10,14 @@ overwriteFiles = 1;
 % Jonathan's Configurations
 % configFilePath = '../Data_json/CarrenoConfig/IOC_ExpressiveData_test.json';
 % configFilePath = '../Data_json/LinConfig/IOC_IITFatigue_test.json';
-% configFilePath = '../Data_json/LinConfig/IOC_IITFatigue_Subj5910_startend.json';
-configFilePath = '../Data_json/LinConfig/IOC_IITFatigue_SubjAll_startend.json';
+configFilePath = '../Data_json/LinConfig/IOC_IITFatigue_Subj1_demo.json';
+% configFilePath = '../Data_json/LinConfig/IOC_IITFatigue_SubjAll_startend.json';
 % configFilePath = '../Data_json/LinConfig/IOC_Healthy1.json';
 % configFilePath = '../Data_json/LinConfig/IOC_Jumping2D.json';
 
-currentDate = '20200316_fatigueEdges';
-savePath = sprintf('D:/results/fatigue_ioc01_weightsIndividual/%s/', currentDate);
+saveSuffix = 'demo';
+% savePath = sprintf('D:/results/fatigue_ioc01_weightsIndividual/%s/', saveSuffix);
+savePath = sprintf('D:/aslab_github/ioc/Data/IOC/%s/', saveSuffix);
 
 % Wanxin's Configurations
 % configFilePath = '../Data_json/JinConfig/Squat_IIT/IOC_IITFatigue_Test_Sub1.json';
@@ -51,14 +52,6 @@ for i=1:n
     % load the specific trialinfo
     fprintf("Processing %s file \n", configFileI.runName);
     trialInfo = loadTrialInfo(configFileI, configFile, potentialBasePaths, configFilePath);
-    
-%     if ~strcmpi(trialInfo.runName(11:end), '3DOF_3CF_START') 
-%         continue;
-%     end
-    
-%     if ~strcmpi(trialInfo.runName, 'Subject15_3DOF_3CF_START') 
-%         continue;
-%     end
 
     % does the target folder already exist? 
     subsavePath = fullfile(savePath, trialInfo.runName);
