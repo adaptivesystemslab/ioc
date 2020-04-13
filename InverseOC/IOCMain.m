@@ -10,12 +10,12 @@ overwriteFiles = 1;
 % Jonathan's Configurations
 % configFilePath = '../Data_json/CarrenoConfig/IOC_ExpressiveData_test.json';
 % configFilePath = '../Data_json/LinConfig/IOC_IITFatigue_test.json';
-configFilePath = '../Data_json/LinConfig/IOC_IITFatigue_Subj1_demo.json';
-% configFilePath = '../Data_json/LinConfig/IOC_IITFatigue_SubjAll_startend.json';
+% configFilePath = '../Data_json/LinConfig/IOC_IITFatigue_Subj1_demo.json';
+configFilePath = '../Data_json/LinConfig/IOC_IITFatigue_SubjAll_full_3CF.json';
 % configFilePath = '../Data_json/LinConfig/IOC_Healthy1.json';
 % configFilePath = '../Data_json/LinConfig/IOC_Jumping2D.json';
 
-saveSuffix = 'demo';
+saveSuffix = '20200413_FatigueFull_3CF';
 % savePath = sprintf('D:/results/fatigue_ioc01_weightsIndividual/%s/', saveSuffix);
 savePath = sprintf('D:/aslab_github/ioc/Data/IOC/%s/', saveSuffix);
 
