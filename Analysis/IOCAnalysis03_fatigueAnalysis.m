@@ -1,8 +1,8 @@
 function IOCAnalysis()
     setPaths();
 %     nowstr = datestr(now, 'yyyymmddHHMMSS');
-    sourceSuffix = '20200316_fatigueEdges';
-    targetSuffix = '20200316_fatigueEdges_04';
+    sourceSuffix = '20200413_FatigueFull_3CF';
+    targetSuffix = '20200413_FatigueFull_3CF';
       
     basePath = ['D:\results\fatigue_ioc02_weightsAssembled\' sourceSuffix '\'];
     outputPath = ['D:\results\fatigue_ioc03_weightsPattern\' targetSuffix '\'];
@@ -40,7 +40,9 @@ function loadAndPlotStuff(filepath)
 end
 
 function calculateMetrics(filepathCurrDataInd, filepathCurrWeiCum, filepathCurrWeiInd, filepathSegments, outputPath, filepathCsv)
-    outFileSpec = filepathCurrWeiCum(end-27:end-10);
+%     outFileSpec = filepathCurrWeiCum(end-27:end-10);
+    strsplitStr = strsplit(filepathCurrWeiCum, '_');
+    outFileSpec = [strsplitStr{end-2} '_' strsplitStr{end-1} '_' strsplitStr{end}(1:3)];
 %     outputPath = [outputPath outFileSpec '\'];
     
     outMat = [outputPath, 'mat\', 'mat_', outFileSpec, '.mat'];
@@ -138,7 +140,7 @@ function stats = featureCalc1(trialInfo, name, t, feature, segData, outputPath, 
     figSegMultiplePath = [outputPath, '\fig\', figFileMultipleWindowSeg];
     figRestMultiplePath = [outputPath, '\fig\', figFileMultipleWindowRest];
     
-    checkMkdir(figSegSinglePath);
+    checkMkdir([outputPath, '\fig\']);
     
     stats.name = name;
     stats.t = t;

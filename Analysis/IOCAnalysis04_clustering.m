@@ -1,8 +1,8 @@
 function IOCAnalysis()
     setPaths();
     nownowstr = datestr(now, 'yyyymmddHHMMSS');
-    sourceSuffix = '20200316_fatigueEdges_04';
-    targetSuffix = '20200316_fatigueEdges_04_3CF';
+    sourceSuffix = '20200413_FatigueFull_3CF';
+    targetSuffix = '20200413_FatigueFull_3CF';
     searchString = 'mat_*_3DOF_3CF*.mat';
       
     basePath = ['D:\results\fatigue_ioc03_weightsPattern\' sourceSuffix '\mat\'];
@@ -114,6 +114,7 @@ function plotStuff(typeLabel, allDofs, allFeaturesSingle, nSubject, featureTable
                 end
                 
                 [b(:, ind_subjects), Rsq2(ind_subjects), X, yCalc2] = linearFit(currTime, currData);
+                dataLen(ind_subjects) = length(currData);
                 
                 signageB = sign(b(2, ind_subjects));
                 if signageB > 0
@@ -157,6 +158,9 @@ function plotStuff(typeLabel, allDofs, allFeaturesSingle, nSubject, featureTable
                 for ind_subjects = 1:nSubject
                     header = [header ',r2_s' num2str(ind_subjects)];
                 end
+                for ind_subjects = 1:nSubject
+                    header = [header ',len_s' num2str(ind_subjects)];
+                end
                 header = [header '\n'];
             else
                 header = '';
@@ -176,7 +180,9 @@ function plotStuff(typeLabel, allDofs, allFeaturesSingle, nSubject, featureTable
             for ind_subjects = 1:nSubject
                 fprintf(fid, ',%f', Rsq2(ind_subjects));
             end
-            
+            for ind_subjects = 1:nSubject
+                fprintf(fid, ',%f', dataLen(ind_subjects));
+            end
             fprintf(fid, '\n');
             fclose(fid);
         end

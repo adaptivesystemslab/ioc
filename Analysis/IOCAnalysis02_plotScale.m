@@ -1,25 +1,11 @@
 function IOCAnalysis()
     setPaths();
-    
-%     perturbAmount = [1e-1 1e-2 1e-3 1e-4];
-%     perturbAmount = [1e-1 1e-2 1e-3 1e-4]*1e4;
-%     residualThreshold = [1e1 1e0 1e-1 1e-2 1e-3 1e-4 1e-5]; % 0.1
-%     residualThreshold = [1e1 1e0 1e-1 1e-2 1e-3 1e-4 1e-5]/1e7; 
-
-%     perturbAmount = 10.^[-5:4]; 
-%     residualThreshold = 10.^[-7:10];
-    perturbAmount = [1e-1];
-    residualThreshold = [1e-1];
-
-    maxAcross = 4;
-    maxDown = 7;
-    
     faceColours = brewermap(8, 'paired');
     
 %     nowstr = datestr(now, 'yyyymmddHHMMSS');
-    nowstr = '20200316_fatigueEdges';
+    nowstr = '20200413_FatigueFull_3CF';
 %     basePath = 'D:\aslab_gitlab\expressive-ioc\Data\IOC\';
-    basePath = 'D:\results\fatigue_ioc01_weightsIndividual\20200316_fatigueEdges\';
+    basePath = 'D:\results\fatigue_ioc01_weightsIndividual\20200413_FatigueFull_3CF\';
     outputPath = ['D:\results\fatigue_ioc02_weightsAssembled\' nowstr];
     masterPathCsv = [outputPath '\a_summary.csv'];
     checkMkdir(outputPath);
@@ -33,10 +19,6 @@ function IOCAnalysis()
             end
             
             if ~exist(currSubPath, 'dir')
-                continue;
-            end
-            
-            if ~strcmpi(currSubPath(end-2:end), 'END')
                 continue;
             end
             

@@ -21,7 +21,7 @@ function [segData, segOnlyDataTable, restOnlyDataTable] = loadSegmentInfo(filepa
         end
     end
     
-    if ~exist('segData', 'var')
+    if ~exist('segData', 'var') || isnan(segData(1).timeStart)
         segData = [];
         segOnlyDataTable = [];
         restOnlyDataTable = [];

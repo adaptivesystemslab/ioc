@@ -16,8 +16,8 @@ configFilePath = '../Data_json/LinConfig/IOC_IITFatigue_SubjAll_full_3CF.json';
 % configFilePath = '../Data_json/LinConfig/IOC_Jumping2D.json';
 
 saveSuffix = '20200413_FatigueFull_3CF';
-% savePath = sprintf('D:/results/fatigue_ioc01_weightsIndividual/%s/', saveSuffix);
-savePath = sprintf('D:/aslab_github/ioc/Data/IOC/%s/', saveSuffix);
+savePath = sprintf('D:/results/fatigue_ioc01_weightsIndividual/%s/', saveSuffix);
+% savePath = sprintf('D:/aslab_github/ioc/Data/IOC/%s/', saveSuffix);
 
 % Wanxin's Configurations
 % configFilePath = '../Data_json/JinConfig/Squat_IIT/IOC_IITFatigue_Test_Sub1.json';
