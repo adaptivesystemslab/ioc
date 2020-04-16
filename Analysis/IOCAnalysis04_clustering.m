@@ -96,10 +96,14 @@ function plotStuff(typeLabel, allDofs, allFeaturesSingle, nSubject, featureTable
         for ind_features = 1:length(allFeaturesSingle)
             currDof = allDofs{ind_dof};
             currFeature = allFeaturesSingle{ind_features};
-            figName = [typeLabel '_' currDof '_' currFeature];
+            figName = ['combined_' typeLabel '_' currDof '_' currFeature];
             figSavePath = fullfile(outputPath, figName);
             
-            h = figure('Position', [-1919 69 1920 964.8000]);
+            figName2 = ['indiv_' typeLabel '_' currDof '_' currFeature];
+            figSavePath2 = fullfile(outputPath, figName2);
+            
+            h1 = figure('Position', [-1919 69 1920 964.8000]);
+            h2 = figure('Position', [-1919 69 1920 964.8000]);
             hold on; 
             
             bSign = zeros(3, 1);
@@ -127,9 +131,18 @@ function plotStuff(typeLabel, allDofs, allFeaturesSingle, nSubject, featureTable
                 
                 currLabel = ['S' num2str(ind_subjects) ', b=' num2str(b(2, ind_subjects), '%0.4f'), ', R2=', num2str(Rsq2(ind_subjects), '%0.4f')];
                 
+                figure(h1);
+                hold on;
                 plot(currTime, currData, 'DisplayName', currLabel, 'Color', currColour, 'MarkerSize', 14, 'Marker', 'o', 'LineStyle', 'none');
                 ph = plot(currTime, yCalc2, 'Color', currColour);
                 ph.Annotation.LegendInformation.IconDisplayStyle = 'off';
+                
+                figure(h2);
+                subplot(3, 5, ind_subjects);
+                plot(currTime, currData, 'DisplayName', currLabel, 'Color', currColour, 'MarkerSize', 14, 'Marker', 'o', 'LineStyle', 'none');
+                ph = plot(currTime, yCalc2, 'Color', [1 0 0]);
+                ph.Annotation.LegendInformation.IconDisplayStyle = 'off';
+                title(currLabel);
             end
             
             % what is the mean/std slope and Rsq value? 
@@ -138,6 +151,7 @@ function plotStuff(typeLabel, allDofs, allFeaturesSingle, nSubject, featureTable
             meanRsq = mean(Rsq2);
             stdRsq = std(Rsq2);
             
+            figure(h1);
             titleStr = [typeLabel '_' currDof '_' currFeature, ...
                 ', b=' num2str(meanB, '%0.4f') '\pm' num2str(stdB, '%0.4f'), ...
                 ', bsign=(+)' num2str(bSign(1), '%0.4f') ', (-)' num2str(bSign(2), '%0.4f'), ...
@@ -146,9 +160,13 @@ function plotStuff(typeLabel, allDofs, allFeaturesSingle, nSubject, featureTable
             
             legend('show');
             
-            saveas(h, figSavePath, 'png');
-            saveas(h, figSavePath, 'fig');
-            close(h);
+            saveas(h1, figSavePath, 'png');
+            saveas(h1, figSavePath, 'fig');
+            close(h1);
+            
+            saveas(h2, figSavePath2, 'png');
+            saveas(h2, figSavePath2, 'fig');
+            close(h2);
             
             if ~exist(outCsv, 'file')
                 header = 'typeLabel,dof,feature,b_mean,b_std,R2_mean,R2_std,bsign_plus,bsign_minus,bsign_nan';
