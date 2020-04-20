@@ -1,0 +1,112 @@
+{
+	"runParamGlobal":
+	[
+        {
+            "templateName":"",  
+			"baseModel":"",   
+            "modelType":"rl",
+			"model":"",			
+			"gamma": [],
+			"dimWeights": [5],
+			"maxWinLen": [400],
+            "hWinAdvFlag": "forward",
+			"runInds": [],
+            "displayInfo":"final",
+            "saveIntermediate": [300],
+            "weights":[]         
+		}
+	],
+	"Files":
+    [
+    	{
+            "runName":"Subject01_3DOF_3CF",
+            "basepath":"D:/aslab_svn/data_IK",
+            "subpath":"FullBody_IIT_2017/2019_04_10_squat02/matEkfIk/SQUA_STD_FAT_Subject01_mocap_mocap_X00_floating_ekfId1_ekfIk.mat",
+			"runTemplate": "3DOF_3CF_Forward"
+        },
+		{
+            "runName":"Subject02_3DOF_3CF",
+            "basepath":"D:/aslab_svn/data_IK",
+            "subpath":"FullBody_IIT_2017/2019_04_10_squat02/matEkfIk/SQUA_STD_FAT_Subject02_mocap_mocap_X00_floating_ekfId1_ekfIk.mat",
+			"runTemplate": "3DOF_3CF_Forward"
+        },
+    	{
+            "runName":"Subject03_3DOF_3CF",
+            "basepath":"D:/aslab_svn/data_IK",
+            "subpath":"FullBody_IIT_2017/2019_04_10_squat02/matEkfIk/SQUA_STD_FAT_Subject03_mocap_mocap_X00_floating_ekfId1_ekfIk.mat",
+			"runTemplate": "3DOF_3CF_Forward"
+        },
+    	{
+            "runName":"Subject04_3DOF_3CF",
+            "basepath":"D:/aslab_svn/data_IK",
+            "subpath":"FullBody_IIT_2017/2019_04_10_squat02/matEkfIk/SQUA_STD_FAT_Subject04_mocap_mocap_X00_floating_ekfId1_ekfIk.mat",
+			"runTemplate": "3DOF_3CF_Forward"
+        },
+    	{
+            "runName":"Subject05_3DOF_3CF",
+            "basepath":"D:/aslab_svn/data_IK",
+            "subpath":"FullBody_IIT_2017/2019_04_10_squat02/matEkfIk/SQUA_STD_FAT_Subject05_mocap_mocap_X00_floating_ekfId1_ekfIk.mat",
+			"runTemplate": "3DOF_3CF_Forward"
+        },
+    	{
+            "runName":"Subject06_3DOF_3CF",
+            "basepath":"D:/aslab_svn/data_IK",
+            "subpath":"FullBody_IIT_2017/2019_04_10_squat02/matEkfIk/SQUA_STD_FAT_Subject06_mocap_mocap_X00_floating_ekfId1_ekfIk.mat",
+			"runTemplate": "3DOF_3CF_Forward"
+        },
+    	{
+            "runName":"Subject07_3DOF_3CF",
+            "basepath":"D:/aslab_svn/data_IK",
+            "subpath":"FullBody_IIT_2017/2019_04_10_squat02/matEkfIk/SQUA_STD_FAT_Subject07_mocap_mocap_X00_floating_ekfId1_ekfIk.mat",
+			"runTemplate": "3DOF_3CF_Forward"
+        },
+    	{
+            "runName":"Subject08_3DOF_3CF",
+            "basepath":"D:/aslab_svn/data_IK",
+            "subpath":"FullBody_IIT_2017/2019_04_10_squat02/matEkfIk/SQUA_STD_FAT_Subject08_mocap_mocap_X00_floating_ekfId1_ekfIk.mat",
+			"runTemplate": "3DOF_3CF_Forward"
+        },
+    	{
+            "runName":"Subject09_3DOF_3CF",
+            "basepath":"D:/aslab_svn/data_IK",
+            "subpath":"FullBody_IIT_2017/2019_04_10_squat02/matEkfIk/SQUA_STD_FAT_Subject09_mocap_mocap_X00_floating_ekfId1_ekfIk.mat",
+			"runTemplate": "3DOF_3CF_Forward"
+        },
+    	{
+            "runName":"Subject10_3DOF_3CF",
+            "basepath":"D:/aslab_svn/data_IK",
+            "subpath":"FullBody_IIT_2017/2019_04_10_squat02/matEkfIk/SQUA_STD_FAT_Subject10_mocap_mocap_X00_floating_ekfId1_ekfIk.mat",
+			"runTemplate": "3DOF_3CF_Forward"
+        },
+    	{
+            "runName":"Subject11_3DOF_3CF",
+            "basepath":"D:/aslab_svn/data_IK",
+            "subpath":"FullBody_IIT_2017/2019_04_10_squat02/matEkfIk/SQUA_STD_FAT_Subject11_mocap_mocap_X00_floating_ekfId1_ekfIk.mat",
+			"runTemplate": "3DOF_3CF_Forward"
+        },
+    	{
+            "runName":"Subject12_3DOF_3CF",
+            "basepath":"D:/aslab_svn/data_IK",
+            "subpath":"FullBody_IIT_2017/2019_04_10_squat02/matEkfIk/SQUA_STD_FAT_Subject12_mocap_mocap_X00_floating_ekfId1_ekfIk.mat",
+			"runTemplate": "3DOF_3CF_Forward"
+        },
+    	{
+            "runName":"Subject13_3DOF_3CF",
+            "basepath":"D:/aslab_svn/data_IK",
+            "subpath":"FullBody_IIT_2017/2019_04_10_squat02/matEkfIk/SQUA_STD_FAT_Subject13_mocap_mocap_X00_floating_ekfId1_ekfIk.mat",
+			"runTemplate": "3DOF_3CF_Forward"
+        },
+    	{
+            "runName":"Subject14_3DOF_3CF",
+            "basepath":"D:/aslab_svn/data_IK",
+            "subpath":"FullBody_IIT_2017/2019_04_10_squat02/matEkfIk/SQUA_STD_FAT_Subject14_mocap_mocap_X00_floating_ekfId1_ekfIk.mat",
+			"runTemplate": "3DOF_3CF_Forward"
+        },
+    	{
+            "runName":"Subject15_3DOF_3CF",
+            "basepath":"D:/aslab_svn/data_IK",
+            "subpath":"FullBody_IIT_2017/2019_04_10_squat02/matEkfIk/SQUA_STD_FAT_Subject15_mocap_mocap_X00_floating_ekfId1_ekfIk.mat",
+			"runTemplate": "3DOF_3CF_Forward"
+        }
+	]
+}

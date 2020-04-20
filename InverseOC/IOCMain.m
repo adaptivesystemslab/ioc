@@ -8,12 +8,8 @@ overwriteFiles = 1;
 
 %% Define internal settings
 % Jonathan's Configurations
-% configFilePath = '../Data_json/CarrenoConfig/IOC_ExpressiveData_test.json';
-% configFilePath = '../Data_json/LinConfig/IOC_IITFatigue_test.json';
-% configFilePath = '../Data_json/LinConfig/IOC_IITFatigue_Subj1_demo.json';
+templateFilePath = '../Data_json/LinConfig/IITFatigue_Templates_348CF.json';
 configFilePath = '../Data_json/LinConfig/IOC_IITFatigue_SubjAll_full_3CF.json';
-% configFilePath = '../Data_json/LinConfig/IOC_Healthy1.json';
-% configFilePath = '../Data_json/LinConfig/IOC_Jumping2D.json';
 
 saveSuffix = '20200413_FatigueFull_3CF';
 savePath = sprintf('D:/results/fatigue_ioc01_weightsIndividual/%s/', saveSuffix);
@@ -34,6 +30,7 @@ savePath = sprintf('D:/results/fatigue_ioc01_weightsIndividual/%s/', saveSuffix)
 setPaths();
 
 % Load json file with list of all trials on which IOC will be run
+templateFile = jsdondecode(fileread(templateFilePath));
 configFile = jsondecode(fileread(configFilePath));
 n = length(configFile.Files);
 
@@ -51,7 +48,7 @@ for i=1:n
     
     % load the specific trialinfo
     fprintf("Processing %s file \n", configFileI.runName);
-    trialInfo = loadTrialInfo(configFileI, configFile, potentialBasePaths, configFilePath);
+    trialInfo = loadTrialInfo(configFileI, configFile, potentialBasePaths, configFilePath, templateFile);
 
     % does the target folder already exist? 
     subsavePath = fullfile(savePath, trialInfo.runName);

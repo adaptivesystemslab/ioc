@@ -199,17 +199,47 @@ function writeCumCsv(stats, outCsv, trialInfo, name)
             header = [header ',Rsq2ValSecondLast_seqSingle_' segOnlySingleDataTable.statType{i}];
             header = [header ',Rsq2ValThreshold_seqSingle_' segOnlySingleDataTable.statType{i}];
             header = [header ',Rsq2IndLast_seqSingle_' segOnlySingleDataTable.statType{i}];
+        end
+        for i = 1:size(segOnlySingleDataTable, 1)
+            
+        end
+        for i = 1:size(segOnlySingleDataTable, 1)
+            
+        end
+        for i = 1:size(segOnlySingleDataTable, 1)
+            
+        end
+        for i = 1:size(segOnlySingleDataTable, 1)
+            
+        end
+        for i = 1:size(segOnlySingleDataTable, 1)
             header = [header ',Rsq2IndSecondLast_seqSingle_' segOnlySingleDataTable.statType{i}];
+        end
+        for i = 1:size(segOnlySingleDataTable, 1)
             header = [header ',Rsq2IndThreshold_seqSingle_' segOnlySingleDataTable.statType{i}];
         end
         
+        
         for i = 1:size(restOnlySingleDataTable, 1)
             header = [header ',b_restSingle_' restOnlySingleDataTable.statType{i}];
+        end
+        
+        for i = 1:size(restOnlySingleDataTable, 1)
             header = [header ',Rsq2ValLast_restSingle_' restOnlySingleDataTable.statType{i}];
+        end
+        for i = 1:size(restOnlySingleDataTable, 1)
             header = [header ',Rsq2ValSecondLast_restSingle_' restOnlySingleDataTable.statType{i}];
+        end
+        for i = 1:size(restOnlySingleDataTable, 1)
             header = [header ',Rsq2ValThreshold_restSingle_' restOnlySingleDataTable.statType{i}];
+        end
+        for i = 1:size(restOnlySingleDataTable, 1)
             header = [header ',Rsq2IndLast_restSingle_' restOnlySingleDataTable.statType{i}];
+        end
+        for i = 1:size(restOnlySingleDataTable, 1)
             header = [header ',Rsq2IndSecondLast_restSingle_' restOnlySingleDataTable.statType{i}];
+        end
+        for i = 1:size(restOnlySingleDataTable, 1)
             header = [header ',Rsq2IndThreshold_restSingle_' restOnlySingleDataTable.statType{i}];
         end
        
@@ -238,21 +268,28 @@ function writeCumCsv(stats, outCsv, trialInfo, name)
      fprintf(fid, '%s,%s', trialInfo.runName, name);
      for i = 1:size(segOnlySingleDataTable, 1)
          fprintf(fid, ',%f',segOnlySingleDataTable.b_2(i));
-         fprintf(fid, ',%f',segOnlySingleDataTable.Rsq2(i));
-         fprintf(fid, ',%f',segOnlySingleDataTable.rsq2Val_SecondLast(i));
-         fprintf(fid, ',%f',segOnlySingleDataTable.rsq2Val_05Threshold(i));
-         fprintf(fid, ',%f',segOnlySingleDataTable.rsq2Ind_SecondLast(i)+1);
-         fprintf(fid, ',%f',segOnlySingleDataTable.rsq2Ind_SecondLast(i));
-         fprintf(fid, ',%f',segOnlySingleDataTable.rsq2Val_05Threshold(i));
      end
+     for i = 1:size(segOnlySingleDataTable, 1)
+         fprintf(fid, ',%f',segOnlySingleDataTable.Rsq2(i));
+     end
+     for i = 1:size(segOnlySingleDataTable, 1)
+         fprintf(fid, ',%f',segOnlySingleDataTable.errInd(i));
+     end
+     for i = 1:size(segOnlySingleDataTable, 1)
+         fprintf(fid, ',%f',segOnlySingleDataTable.errVal(i));
+     end
+     
      for i = 1:size(restOnlySingleDataTable, 1)
          fprintf(fid, ',%f',restOnlySingleDataTable.b_2(i));
+     end
+     for i = 1:size(restOnlySingleDataTable, 1)
          fprintf(fid, ',%f',restOnlySingleDataTable.Rsq2(i));
-         fprintf(fid, ',%f',restOnlySingleDataTable.rsq2Val_SecondLast(i));
-         fprintf(fid, ',%f',restOnlySingleDataTable.rsq2Val_05Threshold(i));
-         fprintf(fid, ',%f',restOnlySingleDataTable.rsq2Ind_SecondLast(i)+1);
-         fprintf(fid, ',%f',restOnlySingleDataTable.rsq2Ind_SecondLast(i));
-         fprintf(fid, ',%f',restOnlySingleDataTable.rsq2Val_05Threshold(i));
+     end
+      for i = 1:size(restOnlySingleDataTable, 1)
+         fprintf(fid, ',%f',restOnlySingleDataTable.errInd(i));
+     end
+     for i = 1:size(restOnlySingleDataTable, 1)
+         fprintf(fid, ',%f',restOnlySingleDataTable.errVal(i));
      end
      
 %      for i = 1:size(segOnlyMultipleDataTable, 1)
