@@ -11,7 +11,7 @@ configFilePath = '../Data_json/LinConfig/IOC_IITFatigue_Subj1_demo.json';
 
 saveSuffix = 'demo';
 % savePath = sprintf('D:/results/fatigue_ioc01_weightsIndividual/%s/', saveSuffix);
-savePath = sprintf('D:/aslab_github/ioc/Data/IOC/%s/', saveSuffix);
+savePath = sprintf('C:/results/ioc/Data/IOC/%s/', saveSuffix);
 
 %% Set up internal parameters
 % Add paths to directories with model definition and util functions
