@@ -7,6 +7,10 @@ function [weights_mean_all, weights_var_all, winCount_all] = cumWeights(t, progr
     
     % the weight at each timestep is the sum of every window that overlaps with iterate
     for i = 1:length(t)
+        if mod(t, 1000) == 0
+            fprintf('    [%u/%u] Cumulating weights...\n', i, length(t));
+        end
+        
         weightAtI = [];
         for j = 1:length(progressVar)
             if isempty(progressVar(j).winInds)
