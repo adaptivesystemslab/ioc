@@ -93,10 +93,14 @@ end
 
 function plotStuff(typeLabel, allDofs, allFeaturesSingle, nSubject, featureTableSegTime, featureTableSegData, outCsv, outputPath) 
     subjectColours = distinguishable_colors(nSubject);
+    currInd = 0;
     
     % then plot everything
     for ind_dof = 1:length(allDofs)
         for ind_features = 1:length(allFeaturesSingle)
+            currInd = currInd + 1;
+            fprintf('Currently on %s - %u of %u\n', typeLabel, currInd, length(allDofs)*length(allFeaturesSingle));
+            
             currDof = allDofs{ind_dof};
             currFeature = allFeaturesSingle{ind_features};
             figName = ['combined_' typeLabel '_' currDof '_' currFeature];
@@ -142,6 +146,7 @@ function plotStuff(typeLabel, allDofs, allFeaturesSingle, nSubject, featureTable
                 
                 figure(h2);
                 subplot(3, 5, ind_subjects);
+                hold on;
                 plot(currTime, currData, 'DisplayName', currLabel, 'Color', currColour, 'MarkerSize', 14, 'Marker', 'o', 'LineStyle', 'none');
                 ph = plot(currTime, yCalc2, 'Color', [1 0 0]);
                 ph.Annotation.LegendInformation.IconDisplayStyle = 'off';
