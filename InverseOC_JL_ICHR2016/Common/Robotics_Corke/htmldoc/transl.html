@@ -1,0 +1,117 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of transl</title>
+  <meta name="keywords" content="transl">
+  <meta name="description" content="TRANSL Create translational transform">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="./m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="./index.html">Home</a> &gt;  <a href="index.html">.</a> &gt; transl.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="./index.html"><img alt="<" border="0" src="./left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for .&nbsp;<img alt=">" border="0" src="./right.png"></a></td></tr></table>-->
+
+<h1>transl
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="./up.png"></a></h2>
+<div class="box"><strong>TRANSL Create translational transform</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="./up.png"></a></h2>
+<div class="box"><strong>function r = transl(x, y, z) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="./up.png"></a></h2>
+<div class="fragment"><pre class="comment">TRANSL Create translational transform
+
+    TR = TRANSL(X, Y, Z)
+    TR = TRANSL( [X Y Z] )
+
+ Returns a homogeneous transformation representing a translation of X, Y
+ and Z.
+
+    [X Y Z]' = TRANSL(T)
+
+ Returns the translational part of a homogenous transform as a 3-element 
+ column vector.
+
+    [X Y Z] = TRANSL(TG)
+
+ Returns a  matrix of the X, Y and Z elements extracted from a Cartesian 
+ trajectory matrix TG.
+
+ See also: <a href="ctraj.html" class="code" title="function tt = ctraj(t0, t1, n)">CTRAJ</a>.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="./up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(./matlabicon.gif)">
+<li><a href="ishomog.html" class="code" title="function h = ishomog(tr)">ishomog</a>	ISHOMOG Test if argument is a homogeneous transformation</li></ul>
+This function is called by:
+<ul style="list-style-image:url(./matlabicon.gif)">
+<li><a href="ftrans.html" class="code" title="function Ft = ftrans(T, F)">ftrans</a>	FTRANS Transform force/moment</li><li><a href="trinterp.html" class="code" title="function t = trinterp(T0, T1, r)">trinterp</a>	TRINTERP Interpolate homogeneous transformations</li><li><a href="trplot.html" class="code" title="function trplot(T, name, color)">trplot</a>	TRPLOT Plot a transformation</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="./up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%TRANSL Create translational transform</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">%    TR = TRANSL(X, Y, Z)</span>
+0004 <span class="comment">%    TR = TRANSL( [X Y Z] )</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">% Returns a homogeneous transformation representing a translation of X, Y</span>
+0007 <span class="comment">% and Z.</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">%    [X Y Z]' = TRANSL(T)</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">% Returns the translational part of a homogenous transform as a 3-element</span>
+0012 <span class="comment">% column vector.</span>
+0013 <span class="comment">%</span>
+0014 <span class="comment">%    [X Y Z] = TRANSL(TG)</span>
+0015 <span class="comment">%</span>
+0016 <span class="comment">% Returns a  matrix of the X, Y and Z elements extracted from a Cartesian</span>
+0017 <span class="comment">% trajectory matrix TG.</span>
+0018 <span class="comment">%</span>
+0019 <span class="comment">% See also: CTRAJ.</span>
+0020 
+0021 <span class="comment">% Copyright (C) 1993-2008, by Peter I. Corke</span>
+0022 <span class="comment">%</span>
+0023 <span class="comment">% This file is part of The Robotics Toolbox for Matlab (RTB).</span>
+0024 <span class="comment">%</span>
+0025 <span class="comment">% RTB is free software: you can redistribute it and/or modify</span>
+0026 <span class="comment">% it under the terms of the GNU Lesser General Public License as published by</span>
+0027 <span class="comment">% the Free Software Foundation, either version 3 of the License, or</span>
+0028 <span class="comment">% (at your option) any later version.</span>
+0029 <span class="comment">%</span>
+0030 <span class="comment">% RTB is distributed in the hope that it will be useful,</span>
+0031 <span class="comment">% but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+0032 <span class="comment">% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+0033 <span class="comment">% GNU Lesser General Public License for more details.</span>
+0034 <span class="comment">%</span>
+0035 <span class="comment">% You should have received a copy of the GNU Leser General Public License</span>
+0036 <span class="comment">% along with RTB.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
+0037 
+0038 <a name="_sub0" href="#_subfunctions" class="code">function r = transl(x, y, z)</a>
+0039     <span class="keyword">if</span> nargin == 1,
+0040         <span class="keyword">if</span> <a href="ishomog.html" class="code" title="function h = ishomog(tr)">ishomog</a>(x),
+0041             r = x(1:3,4);
+0042         <span class="keyword">elseif</span> ndims(x) == 3,
+0043             r = squeeze(x(1:3,4,:))';
+0044         <span class="keyword">else</span>
+0045             t = x(:);
+0046             r =    [eye(3)            t;
+0047                 0    0    0    1];
+0048         <span class="keyword">end</span>
+0049     <span class="keyword">elseif</span> nargin == 3,
+0050         t = [x; y; z];
+0051         r =    [eye(3)            t;
+0052             0    0    0    1];
+0053     <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sun 15-Feb-2009 18:09:29 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

@@ -1,0 +1,306 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of rne_dh</title>
+  <meta name="keywords" content="rne_dh">
+  <meta name="description" content="RNE_DH Compute inverse dynamics via recursive Newton-Euler formulation">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../index.html">Home</a> &gt;  <a href="#">@robot</a> &gt; rne_dh.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../index.html"><img alt="<" border="0" src="../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for ./@robot&nbsp;<img alt=">" border="0" src="../right.png"></a></td></tr></table>-->
+
+<h1>rne_dh
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>RNE_DH Compute inverse dynamics via recursive Newton-Euler formulation</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function tau = rne_dh(robot, a1, a2, a3, a4, a5) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment">RNE_DH Compute inverse dynamics via recursive Newton-Euler formulation
+
+    TAU = RNE(ROBOT, Q, QD, QDD)
+    TAU = RNE(ROBOT, [Q QD QDD])
+
+ Returns the joint torque required to achieve the specified joint position,
+ velocity and acceleration state.
+
+ Gravity vector is an attribute of the robot object but this may be 
+ overriden by providing a gravity acceleration vector [gx gy gz].
+
+    TAU = RNE(ROBOT, Q, QD, QDD, GRAV)
+    TAU = RNE(ROBOT, [Q QD QDD], GRAV)
+
+ An external force/moment acting on the end of the manipulator may also be
+ specified by a 6-element vector [Fx Fy Fz Mx My Mz].
+
+    TAU = RNE(ROBOT, Q, QD, QDD, GRAV, FEXT)
+    TAU = RNE(ROBOT, [Q QD QDD], GRAV, FEXT)
+
+ where Q, QD and QDD are row vectors of the manipulator state; pos, vel, 
+ and accel.
+
+ The torque computed also contains a contribution due to armature
+ inertia.
+
+ RNE can be either an M-file or a MEX-file.  See the manual for details on
+ how to configure the MEX-file.  The M-file is a wrapper which calls either
+ RNE_DH or RNE_MDH depending on the kinematic conventions used by the robot
+ object.
+
+ See also: <a href="robot.html" class="code" title="function r = robot(L, a1, a2, a3)">ROBOT</a>, ACCEL, GRAVLOAD, INERTIA.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="friction.html" class="code" title="function  tau = friction(robot, qd)">friction</a>	FRICTION Compute friction torque for a ROBOT object</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="rne.html" class="code" title="function tau = rne(robot, varargin)">rne</a>	RNE Compute inverse dynamics via recursive Newton-Euler formulation</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%RNE_DH Compute inverse dynamics via recursive Newton-Euler formulation</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">%    TAU = RNE(ROBOT, Q, QD, QDD)</span>
+0004 <span class="comment">%    TAU = RNE(ROBOT, [Q QD QDD])</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">% Returns the joint torque required to achieve the specified joint position,</span>
+0007 <span class="comment">% velocity and acceleration state.</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">% Gravity vector is an attribute of the robot object but this may be</span>
+0010 <span class="comment">% overriden by providing a gravity acceleration vector [gx gy gz].</span>
+0011 <span class="comment">%</span>
+0012 <span class="comment">%    TAU = RNE(ROBOT, Q, QD, QDD, GRAV)</span>
+0013 <span class="comment">%    TAU = RNE(ROBOT, [Q QD QDD], GRAV)</span>
+0014 <span class="comment">%</span>
+0015 <span class="comment">% An external force/moment acting on the end of the manipulator may also be</span>
+0016 <span class="comment">% specified by a 6-element vector [Fx Fy Fz Mx My Mz].</span>
+0017 <span class="comment">%</span>
+0018 <span class="comment">%    TAU = RNE(ROBOT, Q, QD, QDD, GRAV, FEXT)</span>
+0019 <span class="comment">%    TAU = RNE(ROBOT, [Q QD QDD], GRAV, FEXT)</span>
+0020 <span class="comment">%</span>
+0021 <span class="comment">% where Q, QD and QDD are row vectors of the manipulator state; pos, vel,</span>
+0022 <span class="comment">% and accel.</span>
+0023 <span class="comment">%</span>
+0024 <span class="comment">% The torque computed also contains a contribution due to armature</span>
+0025 <span class="comment">% inertia.</span>
+0026 <span class="comment">%</span>
+0027 <span class="comment">% RNE can be either an M-file or a MEX-file.  See the manual for details on</span>
+0028 <span class="comment">% how to configure the MEX-file.  The M-file is a wrapper which calls either</span>
+0029 <span class="comment">% RNE_DH or RNE_MDH depending on the kinematic conventions used by the robot</span>
+0030 <span class="comment">% object.</span>
+0031 <span class="comment">%</span>
+0032 <span class="comment">% See also: ROBOT, ACCEL, GRAVLOAD, INERTIA.</span>
+0033 
+0034 <span class="comment">%</span>
+0035 <span class="comment">% verified against MAPLE code, which is verified by examples</span>
+0036 <span class="comment">%</span>
+0037 
+0038 <span class="comment">% Copyright (C) 1992-2008, by Peter I. Corke</span>
+0039 <span class="comment">%</span>
+0040 <span class="comment">% This file is part of The Robotics Toolbox for Matlab (RTB).</span>
+0041 <span class="comment">%</span>
+0042 <span class="comment">% RTB is free software: you can redistribute it and/or modify</span>
+0043 <span class="comment">% it under the terms of the GNU Lesser General Public License as published by</span>
+0044 <span class="comment">% the Free Software Foundation, either version 3 of the License, or</span>
+0045 <span class="comment">% (at your option) any later version.</span>
+0046 <span class="comment">%</span>
+0047 <span class="comment">% RTB is distributed in the hope that it will be useful,</span>
+0048 <span class="comment">% but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+0049 <span class="comment">% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+0050 <span class="comment">% GNU Lesser General Public License for more details.</span>
+0051 <span class="comment">%</span>
+0052 <span class="comment">% You should have received a copy of the GNU Leser General Public License</span>
+0053 <span class="comment">% along with RTB.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
+0054 <a name="_sub0" href="#_subfunctions" class="code">function tau = rne_dh(robot, a1, a2, a3, a4, a5)</a>
+0055 
+0056     z0 = [0;0;1];
+0057     grav = robot.gravity;    <span class="comment">% default gravity from the object</span>
+0058     fext = zeros(6, 1);
+0059 
+0060     <span class="comment">% Set debug to:</span>
+0061     <span class="comment">%    0 no messages</span>
+0062     <span class="comment">%    1 display results of forward and backward recursions</span>
+0063     <span class="comment">%    2 display print R and p*</span>
+0064     debug = 0;
+0065 
+0066     n = robot.n;
+0067     <span class="keyword">if</span> numcols(a1) == 3*n,
+0068         Q = a1(:,1:n);
+0069         Qd = a1(:,n+1:2*n);
+0070         Qdd = a1(:,2*n+1:3*n);
+0071         np = numrows(Q);
+0072         <span class="keyword">if</span> nargin &gt;= 3,    
+0073             grav = a2(:);
+0074         <span class="keyword">end</span>
+0075         <span class="keyword">if</span> nargin == 4,
+0076             fext = a3;
+0077         <span class="keyword">end</span>
+0078     <span class="keyword">else</span>
+0079         np = numrows(a1);
+0080         Q = a1;
+0081         Qd = a2;
+0082         Qdd = a3;
+0083         <span class="keyword">if</span> numcols(a1) ~= n | numcols(Qd) ~= n | numcols(Qdd) ~= n | <span class="keyword">...</span>
+0084             numrows(Qd) ~= np | numrows(Qdd) ~= np,
+0085             error(<span class="string">'bad data'</span>);
+0086         <span class="keyword">end</span>
+0087         <span class="keyword">if</span> nargin &gt;= 5,    
+0088             grav = a4(:);
+0089         <span class="keyword">end</span>
+0090         <span class="keyword">if</span> nargin == 6,
+0091             fext = a5;
+0092         <span class="keyword">end</span>
+0093     <span class="keyword">end</span>
+0094     
+0095     tau = zeros(np,n);
+0096 
+0097     <span class="keyword">for</span> p=1:np,
+0098         q = Q(p,:)';
+0099         qd = Qd(p,:)';
+0100         qdd = Qdd(p,:)';
+0101     
+0102         Fm = [];
+0103         Nm = [];
+0104         pstarm = [];
+0105         Rm = [];
+0106         w = zeros(3,1);
+0107         wd = zeros(3,1);
+0108         v = zeros(3,1);
+0109         vd = grav(:);
+0110 
+0111     <span class="comment">%</span>
+0112     <span class="comment">% init some variables, compute the link rotation matrices</span>
+0113     <span class="comment">%</span>
+0114         <span class="keyword">for</span> j=1:n,
+0115             link = robot.link{j};
+0116             Tj = link(q(j));
+0117             <span class="keyword">if</span> link.RP == <span class="string">'R'</span>,
+0118                 D = link.D;
+0119             <span class="keyword">else</span>
+0120                 D = q(j);
+0121             <span class="keyword">end</span>
+0122             alpha = link.alpha;
+0123             pstar = [link.A; D*sin(alpha); D*cos(alpha)];
+0124             <span class="keyword">if</span> j == 1,
+0125                 pstar = t2r(robot.base) * pstar;
+0126                 Tj = robot.base * Tj;
+0127             <span class="keyword">end</span>
+0128             pstarm(:,j) = pstar;
+0129             Rm{j} = t2r(Tj);
+0130             <span class="keyword">if</span> debug&gt;1,
+0131                 Rm{j}
+0132                 Pstarm(:,j)'
+0133             <span class="keyword">end</span>
+0134         <span class="keyword">end</span>
+0135 
+0136     <span class="comment">%</span>
+0137     <span class="comment">%  the forward recursion</span>
+0138     <span class="comment">%</span>
+0139         <span class="keyword">for</span> j=1:n,
+0140             link = robot.link{j};
+0141 
+0142             Rt = Rm{j}';    <span class="comment">% transpose!!</span>
+0143             pstar = pstarm(:,j);
+0144             r = link.r;
+0145 
+0146             <span class="comment">%</span>
+0147             <span class="comment">% statement order is important here</span>
+0148             <span class="comment">%</span>
+0149             <span class="keyword">if</span> link.RP == <span class="string">'R'</span>,
+0150                 <span class="comment">% revolute axis</span>
+0151                 wd = Rt*(wd + z0*qdd(j) + <span class="keyword">...</span>
+0152                     cross(w,z0*qd(j)));
+0153                 w = Rt*(w + z0*qd(j));
+0154                 <span class="comment">%v = cross(w,pstar) + Rt*v;</span>
+0155                 vd = cross(wd,pstar) + <span class="keyword">...</span>
+0156                     cross(w, cross(w,pstar)) +Rt*vd;
+0157 
+0158             <span class="keyword">else</span>
+0159                 <span class="comment">% prismatic axis</span>
+0160                 w = Rt*w;
+0161                 wd = Rt*wd;
+0162                 vd = Rt*(z0*qdd(j)+vd) + <span class="keyword">...</span>
+0163                     cross(wd,pstar) + <span class="keyword">...</span>
+0164                     2*cross(w,Rt*z0*qd(j)) +<span class="keyword">...</span>
+0165                     cross(w, cross(w,pstar));
+0166             <span class="keyword">end</span>
+0167 
+0168             vhat = cross(wd,r) + <span class="keyword">...</span>
+0169                 cross(w,cross(w,r)) + vd;
+0170             F = link.m*vhat;
+0171             N = link.I*wd + cross(w,link.I*w);
+0172             Fm = [Fm F];
+0173             Nm = [Nm N];
+0174 
+0175             <span class="keyword">if</span> debug,
+0176                 fprintf(<span class="string">'w: '</span>); fprintf(<span class="string">'%.3f '</span>, w)
+0177                 fprintf(<span class="string">'\nwd: '</span>); fprintf(<span class="string">'%.3f '</span>, wd)
+0178                 fprintf(<span class="string">'\nvd: '</span>); fprintf(<span class="string">'%.3f '</span>, vd)
+0179                 fprintf(<span class="string">'\nvdbar: '</span>); fprintf(<span class="string">'%.3f '</span>, vhat)
+0180                 fprintf(<span class="string">'\n'</span>);
+0181             <span class="keyword">end</span>
+0182         <span class="keyword">end</span>
+0183 
+0184     <span class="comment">%</span>
+0185     <span class="comment">%  the backward recursion</span>
+0186     <span class="comment">%</span>
+0187 
+0188         fext = fext(:);
+0189         f = fext(1:3);        <span class="comment">% force/moments on end of arm</span>
+0190         nn = fext(4:6);
+0191 
+0192         <span class="keyword">for</span> j=n:-1:1,
+0193             link = robot.link{j};
+0194             pstar = pstarm(:,j);
+0195             
+0196             <span class="comment">%</span>
+0197             <span class="comment">% order of these statements is important, since both</span>
+0198             <span class="comment">% nn and f are functions of previous f.</span>
+0199             <span class="comment">%</span>
+0200             <span class="keyword">if</span> j == n,
+0201                 R = eye(3,3);
+0202             <span class="keyword">else</span>
+0203                 R = Rm{j+1};
+0204             <span class="keyword">end</span>
+0205             r = link.r;
+0206             nn = R*(nn + cross(R'*pstar,f)) + <span class="keyword">...</span>
+0207                 cross(pstar+r,Fm(:,j)) + <span class="keyword">...</span>
+0208                 Nm(:,j);
+0209             f = R*f + Fm(:,j);
+0210             <span class="keyword">if</span> debug,
+0211                 fprintf(<span class="string">'f: '</span>); fprintf(<span class="string">'%.3f '</span>, f)
+0212                 fprintf(<span class="string">'\nn: '</span>); fprintf(<span class="string">'%.3f '</span>, nn)
+0213                 fprintf(<span class="string">'\n'</span>);
+0214             <span class="keyword">end</span>
+0215 
+0216             R = Rm{j};
+0217             <span class="keyword">if</span> link.RP == <span class="string">'R'</span>,
+0218                 <span class="comment">% revolute</span>
+0219                 tau(p,j) = nn'*(R'*z0) + <span class="keyword">...</span>
+0220                     link.G^2 * link.Jm*qdd(j) + <span class="keyword">...</span>
+0221                     link.G * <a href="friction.html" class="code" title="function  tau = friction(robot, qd)">friction</a>(link, qd(j));
+0222             <span class="keyword">else</span>
+0223                 <span class="comment">% prismatic</span>
+0224                 tau(p,j) = f'*(R'*z0) + <span class="keyword">...</span>
+0225                     link.G^2 * link.Jm*qdd(j) + <span class="keyword">...</span>
+0226                     link.G * <a href="friction.html" class="code" title="function  tau = friction(robot, qd)">friction</a>(link, qd(j));
+0227             <span class="keyword">end</span>
+0228         <span class="keyword">end</span>
+0229     <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sun 15-Feb-2009 18:09:29 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

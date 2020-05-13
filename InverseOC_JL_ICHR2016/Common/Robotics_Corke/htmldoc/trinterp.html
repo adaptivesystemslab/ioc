@@ -1,0 +1,93 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of trinterp</title>
+  <meta name="keywords" content="trinterp">
+  <meta name="description" content="TRINTERP Interpolate homogeneous transformations">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="./m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="./index.html">Home</a> &gt;  <a href="index.html">.</a> &gt; trinterp.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="./index.html"><img alt="<" border="0" src="./left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for .&nbsp;<img alt=">" border="0" src="./right.png"></a></td></tr></table>-->
+
+<h1>trinterp
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="./up.png"></a></h2>
+<div class="box"><strong>TRINTERP Interpolate homogeneous transformations</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="./up.png"></a></h2>
+<div class="box"><strong>function t = trinterp(T0, T1, r) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="./up.png"></a></h2>
+<div class="fragment"><pre class="comment">TRINTERP Interpolate homogeneous transformations
+
+    TR = TRINTERP(T0, T1, R)
+
+ Returns a homogeneous transform interpolation between T0 and T1 as
+ R varies from 0 to 1.  Rotation is interpolated using quaternion
+ spherical linear interpolation.
+
+ See also: <a href="ctraj.html" class="code" title="function tt = ctraj(t0, t1, n)">CTRAJ</a>, QUATERNION</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="./up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(./matlabicon.gif)">
+<li><a href="transl.html" class="code" title="function r = transl(x, y, z)">transl</a>	TRANSL Create translational transform</li></ul>
+This function is called by:
+<ul style="list-style-image:url(./matlabicon.gif)">
+<li><a href="ctraj.html" class="code" title="function tt = ctraj(t0, t1, n)">ctraj</a>	CTRAJ Compute a Cartesian trajectory between two points</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="./up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%TRINTERP Interpolate homogeneous transformations</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">%    TR = TRINTERP(T0, T1, R)</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% Returns a homogeneous transform interpolation between T0 and T1 as</span>
+0006 <span class="comment">% R varies from 0 to 1.  Rotation is interpolated using quaternion</span>
+0007 <span class="comment">% spherical linear interpolation.</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">% See also: CTRAJ, QUATERNION</span>
+0010 
+0011 <span class="comment">% Copyright (C) 1993-2008, by Peter I. Corke</span>
+0012 <span class="comment">%</span>
+0013 <span class="comment">% This file is part of The Robotics Toolbox for Matlab (RTB).</span>
+0014 <span class="comment">%</span>
+0015 <span class="comment">% RTB is free software: you can redistribute it and/or modify</span>
+0016 <span class="comment">% it under the terms of the GNU Lesser General Public License as published by</span>
+0017 <span class="comment">% the Free Software Foundation, either version 3 of the License, or</span>
+0018 <span class="comment">% (at your option) any later version.</span>
+0019 <span class="comment">%</span>
+0020 <span class="comment">% RTB is distributed in the hope that it will be useful,</span>
+0021 <span class="comment">% but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+0022 <span class="comment">% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+0023 <span class="comment">% GNU Lesser General Public License for more details.</span>
+0024 <span class="comment">%</span>
+0025 <span class="comment">% You should have received a copy of the GNU Leser General Public License</span>
+0026 <span class="comment">% along with RTB.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
+0027 
+0028 <a name="_sub0" href="#_subfunctions" class="code">function t = trinterp(T0, T1, r)</a>
+0029 
+0030     q0 = quaternion(T0);
+0031     q1 = quaternion(T1);
+0032 
+0033     p0 = <a href="transl.html" class="code" title="function r = transl(x, y, z)">transl</a>(T0);
+0034     p1 = <a href="transl.html" class="code" title="function r = transl(x, y, z)">transl</a>(T1);
+0035 
+0036     qr = qinterp(q0, q1, r);
+0037     pr = p0*(1-r) + r*p1;
+0038 
+0039     t = [qr.r pr; 0 0 0 1];</pre></div>
+<hr><address>Generated on Sun 15-Feb-2009 18:09:29 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

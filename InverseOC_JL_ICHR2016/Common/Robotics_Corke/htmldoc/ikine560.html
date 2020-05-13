@@ -1,0 +1,304 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of ikine560</title>
+  <meta name="keywords" content="ikine560">
+  <meta name="description" content="IKINE560 Inverse kinematics for Puma 560">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="./m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="./index.html">Home</a> &gt;  <a href="index.html">.</a> &gt; ikine560.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="./index.html"><img alt="<" border="0" src="./left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for .&nbsp;<img alt=">" border="0" src="./right.png"></a></td></tr></table>-->
+
+<h1>ikine560
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="./up.png"></a></h2>
+<div class="box"><strong>IKINE560 Inverse kinematics for Puma 560</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="./up.png"></a></h2>
+<div class="box"><strong>function theta = ikine560(robot, T,configuration) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="./up.png"></a></h2>
+<div class="fragment"><pre class="comment">IKINE560 Inverse kinematics for Puma 560 
+
+    Q = IKINE560(ROBOT, T, CONFIG)
+
+ Solve the inverse kinematics of the Puma-like (spherical wristed) robot 
+ ROBOT whose end-effector pose is given by T.
+
+ The optional third argument specifies the configuration of the arm in
+ the form of a string containing one or more of the configuration codes:
+    'l' or 'r'    lefty/righty
+    'u' or 'd'    elbow
+    'n' or 'f'    wrist flip or noflip.
+
+ The default configuration is 'lun'.
+
+ REFERENCE:
+
+ Inverse kinematics for a PUMA 560 based on the equations by Paul and Zhang
+ From The International Journal of Robotics Research
+ Vol. 5, No. 2, Summer 1986, p. 32-44
+
+
+ AUTHOR:
+ Robert Biro        gt2231a@prism.gatech.edu
+ with Gary Von McMurray
+
+ GTRI/ATRP/IIMB
+ Georgia Institute of Technology
+ 2/13/95</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="./up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(./matlabicon.gif)">
+<li><a href="ikine560.html" class="code" title="function theta = ikine560(robot, T,configuration)">ikine560</a>	IKINE560 Inverse kinematics for Puma 560</li><li><a href="ishomog.html" class="code" title="function h = ishomog(tr)">ishomog</a>	ISHOMOG Test if argument is a homogeneous transformation</li></ul>
+This function is called by:
+<ul style="list-style-image:url(./matlabicon.gif)">
+<li><a href="ikine560.html" class="code" title="function theta = ikine560(robot, T,configuration)">ikine560</a>	IKINE560 Inverse kinematics for Puma 560</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="./up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%IKINE560 Inverse kinematics for Puma 560</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">%    Q = IKINE560(ROBOT, T, CONFIG)</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% Solve the inverse kinematics of the Puma-like (spherical wristed) robot</span>
+0006 <span class="comment">% ROBOT whose end-effector pose is given by T.</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">% The optional third argument specifies the configuration of the arm in</span>
+0009 <span class="comment">% the form of a string containing one or more of the configuration codes:</span>
+0010 <span class="comment">%    'l' or 'r'    lefty/righty</span>
+0011 <span class="comment">%    'u' or 'd'    elbow</span>
+0012 <span class="comment">%    'n' or 'f'    wrist flip or noflip.</span>
+0013 <span class="comment">%</span>
+0014 <span class="comment">% The default configuration is 'lun'.</span>
+0015 <span class="comment">%</span>
+0016 <span class="comment">% REFERENCE:</span>
+0017 <span class="comment">%</span>
+0018 <span class="comment">% Inverse kinematics for a PUMA 560 based on the equations by Paul and Zhang</span>
+0019 <span class="comment">% From The International Journal of Robotics Research</span>
+0020 <span class="comment">% Vol. 5, No. 2, Summer 1986, p. 32-44</span>
+0021 <span class="comment">%</span>
+0022 <span class="comment">%</span>
+0023 <span class="comment">% AUTHOR:</span>
+0024 <span class="comment">% Robert Biro        gt2231a@prism.gatech.edu</span>
+0025 <span class="comment">% with Gary Von McMurray</span>
+0026 <span class="comment">%</span>
+0027 <span class="comment">% GTRI/ATRP/IIMB</span>
+0028 <span class="comment">% Georgia Institute of Technology</span>
+0029 <span class="comment">% 2/13/95</span>
+0030 
+0031 <span class="comment">% MOD HISTORY</span>
+0032 <span class="comment">%  4/99 use new robot object</span>
+0033 <span class="comment">%  4/02 tidyup, remove multiple solutions</span>
+0034 
+0035 <a name="_sub0" href="#_subfunctions" class="code">function theta = ikine560(robot, T,configuration)</a>
+0036 
+0037     <span class="keyword">if</span> robot.n ~= 6,
+0038         error(<span class="string">'Solution only applicable for 6DOF manipulator'</span>);
+0039     <span class="keyword">end</span>
+0040 
+0041     <span class="keyword">if</span> robot.mdh ~= 0,
+0042         error(<span class="string">'Solution only applicable for standard DH conventions'</span>);
+0043     <span class="keyword">end</span>
+0044 
+0045     <span class="keyword">if</span> ndims(T) == 3,
+0046         theta = [];
+0047         <span class="keyword">for</span> k=1:size(T,3),
+0048             <span class="keyword">if</span> nargin &lt; 3,
+0049                 theta = [theta; <a href="ikine560.html" class="code" title="function theta = ikine560(robot, T,configuration)">ikine560</a>(robot, T(:,:,k))];
+0050             <span class="keyword">else</span>
+0051                 theta = [theta; <a href="ikine560.html" class="code" title="function theta = ikine560(robot, T,configuration)">ikine560</a>(robot, T(:,:,k), configuration)];
+0052             <span class="keyword">end</span>
+0053         <span class="keyword">end</span>
+0054 
+0055         <span class="keyword">return</span>;
+0056     <span class="keyword">end</span>
+0057     L = robot.links;
+0058     a1 = L{1}.A;
+0059     a2 = L{2}.A;
+0060     a3 = L{3}.A;
+0061 
+0062     <span class="keyword">if</span> ~isempty( find( [L{4}.A L{5}.A L{6}.A] ~= 0 ))
+0063         error(<span class="string">'wrist is not spherical'</span>)
+0064     <span class="keyword">end</span>
+0065 
+0066     d1 = L{1}.D;
+0067     d2 = L{2}.D;
+0068     d3 = L{3}.D;
+0069     d4 = L{4}.D;
+0070 
+0071     <span class="keyword">if</span> ~<a href="ishomog.html" class="code" title="function h = ishomog(tr)">ishomog</a>(T),
+0072         error(<span class="string">'T is not a homog xform'</span>);
+0073     <span class="keyword">end</span>
+0074 
+0075     <span class="comment">% undo base transformation</span>
+0076     T = inv(robot.base) * T;
+0077 
+0078     <span class="comment">% The following parameters are extracted from the Homogeneous</span>
+0079     <span class="comment">% Transformation as defined in equation 1, p. 34</span>
+0080 
+0081     Ox = T(1,2);
+0082     Oy = T(2,2);
+0083     Oz = T(3,2);
+0084 
+0085     Ax = T(1,3);
+0086     Ay = T(2,3);
+0087     Az = T(3,3);
+0088 
+0089     Px = T(1,4);
+0090     Py = T(2,4);
+0091     Pz = T(3,4);
+0092 
+0093     <span class="comment">% The configuration parameter determines what n1,n2,n4 values are used</span>
+0094     <span class="comment">% and how many solutions are determined which have values of -1 or +1.</span>
+0095 
+0096     <span class="keyword">if</span> nargin &lt; 3,
+0097         configuration = <span class="string">''</span>;
+0098     <span class="keyword">else</span>
+0099         configuration = lower(configuration);
+0100     <span class="keyword">end</span>
+0101 
+0102     <span class="comment">% default configuration</span>
+0103 
+0104     n1 = -1;    <span class="comment">% L</span>
+0105     n2 = -1;    <span class="comment">% U</span>
+0106     n4 = -1;    <span class="comment">% N</span>
+0107     <span class="keyword">if</span> ~isempty(findstr(configuration, <span class="string">'l'</span>)),
+0108         n1 = -1;
+0109     <span class="keyword">end</span>
+0110     <span class="keyword">if</span> ~isempty(findstr(configuration, <span class="string">'r'</span>)),
+0111         n1 = 1;
+0112     <span class="keyword">end</span>
+0113     <span class="keyword">if</span> ~isempty(findstr(configuration, <span class="string">'u'</span>)),
+0114         <span class="keyword">if</span> n1 == 1,
+0115             n2 = 1;
+0116         <span class="keyword">else</span>
+0117             n2 = -1;
+0118         <span class="keyword">end</span>
+0119     <span class="keyword">end</span>
+0120     <span class="keyword">if</span> ~isempty(findstr(configuration, <span class="string">'d'</span>)),
+0121         <span class="keyword">if</span> n1 == 1,
+0122             n2 = -1;
+0123         <span class="keyword">else</span>
+0124             n2 = 1;
+0125         <span class="keyword">end</span>
+0126     <span class="keyword">end</span>
+0127     <span class="keyword">if</span> ~isempty(findstr(configuration, <span class="string">'n'</span>)),
+0128         n4 = 1;
+0129     <span class="keyword">end</span>
+0130     <span class="keyword">if</span> ~isempty(findstr(configuration, <span class="string">'f'</span>)),
+0131         n4 = -1;
+0132     <span class="keyword">end</span>
+0133 
+0134 
+0135     <span class="comment">%</span>
+0136     <span class="comment">% Solve for theta(1)</span>
+0137     <span class="comment">%</span>
+0138     <span class="comment">% r is defined in equation 38, p. 39.</span>
+0139     <span class="comment">% theta(1) uses equations 40 and 41, p.39,</span>
+0140     <span class="comment">% based on the configuration parameter n1</span>
+0141     <span class="comment">%</span>
+0142 
+0143     r=sqrt(Px^2 + Py^2);
+0144     <span class="keyword">if</span> (n1 == 1),
+0145         theta(1)= atan2(Py,Px) + asin(d3/r);
+0146     <span class="keyword">else</span>
+0147         theta(1)= atan2(Py,Px) + pi - asin(d3/r);
+0148     <span class="keyword">end</span>
+0149 
+0150     <span class="comment">%</span>
+0151     <span class="comment">% Solve for theta(2)</span>
+0152     <span class="comment">%</span>
+0153     <span class="comment">% V114 is defined in equation 43, p.39.</span>
+0154     <span class="comment">% r is defined in equation 47, p.39.</span>
+0155     <span class="comment">% Psi is defined in equation 49, p.40.</span>
+0156     <span class="comment">% theta(2) uses equations 50 and 51, p.40, based on the configuration</span>
+0157     <span class="comment">% parameter n2</span>
+0158     <span class="comment">%</span>
+0159 
+0160     V114= Px*cos(theta(1)) + Py*sin(theta(1));
+0161     r=sqrt(V114^2 + Pz^2);
+0162     Psi = acos((a2^2-d4^2-a3^2+V114^2+Pz^2)/(2.0*a2*r));
+0163     <span class="keyword">if</span> ~isreal(Psi),
+0164         error(<span class="string">'point not reachable'</span>);
+0165     <span class="keyword">end</span>
+0166     theta(2) = atan2(Pz,V114) + n2*Psi;
+0167 
+0168     <span class="comment">%</span>
+0169     <span class="comment">% Solve for theta(3)</span>
+0170     <span class="comment">%</span>
+0171     <span class="comment">% theta(3) uses equation 57, p. 40.</span>
+0172     <span class="comment">%</span>
+0173 
+0174     num = cos(theta(2))*V114+sin(theta(2))*Pz-a2;
+0175     den = cos(theta(2))*Pz - sin(theta(2))*V114;
+0176     theta(3) = atan2(a3,d4) - atan2(num, den);
+0177 
+0178     <span class="comment">%</span>
+0179     <span class="comment">% Solve for theta(4)</span>
+0180     <span class="comment">%</span>
+0181     <span class="comment">% V113 is defined in equation 62, p. 41.</span>
+0182     <span class="comment">% V323 is defined in equation 62, p. 41.</span>
+0183     <span class="comment">% V313 is defined in equation 62, p. 41.</span>
+0184     <span class="comment">% theta(4) uses equation 61, p.40, based on the configuration</span>
+0185     <span class="comment">% parameter n4</span>
+0186     <span class="comment">%</span>
+0187 
+0188     V113 = cos(theta(1))*Ax + sin(theta(1))*Ay;
+0189     V323 = cos(theta(1))*Ay - sin(theta(1))*Ax;
+0190     V313 = cos(theta(2)+theta(3))*V113 + sin(theta(2)+theta(3))*Az;
+0191     theta(4) = atan2((n4*V323),(n4*V313));
+0192     <span class="comment">%[(n4*V323),(n4*V313)]</span>
+0193 
+0194     <span class="comment">%</span>
+0195     <span class="comment">% Solve for theta(5)</span>
+0196     <span class="comment">%</span>
+0197     <span class="comment">% num is defined in equation 65, p. 41.</span>
+0198     <span class="comment">% den is defined in equation 65, p. 41.</span>
+0199     <span class="comment">% theta(5) uses equation 66, p. 41.</span>
+0200     <span class="comment">%</span>
+0201      
+0202     num = -cos(theta(4))*V313 - V323*sin(theta(4));
+0203     den = -V113*sin(theta(2)+theta(3)) + Az*cos(theta(2)+theta(3));
+0204     theta(5) = atan2(num,den);
+0205     <span class="comment">%[num den]</span>
+0206 
+0207     <span class="comment">%</span>
+0208     <span class="comment">% Solve for theta(6)</span>
+0209     <span class="comment">%</span>
+0210     <span class="comment">% V112 is defined in equation 69, p. 41.</span>
+0211     <span class="comment">% V122 is defined in equation 69, p. 41.</span>
+0212     <span class="comment">% V312 is defined in equation 69, p. 41.</span>
+0213     <span class="comment">% V332 is defined in equation 69, p. 41.</span>
+0214     <span class="comment">% V412 is defined in equation 69, p. 41.</span>
+0215     <span class="comment">% V432 is defined in equation 69, p. 41.</span>
+0216     <span class="comment">% num is defined in equation 68, p. 41.</span>
+0217     <span class="comment">% den is defined in equation 68, p. 41.</span>
+0218     <span class="comment">% theta(6) uses equation 70, p. 41.</span>
+0219     <span class="comment">%</span>
+0220 
+0221     V112 = cos(theta(1))*Ox + sin(theta(1))*Oy;
+0222     V132 = sin(theta(1))*Ox - cos(theta(1))*Oy;
+0223     V312 = V112*cos(theta(2)+theta(3)) + Oz*sin(theta(2)+theta(3));
+0224     V332 = -V112*sin(theta(2)+theta(3)) + Oz*cos(theta(2)+theta(3));
+0225     V412 = V312*cos(theta(4)) - V132*sin(theta(4));
+0226     V432 = V312*sin(theta(4)) + V132*cos(theta(4));
+0227     num = -V412*cos(theta(5)) - V332*sin(theta(5));
+0228     den = - V432;
+0229     theta(6) = atan2(num,den);
+0230     <span class="comment">%[num den]</span></pre></div>
+<hr><address>Generated on Sun 15-Feb-2009 18:09:29 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

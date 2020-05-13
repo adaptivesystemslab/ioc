@@ -1,0 +1,168 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of gcamera</title>
+  <meta name="keywords" content="gcamera">
+  <meta name="description" content="GCAMERA	graphical camera model">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../index.html">Home</a> &gt;  <a href="#">demos</a> &gt; gcamera.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../index.html"><img alt="<" border="0" src="../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for ./demos&nbsp;<img alt=">" border="0" src="../right.png"></a></td></tr></table>-->
+
+<h1>gcamera
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>GCAMERA	graphical camera model</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function ovar = gcamera(a1, a2, a3, a4) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment">GCAMERA    graphical camera model
+
+    H = GCAMERA(NAME, C, DIMS)
+
+    Create a graphical camera with name NAME, pixel dimensions given by 
+    DIMS = [xmin xmax ymin ymax] for the axes, and calibration matrix C.
+
+  Returns H, the handle to the graphical camera.
+
+  Once created update the camera's view with
+
+    uv = GCAMERA(H, POINTS)
+    uv = GCAMERA(H, POINTS, Tobj)
+    uv = GCAMERA(H, POINTS, Tobj, Tcam)
+
+  where H is the handle previously returned, and POINTS is the data to be
+ displayed.  POINTS represents the 3D data to be displayed in the camera
+ view.  If POINTS has 3 columns it is treated as a number of 3D points in
+ world coordinates, one point per row.  Each point is transformed and displayed
+ as a round marker.  If POINTS has 6 columns, each row is treated as the start
+ and end 3D coordinate for a line segment, in world coordinates.  Each end of 
+ the line is transformed and a line segment displayed.
+ The optional arguments, Tobj, represents a transformation that can be applied
+ to the object data, POINTS, prior to 'imaging'.  Tcam is the pose of the
+ camera which defaults to the orign looking along the Z-axis.
+
+    Copyright (c) Peter Corke, 1999  Machine Vision Toolbox for Matlab</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="camera.html" class="code" title="function uv = camera(C, p, Tobj, Tcam)">camera</a>	CAMERA	 Camera imaging model</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%GCAMERA    graphical camera model</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">%    H = GCAMERA(NAME, C, DIMS)</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">%    Create a graphical camera with name NAME, pixel dimensions given by</span>
+0006 <span class="comment">%    DIMS = [xmin xmax ymin ymax] for the axes, and calibration matrix C.</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">%  Returns H, the handle to the graphical camera.</span>
+0009 <span class="comment">%</span>
+0010 <span class="comment">%  Once created update the camera's view with</span>
+0011 <span class="comment">%</span>
+0012 <span class="comment">%    uv = GCAMERA(H, POINTS)</span>
+0013 <span class="comment">%    uv = GCAMERA(H, POINTS, Tobj)</span>
+0014 <span class="comment">%    uv = GCAMERA(H, POINTS, Tobj, Tcam)</span>
+0015 <span class="comment">%</span>
+0016 <span class="comment">%  where H is the handle previously returned, and POINTS is the data to be</span>
+0017 <span class="comment">% displayed.  POINTS represents the 3D data to be displayed in the camera</span>
+0018 <span class="comment">% view.  If POINTS has 3 columns it is treated as a number of 3D points in</span>
+0019 <span class="comment">% world coordinates, one point per row.  Each point is transformed and displayed</span>
+0020 <span class="comment">% as a round marker.  If POINTS has 6 columns, each row is treated as the start</span>
+0021 <span class="comment">% and end 3D coordinate for a line segment, in world coordinates.  Each end of</span>
+0022 <span class="comment">% the line is transformed and a line segment displayed.</span>
+0023 <span class="comment">% The optional arguments, Tobj, represents a transformation that can be applied</span>
+0024 <span class="comment">% to the object data, POINTS, prior to 'imaging'.  Tcam is the pose of the</span>
+0025 <span class="comment">% camera which defaults to the orign looking along the Z-axis.</span>
+0026 <span class="comment">%</span>
+0027 <span class="comment">%    Copyright (c) Peter Corke, 1999  Machine Vision Toolbox for Matlab</span>
+0028 
+0029 <span class="comment">% Peter Corke 1996</span>
+0030 
+0031 <a name="_sub0" href="#_subfunctions" class="code">function ovar = gcamera(a1, a2, a3, a4)</a>
+0032     <span class="keyword">if</span> isstr(a1),
+0033         <span class="comment">% creating a new camera</span>
+0034         name = a1;
+0035         name
+0036         C = a2;
+0037         <span class="comment">%dimcheck(C, 'calibration matrix', 3, 4);</span>
+0038         dims = a3;
+0039         <span class="comment">%dimcheck(dims, 'pixel dimensions', 4);</span>
+0040 
+0041         h = findobj(<span class="string">'Name'</span>, name);
+0042         <span class="keyword">if</span> isempty(h),
+0043             h = figure;
+0044             set(h, <span class="string">'Name'</span>, name);
+0045             set(h, <span class="string">'NextPlot'</span>, <span class="string">'new'</span>);
+0046         <span class="keyword">else</span>
+0047             figure(h)
+0048             clf
+0049         <span class="keyword">end</span>
+0050         ovar = axes(<span class="string">'XLim'</span>, dims(1:2), <span class="string">'YLim'</span>, dims(3:4), <span class="keyword">...</span>
+0051              <span class="string">'UserData'</span>, C, <span class="keyword">...</span>
+0052             <span class="string">'Xgrid'</span>, <span class="string">'on'</span>, <span class="string">'Ygrid'</span>, <span class="string">'on'</span>, <span class="string">'Ydir'</span> , <span class="string">'reverse'</span>, <span class="string">'NextPlot'</span>, <span class="string">'new'</span>);
+0053         <span class="comment">%line('LineStyle', 'o', 'Color', 'black');</span>
+0054         line(<span class="string">'LineStyle'</span>, <span class="string">'none'</span>, <span class="keyword">...</span>
+0055             <span class="string">'Marker'</span>, <span class="string">'o'</span>, <span class="keyword">...</span>
+0056             <span class="string">'Color'</span>, <span class="string">'black'</span>, <span class="keyword">...</span>
+0057             <span class="string">'EraseMode'</span>, <span class="string">'xor'</span>);
+0058         title(name);
+0059     <span class="keyword">else</span>
+0060         h = a1;
+0061         points = a2;
+0062         nc = numcols(points);
+0063         C = get(h, <span class="string">'UserData'</span>);
+0064         <span class="keyword">switch</span> nargin,
+0065         <span class="keyword">case</span> 4,
+0066             Tcam = a4;
+0067             Tobj = a3;
+0068         <span class="keyword">case</span> 3,
+0069             Tobj = a3;
+0070             Tcam = eye(4);
+0071         <span class="keyword">otherwise</span>,
+0072             Tobj = eye(4);
+0073             Tcam = eye(4);
+0074         <span class="keyword">end</span>
+0075         <span class="keyword">if</span> nc == 3,
+0076             <span class="comment">% draw points</span>
+0077             uv = <a href="camera.html" class="code" title="function uv = camera(C, p, Tobj, Tcam)">camera</a>(C, points, Tobj, Tcam);
+0078             ovar = uv;
+0079             l = get(h, <span class="string">'Children'</span>);
+0080             set(l, <span class="string">'Xdata'</span>, uv(:,1), <span class="string">'Ydata'</span>, uv(:,2));
+0081         <span class="keyword">elseif</span> nc == 6,
+0082             <span class="comment">% draw lines</span>
+0083             uv_s = <a href="camera.html" class="code" title="function uv = camera(C, p, Tobj, Tcam)">camera</a>(C, points(:,1:3), Tobj, Tcam);
+0084             uv_f = <a href="camera.html" class="code" title="function uv = camera(C, p, Tobj, Tcam)">camera</a>(C, points(:,4:6), Tobj, Tcam);
+0085             ovar = [uv_s uv_f];
+0086             <span class="keyword">for</span> c = get(h, <span class="string">'Children'</span>)',
+0087                 delete(c);
+0088             <span class="keyword">end</span>
+0089             line([uv_s(:,1)'; uv_f(:,1)'], <span class="keyword">...</span>
+0090                 [uv_s(:,2)'; uv_f(:,2)'], <span class="keyword">...</span>
+0091                 <span class="string">'EraseMode'</span>, <span class="string">'xor'</span>, <span class="keyword">...</span>
+0092                 <span class="string">'LineStyle'</span>, <span class="string">'-'</span>);
+0093         <span class="keyword">else</span>
+0094             error(<span class="string">'Points matrix should be 3 or 6 columns'</span>);
+0095         <span class="keyword">end</span>
+0096     <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sun 15-Feb-2009 18:09:29 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

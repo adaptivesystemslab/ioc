@@ -1,0 +1,103 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of tr2diff</title>
+  <meta name="keywords" content="tr2diff">
+  <meta name="description" content="TR2DIFF Convert a transform difference to differential representation">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="./m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="./index.html">Home</a> &gt;  <a href="index.html">.</a> &gt; tr2diff.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="./index.html"><img alt="<" border="0" src="./left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for .&nbsp;<img alt=">" border="0" src="./right.png"></a></td></tr></table>-->
+
+<h1>tr2diff
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="./up.png"></a></h2>
+<div class="box"><strong>TR2DIFF Convert a transform difference to differential representation</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="./up.png"></a></h2>
+<div class="box"><strong>function d = tr2diff(t1, t2) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="./up.png"></a></h2>
+<div class="fragment"><pre class="comment">TR2DIFF Convert a transform difference to differential representation
+
+    D = TR2DIFF(T)
+    D = TR2DIFF(T1, T2)
+
+ First form converts a homogeneous transform representing an
+ infinitessimal motion to a 6-element differential representation.
+ Such a homogeneous transform has a rotational submatrix that is,
+ approximately, skew symmetric.
+
+ Second form returns the 6-element differential motion required to move
+ from T1 to T2 in base coordinates.
+
+ See also: <a href="diff2tr.html" class="code" title="function delta = diff2tr(d)">DIFF2TR</a>.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="./up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(./matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(./matlabicon.gif)">
+<li><a href="ikine.html" class="code" title="function qt = ikine(robot, tr, q, m)">ikine</a>	IKINE Inverse manipulator kinematics</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="./up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%TR2DIFF Convert a transform difference to differential representation</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">%    D = TR2DIFF(T)</span>
+0004 <span class="comment">%    D = TR2DIFF(T1, T2)</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">% First form converts a homogeneous transform representing an</span>
+0007 <span class="comment">% infinitessimal motion to a 6-element differential representation.</span>
+0008 <span class="comment">% Such a homogeneous transform has a rotational submatrix that is,</span>
+0009 <span class="comment">% approximately, skew symmetric.</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">% Second form returns the 6-element differential motion required to move</span>
+0012 <span class="comment">% from T1 to T2 in base coordinates.</span>
+0013 <span class="comment">%</span>
+0014 <span class="comment">% See also: DIFF2TR.</span>
+0015 
+0016 <span class="comment">% Copyright (C) 1993-2008, by Peter I. Corke</span>
+0017 <span class="comment">%</span>
+0018 <span class="comment">% This file is part of The Robotics Toolbox for Matlab (RTB).</span>
+0019 <span class="comment">%</span>
+0020 <span class="comment">% RTB is free software: you can redistribute it and/or modify</span>
+0021 <span class="comment">% it under the terms of the GNU Lesser General Public License as published by</span>
+0022 <span class="comment">% the Free Software Foundation, either version 3 of the License, or</span>
+0023 <span class="comment">% (at your option) any later version.</span>
+0024 <span class="comment">%</span>
+0025 <span class="comment">% RTB is distributed in the hope that it will be useful,</span>
+0026 <span class="comment">% but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+0027 <span class="comment">% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+0028 <span class="comment">% GNU Lesser General Public License for more details.</span>
+0029 <span class="comment">%</span>
+0030 <span class="comment">% You should have received a copy of the GNU Leser General Public License</span>
+0031 <span class="comment">% along with RTB.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
+0032 
+0033 <a name="_sub0" href="#_subfunctions" class="code">function d = tr2diff(t1, t2)</a>
+0034     <span class="keyword">if</span> nargin == 1,
+0035         d = [    t1(1:3,4);
+0036             0.5*[t1(3,2)-t1(2,3); t1(1,3)-t1(3,1); t1(2,1)-t1(1,2)]];
+0037     <span class="keyword">else</span>
+0038         d = [    t2(1:3,4)-t1(1:3,4);
+0039             0.5*(    cross(t1(1:3,1), t2(1:3,1)) + <span class="keyword">...</span>
+0040                 cross(t1(1:3,2), t2(1:3,2)) + <span class="keyword">...</span>
+0041                 cross(t1(1:3,3), t2(1:3,3)) <span class="keyword">...</span>
+0042             )];
+0043     <span class="keyword">end</span>
+0044</pre></div>
+<hr><address>Generated on Sun 15-Feb-2009 18:09:29 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>
