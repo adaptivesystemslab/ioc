@@ -1,0 +1,121 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of rttgdemo</title>
+  <meta name="keywords" content="rttgdemo">
+  <meta name="description" content="RTTRDEMO Trajectory demo">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../index.html">Home</a> &gt;  <a href="#">demos</a> &gt; rttgdemo.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../index.html"><img alt="<" border="0" src="../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for ./demos&nbsp;<img alt=">" border="0" src="../right.png"></a></td></tr></table>-->
+
+<h1>rttgdemo
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>RTTRDEMO Trajectory demo</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment">RTTRDEMO Trajectory demo</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%RTTRDEMO Trajectory demo</span>
+0002 
+0003 <span class="comment">% Copyright (C) 1993-2002, by Peter I. Corke</span>
+0004 <span class="comment">% $Log: not supported by cvs2svn $</span>
+0005 <span class="comment">% Revision 1.3  2002-04-02 12:26:49  pic</span>
+0006 <span class="comment">% Handle figures better, control echo at end of each script.</span>
+0007 <span class="comment">% Fix bug in calling ctraj.</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">% Revision 1.2  2002/04/01 11:47:18  pic</span>
+0010 <span class="comment">% General cleanup of code: help comments, see also, copyright, remnant dh/dyn</span>
+0011 <span class="comment">% references, clarification of functions.</span>
+0012 <span class="comment">%</span>
+0013 <span class="comment">% $Revision: 1.1 $</span>
+0014 <span class="comment">%*****************************trajectory****************************************</span>
+0015 figure(2)
+0016 echo on
+0017 <span class="comment">% The path will move the robot from its zero angle pose to the upright (or</span>
+0018 <span class="comment">% READY) pose.</span>
+0019 <span class="comment">%</span>
+0020 <span class="comment">% First create a time vector, completing the motion in 2 seconds with a</span>
+0021 <span class="comment">% sample interval of 56ms.</span>
+0022     t = [0:.056:2];
+0023 pause <span class="comment">% hit any key to continue</span>
+0024 <span class="comment">%</span>
+0025 <span class="comment">% A polynomial trajectory between the 2 poses is computed using jtraj()</span>
+0026 <span class="comment">%</span>
+0027     q = jtraj(qz, qr, t);
+0028 pause <span class="comment">% hit any key to continue</span>
+0029 
+0030 <span class="comment">%</span>
+0031 <span class="comment">% For this particular trajectory most of the motion is done by joints 2 and 3,</span>
+0032 <span class="comment">% and this can be conveniently plotted using standard MATLAB operations</span>
+0033     subplot(2,1,1)
+0034     plot(t,q(:,2))
+0035     title(<span class="string">'Theta'</span>)
+0036     xlabel(<span class="string">'Time (s)'</span>);
+0037     ylabel(<span class="string">'Joint 2 (rad)'</span>)
+0038     subplot(2,1,2)
+0039     plot(t,q(:,3))
+0040     xlabel(<span class="string">'Time (s)'</span>);
+0041     ylabel(<span class="string">'Joint 3 (rad)'</span>)
+0042 
+0043 
+0044     pause <span class="comment">% hit any key to continue</span>
+0045 <span class="comment">%</span>
+0046 <span class="comment">% We can also look at the velocity and acceleration profiles.  We could</span>
+0047 <span class="comment">% differentiate the angle trajectory using diff(), but more accurate results</span>
+0048 <span class="comment">% can be obtained by requesting that jtraj() return angular velocity and</span>
+0049 <span class="comment">% acceleration as follows</span>
+0050     [q,qd,qdd] = jtraj(qz, qr, t);
+0051 <span class="comment">%</span>
+0052 <span class="comment">%  which can then be plotted as before</span>
+0053 
+0054     subplot(2,1,1)
+0055     plot(t,qd(:,2))
+0056     title(<span class="string">'Velocity'</span>)
+0057     xlabel(<span class="string">'Time (s)'</span>);
+0058     ylabel(<span class="string">'Joint 2 vel (rad/s)'</span>)
+0059     subplot(2,1,2)
+0060     plot(t,qd(:,3))
+0061     xlabel(<span class="string">'Time (s)'</span>);
+0062     ylabel(<span class="string">'Joint 3 vel (rad/s)'</span>)
+0063 pause(2)
+0064 <span class="comment">% and the joint acceleration profiles</span>
+0065     subplot(2,1,1)
+0066     plot(t,qdd(:,2))
+0067     title(<span class="string">'Acceleration'</span>)
+0068     xlabel(<span class="string">'Time (s)'</span>);
+0069     ylabel(<span class="string">'Joint 2 accel (rad/s2)'</span>)
+0070     subplot(2,1,2)
+0071     plot(t,qdd(:,3))
+0072     xlabel(<span class="string">'Time (s)'</span>);
+0073     ylabel(<span class="string">'Joint 3 accel (rad/s2)'</span>)
+0074 pause <span class="comment">% any key to continue</span>
+0075 echo off</pre></div>
+<hr><address>Generated on Sun 15-Feb-2009 18:09:29 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

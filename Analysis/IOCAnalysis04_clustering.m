@@ -24,13 +24,14 @@ function IOCAnalysis()
         load(currFullPath);
         
         subjectNum = str2num(trialInfo.runName(8:9));
-        combinedStats = [stats_q stats_dq stats_tau stats_dtau stats_weights stats_dweights];
+%         combinedStats = [stats_q stats_dq stats_tau stats_dtau stats_weights stats_dweights];
+        combinedStats = [stats_weights stats_dweights];
         cumStats{subjectNum} = combinedStats;
     end
     
     nSubject = length(cumStats);
-    allDofs = {cumStats{1}.name};
-    allFeaturesSingle = cumStats{1}(1).segStats_SingleWindow.Properties.VariableNames(5:end);
+    allDofs = {cumStats{2}.name};
+    allFeaturesSingle = cumStats{2}(1).segStats_SingleWindow.Properties.VariableNames(5:end);
     % now assemble everything into a 3D array
     for ind_subject = 1:length(cumStats)
         currSubj = cumStats{ind_subject};
@@ -42,7 +43,9 @@ function IOCAnalysis()
         for ind_dof = 1:length(allDofs)
 %             currStats = cumStats{ind_subject}(ind_dof);
             currFeatureTable = cumStats{ind_subject}(ind_dof).segStats_SingleWindow;
-            currRegressionTable = cumStats{ind_subject}(ind_dof).regression_singleWindow;
+            currIndivTable = cumStats{ind_subject}(ind_dof).regression_individual_singleWindow;
+            currRegressionTable = cumStats{ind_subject}(ind_dof).regression_cumulative_singleWindow;
+            
             [currFeatureTableSeg, currFeatureTableRest, segMask, restMask] = sepSegRest(currFeatureTable);
             [currRegressionTableSeg, currRegressionTableRest, segMask, restMask] = sepSegRest(currRegressionTable);
             
@@ -56,44 +59,48 @@ function IOCAnalysis()
         end
     end
     
-    allFeaturesMultiple = cumStats{1}(1).segStats_MultipleWindow.Properties.VariableNames(8:end);
-    % now assemble everything into a 3D array
-    for ind_subject = 1:length(cumStats)
-        currSubj = cumStats{ind_subject};
-        
-        if isempty(currSubj)
-            continue
-        end
-        
-        for ind_dof = 1:length(allDofs)
-            %             currStats = cumStats{ind_subject}(ind_dof);
-            currFeatureTable = cumStats{ind_subject}(ind_dof).segStats_MultipleWindow;
-            currRegressionTable = cumStats{ind_subject}(ind_dof).segStats_MultipleWindow;
-            [currFeatureTableSeg, currFeatureTableRest, segMask, restMask] = sepSegRest(currFeatureTable);
-            [currRegressionTableSeg, currRegressionTableRest, segMask, restMask] = sepSegRest(currRegressionTable);
-            
-            for ind_features = 1:length(allFeaturesMultiple)
-                featureTableSegTimeMultiple{ind_dof, ind_features, ind_subject} = currFeatureTableSeg.time2;
-                featureTableSegDataMultiple{ind_dof, ind_features, ind_subject} = currFeatureTableSeg.(allFeaturesMultiple{ind_features});
-                
-                featureTableRestTimeMultiple{ind_dof, ind_features, ind_subject} = currFeatureTableRest.time2;
-                featureTableRestDataMultiple{ind_dof, ind_features, ind_subject} = currFeatureTableRest.(allFeaturesMultiple{ind_features});
-            end
-        end
-    end
+%     allFeaturesMultiple = cumStats{1}(1).segStats_MultipleWindow.Properties.VariableNames(8:end);
+%     % now assemble everything into a 3D array
+%     for ind_subject = 1:length(cumStats)
+%         currSubj = cumStats{ind_subject};
+%         
+%         if isempty(currSubj)
+%             continue
+%         end
+%         
+%         for ind_dof = 1:length(allDofs)
+%             %             currStats = cumStats{ind_subject}(ind_dof);
+%             currFeatureTable = cumStats{ind_subject}(ind_dof).segStats_MultipleWindow;
+%             currRegressionTable = cumStats{ind_subject}(ind_dof).segStats_MultipleWindow;
+%             [currFeatureTableSeg, currFeatureTableRest, segMask, restMask] = sepSegRest(currFeatureTable);
+%             [currRegressionTableSeg, currRegressionTableRest, segMask, restMask] = sepSegRest(currRegressionTable);
+%             
+%             for ind_features = 1:length(allFeaturesMultiple)
+%                 featureTableSegTimeMultiple{ind_dof, ind_features, ind_subject} = currFeatureTableSeg.time2;
+%                 featureTableSegDataMultiple{ind_dof, ind_features, ind_subject} = currFeatureTableSeg.(allFeaturesMultiple{ind_features});
+%                 
+%                 featureTableRestTimeMultiple{ind_dof, ind_features, ind_subject} = currFeatureTableRest.time2;
+%                 featureTableRestDataMultiple{ind_dof, ind_features, ind_subject} = currFeatureTableRest.(allFeaturesMultiple{ind_features});
+%             end
+%         end
+%     end
     
     plotStuff('SingleSeg', allDofs, allFeaturesSingle, nSubject, featureTableSegTimeSingle, featureTableSegDataSingle, outCsv, outputPath);
     plotStuff('SingleRest', allDofs, allFeaturesSingle, nSubject, featureTableRestTimeSingle, featureTableRestDataSingle, outCsv, outputPath);
-    plotStuff('MultipleSeg', allDofs, allFeaturesMultiple, nSubject, featureTableSegTimeMultiple, featureTableSegDataMultiple, outCsv, outputPath);
-    plotStuff('MultipleRest', allDofs, allFeaturesMultiple, nSubject, featureTableRestTimeMultiple, featureTableRestDataMultiple, outCsv, outputPath);
+%     plotStuff('MultipleSeg', allDofs, allFeaturesMultiple, nSubject, featureTableSegTimeMultiple, featureTableSegDataMultiple, outCsv, outputPath);
+%     plotStuff('MultipleRest', allDofs, allFeaturesMultiple, nSubject, featureTableRestTimeMultiple, featureTableRestDataMultiple, outCsv, outputPath);
 end
 
 function plotStuff(typeLabel, allDofs, allFeaturesSingle, nSubject, featureTableSegTime, featureTableSegData, outCsv, outputPath) 
     subjectColours = distinguishable_colors(nSubject);
+    currInd = 0;
     
     % then plot everything
     for ind_dof = 1:length(allDofs)
         for ind_features = 1:length(allFeaturesSingle)
+            currInd = currInd + 1;
+            fprintf('Currently on %s - %u of %u\n', typeLabel, currInd, length(allDofs)*length(allFeaturesSingle));
+            
             currDof = allDofs{ind_dof};
             currFeature = allFeaturesSingle{ind_features};
             figName = ['combined_' typeLabel '_' currDof '_' currFeature];
@@ -139,6 +146,7 @@ function plotStuff(typeLabel, allDofs, allFeaturesSingle, nSubject, featureTable
                 
                 figure(h2);
                 subplot(3, 5, ind_subjects);
+                hold on;
                 plot(currTime, currData, 'DisplayName', currLabel, 'Color', currColour, 'MarkerSize', 14, 'Marker', 'o', 'LineStyle', 'none');
                 ph = plot(currTime, yCalc2, 'Color', [1 0 0]);
                 ph.Annotation.LegendInformation.IconDisplayStyle = 'off';

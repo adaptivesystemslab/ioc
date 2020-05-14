@@ -25,9 +25,10 @@ function IOCAnalysis()
         filepathCurrDataInd = fullfile(basePath, currFileName);
         filepathCurrWeiCum = strrep(filepathCurrDataInd, 'mat_dataInd', 'mat_weiCum');
         filepathCurrWeiInd = strrep(filepathCurrDataInd, 'mat_dataInd', 'mat_weiInd');
-        filepathCsv = fullfile(outputPath, 'analysis.csv');
+        filepathCumCsv = fullfile(outputPath, 'ioc03_cum_analysis.csv');
+        filepathIndCsv = fullfile(outputPath, 'ioc03_ind_analysis.csv');
 %         try
-            calculateMetrics(filepathCurrDataInd, filepathCurrWeiCum, filepathCurrWeiInd, filepathSegments, outputPath, filepathCsv);
+            calculateMetrics(filepathCurrDataInd, filepathCurrWeiCum, filepathCurrWeiInd, filepathSegments, outputPath, filepathCumCsv, filepathIndCsv);
 %         catch err
 %             err
 %         end
@@ -39,14 +40,15 @@ function loadAndPlotStuff(filepath)
     
 end
 
-function calculateMetrics(filepathCurrDataInd, filepathCurrWeiCum, filepathCurrWeiInd, filepathSegments, outputPath, filepathCsv)
+function calculateMetrics(filepathCurrDataInd, filepathCurrWeiCum, filepathCurrWeiInd, filepathSegments, outputPath, filepathCumCsv, filepathIndCsv)
 %     outFileSpec = filepathCurrWeiCum(end-27:end-10);
     strsplitStr = strsplit(filepathCurrWeiCum, '_');
     outFileSpec = [strsplitStr{end-2} '_' strsplitStr{end-1} '_' strsplitStr{end}(1:3)];
 %     outputPath = [outputPath outFileSpec '\'];
     
     outMat = [outputPath, 'mat\', 'mat_', outFileSpec, '.mat'];
-    outCsv = [filepathCsv];
+    outIndCsv = [filepathIndCsv];
+    outCumCsv = [filepathCumCsv];
     checkExistDir = dir(outMat);
 
     if length(checkExistDir) > 0
@@ -87,49 +89,50 @@ function calculateMetrics(filepathCurrDataInd, filepathCurrWeiCum, filepathCurrW
     
     dt = 0.01;
     
-    for i = 1:size(traj.q, 2)
-        featureLabel = ['q_' num2str(i) '_' allJointNames{i}];
-        featureTime = traj.trajT;
-        featureData = traj.q(:, i);
-        stats_q(i) = featureCalc1(trialInfo, featureLabel, featureTime, featureData, segmentInfo, outputPath, outCsv, outFileSpec);
-    end
-    for i = 1:size(traj.q, 2)
-        featureLabel = ['dq_' num2str(i) '_' allJointNames{i}];
-        featureTime = traj.trajT;
-        featureData = calcDerivVert(traj.q(:, i), dt);
-        stats_dq(i) = featureCalc1(trialInfo, featureLabel, featureTime, featureData, segmentInfo, outputPath, outCsv, outFileSpec);
-    end
-    
-    for i = 1:size(traj.tau, 2)
-        featureLabel = ['tau_' num2str(i) '_' allJointNames{i}];
-        featureTime = traj.trajT;
-        featureData = traj.tau(:, i);
-        stats_tau(i) = featureCalc1(trialInfo, featureLabel, featureTime, featureData, segmentInfo, outputPath, outCsv, outFileSpec);
-    end
-    for i = 1:size(traj.tau, 2)
-        featureLabel = ['dtau_' num2str(i) '_' allJointNames{i}];
-        featureTime = traj.trajT;
-        featureData = calcDerivVert(traj.tau(:, i), dt);
-        stats_dtau(i) = featureCalc1(trialInfo, featureLabel, featureTime, featureData, segmentInfo, outputPath, outCsv, outFileSpec);
-        end
+%     for i = 1:size(traj.q, 2)
+%         featureLabel = ['q_' num2str(i) '_' allJointNames{i}];
+%         featureTime = traj.trajT;
+%         featureData = traj.q(:, i);
+%         stats_q(i) = featureCalc1(trialInfo, featureLabel, featureTime, featureData, segmentInfo, outputPath, outCsv, outFileSpec);
+%     end
+%     for i = 1:size(traj.q, 2)
+%         featureLabel = ['dq_' num2str(i) '_' allJointNames{i}];
+%         featureTime = traj.trajT;
+%         featureData = calcDerivVert(traj.q(:, i), dt);
+%         stats_dq(i) = featureCalc1(trialInfo, featureLabel, featureTime, featureData, segmentInfo, outputPath, outCsv, outFileSpec);
+%     end
+%     
+%     for i = 1:size(traj.tau, 2)
+%         featureLabel = ['tau_' num2str(i) '_' allJointNames{i}];
+%         featureTime = traj.trajT;
+%         featureData = traj.tau(:, i);
+%         stats_tau(i) = featureCalc1(trialInfo, featureLabel, featureTime, featureData, segmentInfo, outputPath, outCsv, outFileSpec);
+%     end
+%     for i = 1:size(traj.tau, 2)
+%         featureLabel = ['dtau_' num2str(i) '_' allJointNames{i}];
+%         featureTime = traj.trajT;
+%         featureData = calcDerivVert(traj.tau(:, i), dt);
+%         stats_dtau(i) = featureCalc1(trialInfo, featureLabel, featureTime, featureData, segmentInfo, outputPath, outCsv, outFileSpec);
+%     end
     
     for i = 1:size(matSave.weights, 2)
         featureLabel = ['weights_' matData.featureLabels{i}];
         featureTime = matSave.t;
         featureData = matSave.weights(:, i);
-        stats_weights(i) = featureCalc1(trialInfo, featureLabel, featureTime, featureData, segmentInfo, outputPath, outCsv, outFileSpec);
+        stats_weights(i) = featureCalc1(trialInfo, featureLabel, featureTime, featureData, segmentInfo, outputPath, outIndCsv, outCumCsv, outFileSpec);
     end
     for i = 1:size(matSave.weights, 2)
         featureLabel = ['dweights_' matData.featureLabels{i}];
         featureTime = matSave.t;
         featureData = calcDerivVert(matSave.weights(:, i), dt);
-        stats_dweights(i) = featureCalc1(trialInfo, featureLabel, featureTime, featureData, segmentInfo, outputPath, outCsv, outFileSpec);
+        stats_dweights(i) = featureCalc1(trialInfo, featureLabel, featureTime, featureData, segmentInfo, outputPath, outIndCsv, outCumCsv, outFileSpec);
     end
     
-    save(outMat, 'trialInfo', 'segmentInfo', 'stats_q', 'stats_dq', 'stats_tau', 'stats_dtau', 'stats_weights', 'stats_dweights');
+%     save(outMat, 'trialInfo', 'segmentInfo', 'stats_q', 'stats_dq', 'stats_tau', 'stats_dtau', 'stats_weights', 'stats_dweights');
+    save(outMat, 'trialInfo', 'segmentInfo', 'stats_weights', 'stats_dweights');
 end
 
-function stats = featureCalc1(trialInfo, name, t, feature, segData, outputPath, outCsv, outFileSpec)
+function stats = featureCalc1(trialInfo, name, t, feature, segData, outputPath, outIndCsv, outCumCsv, outFileSpec)
     figFileSingleWindowSeg =  [name '_singleWindowSeg_' outFileSpec];
     figFileSingleWindowRest =  [name '_singleWindowRest_' outFileSpec];
     figFileMultipleWindowSeg =  [name '_multipleWindowSeg_' outFileSpec];
@@ -147,25 +150,15 @@ function stats = featureCalc1(trialInfo, name, t, feature, segData, outputPath, 
     stats.feature = feature;
     stats.segData = segData;
     
-    % calculate between window correlations
-    segStats_MultipleWindow = featureCalc_multipleWindow(segData, t, feature);
-    stats.segStats_MultipleWindow = segStats_MultipleWindow;
-    
-    [h_segMultiple, h_restMultiple, regression_multipleWindow] = plotData_MultipleWindow(stats);
-    stats.regression_multipleWindow = regression_multipleWindow;
-    saveas(h_segMultiple, figSegMultiplePath, 'png');
-    saveas(h_segMultiple, figSegMultiplePath, 'fig');
-    close(h_segMultiple);
-    saveas(h_restMultiple, figRestMultiplePath, 'png');
-    saveas(h_restMultiple, figRestMultiplePath, 'fig');
-    close(h_restMultiple);
-    
     % calculate metrics on single window level
     segStats_SingleWindow = featureCalc_singleWindow(segData, t, feature);
     stats.segStats_SingleWindow = segStats_SingleWindow;
     
-    [h_segSingle, h_restSingle, regression_singleWindow] = plotData_SingleWindow(stats);
-    stats.regression_singleWindow = regression_singleWindow;
+    [regression_individual_singleWindow, regression_cumulative_singleWindow] = genRegression(segStats_SingleWindow);
+    stats.regression_individual_singleWindow = regression_individual_singleWindow;
+    stats.regression_cumulative_singleWindow = regression_cumulative_singleWindow;
+    
+    [h_segSingle, h_restSingle] = plotData_SingleWindow(stats);
     saveas(h_segSingle, figSegSinglePath, 'png');
     saveas(h_segSingle, figSegSinglePath, 'fig');
     close(h_segSingle); 
@@ -173,45 +166,67 @@ function stats = featureCalc1(trialInfo, name, t, feature, segData, outputPath, 
     saveas(h_restSingle, figRestSinglePath, 'fig');
     close(h_restSingle);
     
+%     % calculate between window correlations
+%     segStats_MultipleWindow = featureCalc_multipleWindow(segData, t, feature);
+%     stats.segStats_MultipleWindow = segStats_MultipleWindow;
+%     
+%     [regression_individual_multiWindow, regression_cumulative_singleWindow] = genRegression(segStats_MultipleWindow);
+%     stats.regression_individual_multiWindow = regression_individual_multiWindow;
+%     stats.regression_cumulative_multipleWindow = regression_cumulative_singleWindow;
+%     
+%     [h_segMultiple, h_restMultiple] = plotData_MultipleWindow(stats);
+%     saveas(h_segMultiple, figSegMultiplePath, 'png');
+%     saveas(h_segMultiple, figSegMultiplePath, 'fig');
+%     close(h_segMultiple);
+%     saveas(h_restMultiple, figRestMultiplePath, 'png');
+%     saveas(h_restMultiple, figRestMultiplePath, 'fig');
+%     close(h_restMultiple);
     
-    
+    writeCumCsv(stats, outCumCsv, trialInfo, name);
+    writeIndCsv(stats, outIndCsv, trialInfo, name);
+end
+
+function writeCumCsv(stats, outCsv, trialInfo, name)
     % separate into seg window and rest window
-    [segOnlySingleDataTable, restOnlySingleDataTable, segMask, restMask] = sepSegRest(stats.regression_singleWindow);
-    [segOnlyMultipleDataTable, restOnlyMultipleDataTable, segMask, restMask] = sepSegRest(stats.regression_multipleWindow);
+    [segOnlySingleDataTable, restOnlySingleDataTable, segMask, restMask] = sepSegRest(stats.regression_cumulative_singleWindow);
+%     [segOnlyMultipleDataTable, restOnlyMultipleDataTable, segMask, restMask] = sepSegRest(stats.regression_cumulative_multipleWindow);
     
     if ~exist(outCsv, 'file')
         header = 'Subject,feature';
         for i = 1:size(segOnlySingleDataTable, 1)
             header = [header ',b_seqSingle_' segOnlySingleDataTable.statType{i}];
-        end
-        for i = 1:size(segOnlySingleDataTable, 1)
-            header = [header ',Rsq2_seqSingle_' segOnlySingleDataTable.statType{i}];
-        end
-        for i = 1:size(restOnlySingleDataTable, 1)
-            header = [header ',b_restSingle_' restOnlySingleDataTable.statType{i}];
-        end
-        for i = 1:size(restOnlySingleDataTable, 1)
-            header = [header ',Rsq2_restSingle_' restOnlySingleDataTable.statType{i}];
+            header = [header ',Rsq2ValLast_seqSingle_' segOnlySingleDataTable.statType{i}];
+            header = [header ',Rsq2ValSecondLast_seqSingle_' segOnlySingleDataTable.statType{i}];
+            header = [header ',Rsq2ValThreshold_seqSingle_' segOnlySingleDataTable.statType{i}];
+            header = [header ',Rsq2IndLast_seqSingle_' segOnlySingleDataTable.statType{i}];
+            header = [header ',Rsq2IndSecondLast_seqSingle_' segOnlySingleDataTable.statType{i}];
+            header = [header ',Rsq2IndThreshold_seqSingle_' segOnlySingleDataTable.statType{i}];
         end
         
-        for i = 1:size(segOnlyMultipleDataTable, 1)
-            header = [header ',b_segMultiple_' segOnlyMultipleDataTable.statType{i}];
+        for i = 1:size(restOnlySingleDataTable, 1)
+            header = [header ',b_restSingle_' restOnlySingleDataTable.statType{i}];
+            header = [header ',Rsq2ValLast_restSingle_' restOnlySingleDataTable.statType{i}];
+            header = [header ',Rsq2ValSecondLast_restSingle_' restOnlySingleDataTable.statType{i}];
+            header = [header ',Rsq2ValThreshold_restSingle_' restOnlySingleDataTable.statType{i}];
+            header = [header ',Rsq2IndLast_restSingle_' restOnlySingleDataTable.statType{i}];
+            header = [header ',Rsq2IndSecondLast_restSingle_' restOnlySingleDataTable.statType{i}];
+            header = [header ',Rsq2IndThreshold_restSingle_' restOnlySingleDataTable.statType{i}];
         end
-        for i = 1:size(segOnlyMultipleDataTable, 1)
-            header = [header ',Rsq2_segMultiple_' segOnlyMultipleDataTable.statType{i}];
-        end
-        for i = 1:size(restOnlyMultipleDataTable, 1)
-            header = [header ',b_restMultiple_' restOnlyMultipleDataTable.statType{i}];
-        end
-        for i = 1:size(restOnlyMultipleDataTable, 1)
-            header = [header ',Rsq2_restMultiple_' restOnlyMultipleDataTable.statType{i}];
-        end
-%         for i = 1:length(featureParams_MultiWindow)
-%             header = [header ',Rsq2_seq_' featureParams_MultiWindow{i}];
+       
+        
+%         for i = 1:size(segOnlyMultipleDataTable, 1)
+%             header = [header ',b_segMultiple_' segOnlyMultipleDataTable.statType{i}];
 %         end
-%         for i = 1:length(featureParams_MultiWindow)
-%             header = [header ',Rsq2_rest_' featureParams_MultiWindow{i}];
+%         for i = 1:size(segOnlyMultipleDataTable, 1)
+%             header = [header ',Rsq2_segMultiple_' segOnlyMultipleDataTable.statType{i}];
 %         end
+%         for i = 1:size(restOnlyMultipleDataTable, 1)
+%             header = [header ',b_restMultiple_' restOnlyMultipleDataTable.statType{i}];
+%         end
+%         for i = 1:size(restOnlyMultipleDataTable, 1)
+%             header = [header ',Rsq2_restMultiple_' restOnlyMultipleDataTable.statType{i}];
+%         end
+
         header = [header '\n'];
     else
         header = '';
@@ -223,30 +238,65 @@ function stats = featureCalc1(trialInfo, name, t, feature, segData, outputPath, 
      fprintf(fid, '%s,%s', trialInfo.runName, name);
      for i = 1:size(segOnlySingleDataTable, 1)
          fprintf(fid, ',%f',segOnlySingleDataTable.b_2(i));
-     end
-     for i = 1:size(segOnlySingleDataTable, 1)
          fprintf(fid, ',%f',segOnlySingleDataTable.Rsq2(i));
+         fprintf(fid, ',%f',segOnlySingleDataTable.rsq2Val_SecondLast(i));
+         fprintf(fid, ',%f',segOnlySingleDataTable.rsq2Val_05Threshold(i));
+         fprintf(fid, ',%f',segOnlySingleDataTable.rsq2Ind_SecondLast(i)+1);
+         fprintf(fid, ',%f',segOnlySingleDataTable.rsq2Ind_SecondLast(i));
+         fprintf(fid, ',%f',segOnlySingleDataTable.rsq2Val_05Threshold(i));
      end
      for i = 1:size(restOnlySingleDataTable, 1)
          fprintf(fid, ',%f',restOnlySingleDataTable.b_2(i));
-     end
-     for i = 1:size(restOnlySingleDataTable, 1)
          fprintf(fid, ',%f',restOnlySingleDataTable.Rsq2(i));
+         fprintf(fid, ',%f',restOnlySingleDataTable.rsq2Val_SecondLast(i));
+         fprintf(fid, ',%f',restOnlySingleDataTable.rsq2Val_05Threshold(i));
+         fprintf(fid, ',%f',restOnlySingleDataTable.rsq2Ind_SecondLast(i)+1);
+         fprintf(fid, ',%f',restOnlySingleDataTable.rsq2Ind_SecondLast(i));
+         fprintf(fid, ',%f',restOnlySingleDataTable.rsq2Val_05Threshold(i));
      end
      
-          for i = 1:size(segOnlyMultipleDataTable, 1)
-         fprintf(fid, ',%f',segOnlyMultipleDataTable.b_2(i));
-     end
-     for i = 1:size(segOnlyMultipleDataTable, 1)
-         fprintf(fid, ',%f',segOnlyMultipleDataTable.Rsq2(i));
-     end
-     for i = 1:size(restOnlyMultipleDataTable, 1)
-         fprintf(fid, ',%f',restOnlyMultipleDataTable.b_2(i));
-     end
-     for i = 1:size(restOnlyMultipleDataTable, 1)
-         fprintf(fid, ',%f',restOnlyMultipleDataTable.Rsq2(i));
-     end
+%      for i = 1:size(segOnlyMultipleDataTable, 1)
+%          fprintf(fid, ',%f',segOnlyMultipleDataTable.b_2(i));
+%      end
+%      for i = 1:size(segOnlyMultipleDataTable, 1)
+%          fprintf(fid, ',%f',segOnlyMultipleDataTable.Rsq2(i));
+%      end
+%      for i = 1:size(restOnlyMultipleDataTable, 1)
+%          fprintf(fid, ',%f',restOnlyMultipleDataTable.b_2(i));
+%      end
+%      for i = 1:size(restOnlyMultipleDataTable, 1)
+%          fprintf(fid, ',%f',restOnlyMultipleDataTable.Rsq2(i));
+%      end
      fprintf(fid, '\n');
+     fclose(fid);
+end
+
+function writeIndCsv(stats, outCsv, trialInfo, name)
+    dataTable = stats.regression_individual_singleWindow;
+    % separate into seg window and rest window
+%     [segOnlySingleDataTable, restOnlySingleDataTable, segMask, restMask] = sepSegRest(stats.regression_cumulative_singleWindow);
+%     [segOnlyMultipleDataTable, restOnlyMultipleDataTable, segMask, restMask] = sepSegRest(stats.regression_cumulative_multipleWindow);
+    
+    if ~exist(outCsv, 'file')
+        header = 'Subject,feature';
+        header = [header ',segType,statType,segLen,b_1,b_2,Rsq2,errDiff'];
+        header = [header '\n'];
+    else
+        header = '';
+    end
+     
+     fid = fopen(outCsv, 'a');
+     fprintf(fid, [header]);
+     
+     for i = 1:size(dataTable, 1)
+         fprintf(fid, '%s,%s', trialInfo.runName, name);
+         fprintf(fid, ',%s,%s,%f,%f,%f,%f,%f', ...
+             dataTable.segType{i}, dataTable.statType{i}, dataTable.segLength(i), ...
+             dataTable.b_1(i), dataTable.b_2(i), dataTable.Rsq2(i), ...
+             dataTable.ErrDiff(i));
+         fprintf(fid, '\n');
+     end
+   
      fclose(fid);
 end
 
@@ -448,7 +498,92 @@ function valOut = isnan0(val)
     end
 end
 
-function [h_seg, h_rest, returnTable] = plotData_SingleWindow(stats)
+function [returnIndividualTable, returnSummaryTable] = genRegression(segStats_SingleWindow)
+    featureLabels = segStats_SingleWindow.Properties.VariableNames(5:end);
+    
+    % figure out the indices of seg vs rest
+    [segOnlyDataTable, restOnlyDataTable, segMask, restMask] = sepSegRest(segStats_SingleWindow);
+   
+    for i = 1:length(featureLabels)
+        featureLabel = featureLabels{i};
+        
+        % SEG
+        [currIndTable, currSumTable] = subSummaryTable(segOnlyDataTable, 'Seg', featureLabel);
+        if i == 1
+            returnIndividualTable = currIndTable;
+            returnSummaryTable = currSumTable;
+        else
+            returnIndividualTable = [returnIndividualTable; currIndTable];
+            returnSummaryTable = [returnSummaryTable; currSumTable];
+        end
+        
+        % REST
+        [currIndTable, currSumTable] = subSummaryTable(restOnlyDataTable, 'Rest', featureLabel);
+        returnIndividualTable = [returnIndividualTable; currIndTable];
+        returnSummaryTable = [returnSummaryTable; currSumTable];
+    end
+end
+
+function [returnIndividualTable, returnSummaryTable] = subSummaryTable(dataTable, segLabel, featureLabel)
+    percDiff = @(y, y_base) (y - y_base)/y_base; 
+    
+    x_segAll = dataTable.time;
+    y_segAll = dataTable.(featureLabel);
+
+    table_state = table({segLabel}, 'VariableName', {'segType'});
+    table_feature = table({featureLabel}, 'VariableName', {'statType'});
+    
+    for j = 2:length(x_segAll)
+        x_segSub = dataTable.time(1:j);
+        y_segSub = dataTable.(featureLabel)(1:j);
+        [b, Rsq2, X_seg, yCalc2_seg] = linearFit(x_segSub, y_segSub);
+
+        X = [ones(length(x_segAll),1) x_segAll];
+        yCalc2 = X*b;
+        Rsq2 = 1 - sum((y_segAll - yCalc2).^2)/sum((y_segAll - mean(y_segAll)).^2);
+
+        bCum(j-1, :) = b;
+        Rsq2Cum(j-1) = Rsq2;
+    end
+    
+    errInd = -1;
+    errVal = 0;
+    
+    for j = 1:length(Rsq2Cum)
+        % now iterate through to find the percentage difference    
+        errRsq = percDiff(Rsq2Cum(j), Rsq2Cum(end));
+         
+        table_segLength = table(j, 'VariableName', {'segLength'});
+        table_b1 = table(bCum(j, 1), 'VariableName', {'b_1'});
+        table_b2 = table(bCum(j, 2), 'VariableName', {'b_2'});
+        table_rsq2 = table(Rsq2Cum(j), 'VariableName', {'Rsq2'});
+        table_err = table(errRsq, 'VariableName', {'ErrDiff'});
+        
+        if errInd == -1 && errRsq > -0.5 && j < length(Rsq2Cum)
+            errInd = j;
+            errVal = Rsq2Cum(j);
+        end
+        
+        newIndividualTableRow = [table_state table_feature table_segLength table_b1 table_b2 table_rsq2 table_err];
+        if j == 1
+            returnIndividualTable = newIndividualTableRow;
+        else
+            returnIndividualTable = [returnIndividualTable; newIndividualTableRow];
+        end
+    end
+
+    table_b1 = table(bCum(end, 1), 'VariableName', {'b_1'});
+    table_b2 = table(bCum(end, 2), 'VariableName', {'b_2'});
+    table_rsq2 = table(Rsq2Cum(end), 'VariableName', {'Rsq2'});
+    table_secondlasterrInd = table(length(Rsq2Cum)-1, 'VariableName', {'rsq2Ind_SecondLast'});
+    table_secondlasterrVal = table(Rsq2Cum(end-1), 'VariableName', {'rsq2Val_SecondLast'});
+    table_errInd = table(errInd, 'VariableName', {'rsq2Ind_05Threshold'});
+    table_errVal = table(errVal, 'VariableName', {'rsq2Val_05Threshold'});
+
+    returnSummaryTable = [table_state table_feature table_b1 table_b2 table_rsq2 table_secondlasterrInd table_secondlasterrVal table_errInd table_errVal];
+end
+
+function [h_seg, h_rest] = plotData_SingleWindow(stats)
     R_thres = 0.7;
         
     featureLabels = stats.segStats_SingleWindow.Properties.VariableNames(5:end);
@@ -464,20 +599,6 @@ function [h_seg, h_rest, returnTable] = plotData_SingleWindow(stats)
         segT = segOnlyDataTable.time;
         segRaw = segOnlyDataTable.(featureLabel);
         [b, Rsq2, X_seg, yCalc2_seg] = linearFit(segT, segRaw);
-        
-        table_state = table({'Seg'}, 'VariableName', {'segType'});
-        table_feature = table({featureLabel}, 'VariableName', {'statType'});
-        table_b1 = table(b(1), 'VariableName', {'b_1'});
-        table_b2 = table(b(2), 'VariableName', {'b_2'});
-        table_rsq2 = table(Rsq2, 'VariableName', {'Rsq2'});
-
-        newTableRow = [table_state table_feature table_b1 table_b2 table_rsq2];
-   
-        if i == 1
-            returnTable = newTableRow;
-        else
-            returnTable = [returnTable; newTableRow];
-        end
         
         plAx(1) = plot(segT, segRaw, 'o', 'MarkerSize', 16); hold on
         plot(segT, yCalc2_seg);
@@ -504,15 +625,6 @@ function [h_seg, h_rest, returnTable] = plotData_SingleWindow(stats)
         restT = restOnlyDataTable.time;
         restRaw = restOnlyDataTable.(featureLabel);
         [b, Rsq2, X_rest, yCalc2_rest] = linearFit(restT, restRaw);
-        
-        table_state = table({'Rest'}, 'VariableName', {'segType'});
-        table_feature = table({featureLabel}, 'VariableName', {'statType'});
-        table_b1 = table(b(1), 'VariableName', {'b_1'});
-        table_b2 = table(b(2), 'VariableName', {'b_2'});
-        table_rsq2 = table(Rsq2, 'VariableName', {'Rsq2'});
-
-        newTableRow = [table_state table_feature table_b1 table_b2 table_rsq2];
-        returnTable = [returnTable; newTableRow];
         
         plAx(2) = plot(restT,	restRaw, 'o', 'MarkerSize', 16); hold on
         plot(restT,yCalc2_rest)

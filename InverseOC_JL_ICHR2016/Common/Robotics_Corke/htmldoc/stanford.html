@@ -1,0 +1,112 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of stanford</title>
+  <meta name="keywords" content="stanford">
+  <meta name="description" content="STANFORD Load kinematic and dynamic data for Stanford arm">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="./m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="./index.html">Home</a> &gt;  <a href="index.html">.</a> &gt; stanford.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="./index.html"><img alt="<" border="0" src="./left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for .&nbsp;<img alt=">" border="0" src="./right.png"></a></td></tr></table>-->
+
+<h1>stanford
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="./up.png"></a></h2>
+<div class="box"><strong>STANFORD Load kinematic and dynamic data for Stanford arm</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="./up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="./up.png"></a></h2>
+<div class="fragment"><pre class="comment">STANFORD Load kinematic and dynamic data for Stanford arm
+
+ Defines the object 'stanford' in the current workspace which describes the 
+ kinematic and dynamic characterstics of the Stanford (Scheinman) arm.
+
+ Kinematic data from &quot;Modelling, Trajectory calculation and Servoing of 
+ a computer controlled arm&quot;.  Stanford AIM-177.  Figure 2.3
+ Dynamic data from &quot;Robot manipulators: mathematics, programming and control&quot;
+ Paul 1981, Tables 6.4, 6.6
+ 
+ Note: gear ratios not currently known, though reflected armature inertia 
+ is known, so gear ratios set to 1.
+
+ Also define the vector qz which corresponds to the zero joint
+ angle configuration.
+
+ See also: ROBOT, <a href="puma560.html" class="code" title="">PUMA560</a>, <a href="puma560akb.html" class="code" title="">PUMA560AKB</a>, <a href="twolink.html" class="code" title="">TWOLINK</a>.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="./up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(./matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(./matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="./up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%STANFORD Load kinematic and dynamic data for Stanford arm</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">% Defines the object 'stanford' in the current workspace which describes the</span>
+0004 <span class="comment">% kinematic and dynamic characterstics of the Stanford (Scheinman) arm.</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">% Kinematic data from &quot;Modelling, Trajectory calculation and Servoing of</span>
+0007 <span class="comment">% a computer controlled arm&quot;.  Stanford AIM-177.  Figure 2.3</span>
+0008 <span class="comment">% Dynamic data from &quot;Robot manipulators: mathematics, programming and control&quot;</span>
+0009 <span class="comment">% Paul 1981, Tables 6.4, 6.6</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">% Note: gear ratios not currently known, though reflected armature inertia</span>
+0012 <span class="comment">% is known, so gear ratios set to 1.</span>
+0013 <span class="comment">%</span>
+0014 <span class="comment">% Also define the vector qz which corresponds to the zero joint</span>
+0015 <span class="comment">% angle configuration.</span>
+0016 <span class="comment">%</span>
+0017 <span class="comment">% See also: ROBOT, PUMA560, PUMA560AKB, TWOLINK.</span>
+0018 
+0019 <span class="comment">% Copyright (C) 1990-2008, by Peter I. Corke</span>
+0020 <span class="comment">%</span>
+0021 <span class="comment">% This file is part of The Robotics Toolbox for Matlab (RTB).</span>
+0022 <span class="comment">%</span>
+0023 <span class="comment">% RTB is free software: you can redistribute it and/or modify</span>
+0024 <span class="comment">% it under the terms of the GNU Lesser General Public License as published by</span>
+0025 <span class="comment">% the Free Software Foundation, either version 3 of the License, or</span>
+0026 <span class="comment">% (at your option) any later version.</span>
+0027 <span class="comment">%</span>
+0028 <span class="comment">% RTB is distributed in the hope that it will be useful,</span>
+0029 <span class="comment">% but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+0030 <span class="comment">% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+0031 <span class="comment">% GNU Lesser General Public License for more details.</span>
+0032 <span class="comment">%</span>
+0033 <span class="comment">% You should have received a copy of the GNU Leser General Public License</span>
+0034 <span class="comment">% along with RTB.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
+0035 
+0036 <span class="comment">% alpha A    theta    D    sigma    m    rx    ry    rz    Ixx    Iyy    Izz    Ixy    Iyz    Ixz    Jm    G</span>
+0037 stanford_dyn = [
+0038 -pi/2 0    0    0.412    0    9.29    0    .0175    -0.1105    0.276    0.255    0.071    0    0    0    0.953    1
+0039 pi/2 0    0    0.154    0    5.01    0    -1.054    0    0.108    0.018    0.100    0    0    0    2.193    1    
+0040 0 0    -pi/2    0    1    4.25    0    0    -6.447    2.51    2.51    0.006    0    0    0    0.782    1
+0041 -pi/2 0    0    0    0    1.08    0    0.092    -0.054    0.002    0.001    0.001    0    0    0    0.106    1
+0042 pi/2 0    0    0    0    0.63    0    0    0.566    0.003    0.003    0.0004    0    0    0    0.097    1
+0043 0 0    0    0.263    0    0.51    0    0    1.554    0.013    0.013    0.0003    0    0    0    0.020    1
+0044 ];
+0045 
+0046 qz = [0 0 0 0 0 0];
+0047 
+0048 stanf = robot(stanford_dyn);
+0049 stanf.plotopt = {<span class="string">'workspace'</span>, [-2 2 -2 2 -2 2]};
+0050 stanf.name = <span class="string">'Stanford arm'</span>;</pre></div>
+<hr><address>Generated on Sun 15-Feb-2009 18:09:29 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>
