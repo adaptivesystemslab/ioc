@@ -2,7 +2,7 @@ function IOCAnalysis()
     setPaths();
 %     nowstr = datestr(now, 'yyyymmddHHMMSS');
     sourceSuffix = '20200413_FatigueFull_3CF';
-    targetSuffix = '20200413_FatigueFull_3CF';
+    targetSuffix = '20200413_FatigueFull_3CF_2';
       
     basePath = ['D:\results\fatigue_ioc02_weightsAssembled\' sourceSuffix '\'];
     outputPath = ['D:\results\fatigue_ioc03_weightsPattern\' targetSuffix '\'];
