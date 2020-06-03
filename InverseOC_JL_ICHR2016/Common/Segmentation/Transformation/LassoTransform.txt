@@ -1,0 +1,161 @@
+classdef KSPCATransform2 < ATransform
+    % ksPCA, reparsed from Ghodsi
+    
+%  Usage: k = kernel(ker,u,v,p1,p2)
+%
+%  Parameters: ker - kernel type
+%              u,v - kernel arguments
+%
+%  Values for ker: 'linear'     - 
+%                  'delta'      -  
+%                  'poly'       - p1 is degree of polynomial
+%                  'rbf'        - p1 is width of rbfs (sigma)
+%                  'sigmoid'    - p1 is scale, p2 is offset
+%                  'spline'     -
+%                  'bspline'    - p1 is degree of bspline
+%                  'fourier'    - p1 is degree
+%                  'erfb'       - p1 is width of rbfs (sigma)
+%                  'anova'      - p1 is max order of terms
+    
+    properties(SetAccess=private)
+        
+       %kernel functions
+       y_kernal = 'none';
+       x_kernal = 'none';
+       
+       y_kernal_param1 = [];
+       y_kernal_param2 = [];
+       x_kernal_param1 = [];
+       x_kernal_param2 = [];
+       
+       trainingData = [];
+       
+       sigma = [];
+        
+       mean_x = [];
+       mean_y = [];
+       
+       U = [];
+       degree = 2;
+       
+       downsampleUpperBound = 5000; % so n p1 points, and n p0 points
+    end
+        
+    methods
+        function obj = KSPCATransform2()
+           obj.y_kernal = 'delta';
+           obj.x_kernal = 'none'; 
+        end
+        
+        function init(obj,varargin)
+           %Initialization input:
+           %    Kernel function y: 'linear', 'rbf', 'delta'
+           %    Kernel function x: 'linear', 'rbf', 'none'
+           %    sigma
+           %    degree
+           
+           obj.y_kernal = varargin{1};
+           obj.x_kernal = varargin{2};
+           obj.sigma = varargin{3};
+           obj.degree = varargin{4};           
+        end
+        
+        function error = train(obj,X,Y)
+        
+            % apply downsample and save the training data
+            if size(X, 1) > obj.downsampleUpperBound
+                % randomly select some points for downsampling
+                halfXLength = floor(size(X, 1)/2);
+                selectInd = randperm(halfXLength, obj.downsampleUpperBound); % first half is p1 points
+                selectInd2 = randperm(halfXLength, obj.downsampleUpperBound) + halfXLength;
+                X_tr = X([selectInd selectInd2], :)';
+                Y_tr = Y([selectInd selectInd2], :)';
+            else
+                X_tr = X';
+                Y_tr = Y';
+            end
+            
+            % the paper requires data to be normalized
+%             for ind_length = 1:(size(X_tr, 1))
+%                 holding = X_tr(ind_length, :) - min(X_tr(ind_length, :));
+%                 X_tr(ind_length, :) = holding / max(holding);
+%             end
+                
+            obj.trainingData = X_tr; % save the array for future usage
+            
+            param.ktype_y = obj.y_kernal;
+            param.ktype_x = obj.x_kernal;
+             
+            param.kparam_y = 1; % 1 in the example code
+            d = obj.degree;
+                    
+            % set up parameters
+            switch obj.x_kernal
+                case 'none'
+                   
+                case 'rbf'
+                    param.kparam_x = obj.sigma;
+
+                otherwise
+                    param.kparam_x = obj.degree;
+            end
+            
+            % call sPCA code
+            switch obj.x_kernal
+                case 'none'
+                    Y_tr(Y_tr == 1) = 2;
+                    Y_tr(Y_tr == 0) = 1;
+                    [Ztr_SPCA U] = SPCA(X_tr,Y_tr,d,param);
+                    
+                otherwise
+                    [Ztr_KSPCA U] = KSPCA(X_tr,Y_tr,d,param);
+            end
+            
+            obj.U = U;
+        end
+        
+        function out = apply(obj,input, trainingData)
+            
+            X_tr = obj.trainingData;
+            X_ts = input';
+            
+%             % normalizing obs data
+%             for ind_length = 1:(size(X_ts, 1))
+%                 holding = X_ts(ind_length, :) - min(X_ts(ind_length, :));
+%                 X_ts(ind_length, :) = holding / max(holding);
+%             end
+            
+            param.ktype_y = obj.y_kernal;
+            param.ktype_x = obj.x_kernal;
+             
+            param.kparam_y = 1; % 1 in the example code
+            d = obj.degree;
+            
+            switch obj.x_kernal
+                case 'none'
+                    out = obj.U'*X_ts;
+                    
+                otherwise
+                    switch obj.x_kernal
+                        case 'rbf'
+                            param.kparam_x = obj.sigma;
+                        otherwise
+                            param.kparam_x = obj.degree;
+                    end
+                    
+                    Ktest = zeros(size(X_tr,2),size(X_ts,2));
+                    for i=1:size(X_tr,2)
+                        for j=1:size(X_ts,2)
+                            Ktest(i,j) = kernel(param.ktype_x,X_tr(:,i),X_ts(:,j),param.kparam_x,[]);
+                        end
+                    end
+                    out = obj.U'*Ktest;
+            end
+            
+            out = out';
+        end
+    end
+        
+    
+    
+end

@@ -1,0 +1,197 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of rtjademo</title>
+  <meta name="keywords" content="rtjademo">
+  <meta name="description" content="RTJADEMO Jacobian demo">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../index.html">Home</a> &gt;  <a href="#">demos</a> &gt; rtjademo.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../index.html"><img alt="<" border="0" src="../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for ./demos&nbsp;<img alt=">" border="0" src="../right.png"></a></td></tr></table>-->
+
+<h1>rtjademo
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>RTJADEMO Jacobian demo</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment">RTJADEMO Jacobian demo</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%RTJADEMO Jacobian demo</span>
+0002 
+0003 <span class="comment">% Copyright (C) 1993-2002, by Peter I. Corke</span>
+0004 echo off
+0005 <span class="comment">% 6/99    change arg to maniplty() to 'yoshikawa'</span>
+0006 <span class="comment">% $Log: not supported by cvs2svn $</span>
+0007 <span class="comment">% Revision 1.2  2002-04-01 11:47:17  pic</span>
+0008 <span class="comment">% General cleanup of code: help comments, see also, copyright, remnant dh/dyn</span>
+0009 <span class="comment">% references, clarification of functions.</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">% $Revision: 1.1 $</span>
+0012 echo on
+0013 <span class="comment">%</span>
+0014 <span class="comment">% Jacobian and differential motion demonstration</span>
+0015 <span class="comment">%</span>
+0016 <span class="comment">% A differential motion can be represented by a 6-element vector with elements</span>
+0017 <span class="comment">% [dx dy dz drx dry drz]</span>
+0018 <span class="comment">%</span>
+0019 <span class="comment">% where the first 3 elements are a differential translation, and the last 3</span>
+0020 <span class="comment">% are a differential rotation.  When dealing with infinitisimal rotations,</span>
+0021 <span class="comment">% the order becomes unimportant.  The differential motion could be written</span>
+0022 <span class="comment">% in terms of compounded transforms</span>
+0023 <span class="comment">%</span>
+0024 <span class="comment">% transl(dx,dy,dz) * trotx(drx) * troty(dry) * trotz(drz)</span>
+0025 <span class="comment">%</span>
+0026 <span class="comment">% but a more direct approach is to use the function diff2tr()</span>
+0027 <span class="comment">%</span>
+0028     D = [.1 .2 0 -.2 .1 .1]';
+0029     diff2tr(D)
+0030 pause <span class="comment">% any key to continue</span>
+0031 <span class="comment">%</span>
+0032 <span class="comment">% More commonly it is useful to know how a differential motion in one</span>
+0033 <span class="comment">% coordinate frame appears in another frame.  If the second frame is</span>
+0034 <span class="comment">% represented by the transform</span>
+0035     T = transl(100, 200, 300) * troty(pi/8) * trotz(-pi/4);
+0036 <span class="comment">%</span>
+0037 <span class="comment">% then the differential motion in the second frame would be given by</span>
+0038 
+0039     DT = tr2jac(T) * D;
+0040     DT'
+0041 <span class="comment">%</span>
+0042 <span class="comment">% tr2jac() has computed a 6x6 Jacobian matrix which transforms the differential</span>
+0043 <span class="comment">% changes from the first frame to the next.</span>
+0044 <span class="comment">%</span>
+0045 pause <span class="comment">% any key to continue</span>
+0046 
+0047 <span class="comment">% The manipulator's Jacobian matrix relates differential joint coordinate</span>
+0048 <span class="comment">% motion to differential Cartesian motion;</span>
+0049 <span class="comment">%</span>
+0050 <span class="comment">%     dX = J(q) dQ</span>
+0051 <span class="comment">%</span>
+0052 <span class="comment">% For an n-joint manipulator the manipulator Jacobian is a 6 x n matrix and</span>
+0053 <span class="comment">% is used is many manipulator control schemes.  For a 6-axis manipulator like</span>
+0054 <span class="comment">% the Puma 560 the Jacobian is square</span>
+0055 <span class="comment">%</span>
+0056 <span class="comment">% Two Jacobians are frequently used, which express the Cartesian velocity in</span>
+0057 <span class="comment">% the world coordinate frame,</span>
+0058 
+0059     q = [0.1 0.75 -2.25 0 .75 0]
+0060     J = jacob0(p560, q)
+0061 <span class="comment">%</span>
+0062 <span class="comment">% or the T6 coordinate frame</span>
+0063 
+0064     J = jacobn(p560, q)
+0065 <span class="comment">%</span>
+0066 <span class="comment">% Note the top right 3x3 block is all zero.  This indicates, correctly, that</span>
+0067 <span class="comment">% motion of joints 4-6 does not cause any translational motion of the robot's</span>
+0068 <span class="comment">% end-effector.</span>
+0069 pause <span class="comment">% any key to continue</span>
+0070 
+0071 <span class="comment">%</span>
+0072 <span class="comment">%  Many control schemes require the inverse of the Jacobian.  The Jacobian</span>
+0073 <span class="comment">% in this example is not singular</span>
+0074     det(J)
+0075 <span class="comment">%</span>
+0076 <span class="comment">% and may be inverted</span>
+0077     Ji = inv(J)
+0078 pause <span class="comment">% any key to continue</span>
+0079 <span class="comment">%</span>
+0080 <span class="comment">% A classic control technique is Whitney's resolved rate motion control</span>
+0081 <span class="comment">%</span>
+0082 <span class="comment">% dQ/dt = J(q)^-1 dX/dt</span>
+0083 <span class="comment">%</span>
+0084 <span class="comment">% where dX/dt is the desired Cartesian velocity, and dQ/dt is the required</span>
+0085 <span class="comment">% joint velocity to achieve this.</span>
+0086     vel = [1 0 0 0 0 0]'; <span class="comment">% translational motion in the X direction</span>
+0087     qvel = Ji * vel;
+0088     qvel'
+0089 <span class="comment">%</span>
+0090 <span class="comment">%  This is an alternative strategy to computing a Cartesian trajectory</span>
+0091 <span class="comment">% and solving the inverse kinematics.  However like that other scheme, this</span>
+0092 <span class="comment">% strategy also runs into difficulty at a manipulator singularity where</span>
+0093 <span class="comment">% the Jacobian is singular.</span>
+0094 
+0095 pause <span class="comment">% any key to continue</span>
+0096 <span class="comment">%</span>
+0097 <span class="comment">% As already stated this Jacobian relates joint velocity to end-effector</span>
+0098 <span class="comment">% velocity expressed in the end-effector reference frame.  We may wish</span>
+0099 <span class="comment">% instead to specify the velocity in base or world coordinates.</span>
+0100 <span class="comment">%</span>
+0101 <span class="comment">% We have already seen how differential motions in one frame can be translated</span>
+0102 <span class="comment">% to another.  Consider the velocity as a differential in the world frame, that</span>
+0103 <span class="comment">% is, d0X.  We can write</span>
+0104 <span class="comment">%     d6X = Jac(T6) d0X</span>
+0105 <span class="comment">%</span>
+0106     T6 = fkine(p560, q); <span class="comment">% compute the end-effector transform</span>
+0107     d6X = tr2jac(T6) * vel; <span class="comment">% translate world frame velocity to T6 frame</span>
+0108     qvel = Ji * d6X; <span class="comment">% compute required joint velocity as before</span>
+0109     qvel'
+0110 <span class="comment">%</span>
+0111 <span class="comment">% Note that this value of joint velocity is quite different to that calculated</span>
+0112 <span class="comment">% above, which was for motion in the T6 X-axis direction.</span>
+0113 pause <span class="comment">% any key to continue</span>
+0114 <span class="comment">%</span>
+0115 <span class="comment">%  At a manipulator singularity or degeneracy the Jacobian becomes singular.</span>
+0116 <span class="comment">% At the Puma's `ready' position for instance, two of the wrist joints are</span>
+0117 <span class="comment">% aligned resulting in the loss of one degree of freedom.  This is revealed by</span>
+0118 <span class="comment">% the rank of the Jacobian</span>
+0119     rank( jacobn(p560, qr) )
+0120 <span class="comment">%</span>
+0121 <span class="comment">% and the singular values are</span>
+0122     svd( jacobn(p560, qr) )
+0123 pause <span class="comment">% any key to continue</span>
+0124 <span class="comment">%</span>
+0125 <span class="comment">% When not actually at a singularity the Jacobian can provide information</span>
+0126 <span class="comment">% about how `well-conditioned' the manipulator is for making certain motions,</span>
+0127 <span class="comment">% and is referred to as `manipulability'.</span>
+0128 <span class="comment">%</span>
+0129 <span class="comment">% A number of scalar manipulability measures have been proposed.  One by</span>
+0130 <span class="comment">% Yoshikawa</span>
+0131     maniplty(p560, q, <span class="string">'yoshikawa'</span>)
+0132 <span class="comment">%</span>
+0133 <span class="comment">% is based purely on kinematic parameters of the manipulator.</span>
+0134 <span class="comment">%</span>
+0135 <span class="comment">% Another by Asada takes into account the inertia of the manipulator which</span>
+0136 <span class="comment">% affects the acceleration achievable in different directions.  This measure</span>
+0137 <span class="comment">% varies from 0 to 1, where 1 indicates uniformity of acceleration in all</span>
+0138 <span class="comment">% directions</span>
+0139     maniplty(p560, q, <span class="string">'asada'</span>)
+0140 <span class="comment">%</span>
+0141 <span class="comment">% Both of these measures would indicate that this particular pose is not well</span>
+0142 <span class="comment">% conditioned.</span>
+0143 pause <span class="comment">% any key to continue</span>
+0144 
+0145 <span class="comment">% An interesting class of manipulators are those that are redundant, that is,</span>
+0146 <span class="comment">% they have more than 6 degrees of freedom.  Computing the joint motion for</span>
+0147 <span class="comment">% such a manipulator is not straightforward.  Approaches have been suggested</span>
+0148 <span class="comment">% based on the pseudo-inverse of the Jacobian (which will not be square) or</span>
+0149 <span class="comment">% singular value decomposition of the Jacobian.</span>
+0150 <span class="comment">%</span>
+0151 echo off</pre></div>
+<hr><address>Generated on Sun 15-Feb-2009 18:09:29 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>
