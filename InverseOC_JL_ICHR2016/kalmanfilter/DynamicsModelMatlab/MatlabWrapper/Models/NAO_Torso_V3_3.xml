@@ -1,0 +1,436 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rlmdl>
+   <model>
+      <manufacturer>Aldebaran Robotics</manufacturer>
+      <name>Nao_Torso_V3_3</name>
+      <world id="world">
+         <rotation>
+            <x>0</x>
+            <y>0</y>
+            <z>0</z>
+         </rotation>
+         <translation>
+            <x>0</x>
+            <y>0</y>
+            <z>0</z>
+         </translation>
+         <g>
+            <x>0</x>
+            <y>0</y>
+            <z>9.8</z>
+         </g>
+      </world>
+	  <body id="Torso">
+         <cm>
+            <x>-0.00415</x>
+            <y>0.00007</y>
+            <z>0.04258</z>
+         </cm>
+         <m>1.03948</m>
+         <i>
+            <xx>0.00496741976</xx>
+            <yy>0.00479135246</yy>
+            <zz>0.00159784829</zz>
+            <yz>-0.00002477669</yz>
+            <xz>0.00016446814</xz>
+            <xy>0.00001247389</xy>
+         </i>
+      </body>
+	  <body id="Neck">
+         <cm>
+            <x>-0.00002</x>
+            <y>0.00017</y>
+            <z>-0.2556</z>
+         </cm>
+         <m>0.5930</m>
+         <i>
+            <xx>0.00006180308</xx>
+            <yy>0.00006281859</yy>
+            <zz>0.00000543977</zz>
+            <yz>-0.00000005067</yz>
+            <xz>-0.00000004948</xz>
+            <xy>-0.00000000205</xy>
+         </i>
+      </body>
+      <body id="Head">
+         <cm>
+            <x>0.00120</x>
+            <y>-0.00084</y>
+            <z>0.05353</z>
+         </cm>
+         <m>0.52065</m>
+         <i>
+            <xx>0.00226587004</xx>
+            <yy>0.00226420513</yy>
+            <zz>0.00087373321</zz>
+            <yz>-0.00000231846</yz>
+            <xz>-0.00001192653</xz>
+            <xy>0.00000787181</xy>
+         </i>
+      </body>
+	  <body id="RightShoulder">
+         <cm>
+            <x>-0.00178</x>
+            <y>0.02496</y>
+            <z>0.00018</z>
+         </cm>
+         <m>0.06996</m>
+         <i>
+            <xx>0.00007102499</xx>
+            <yy>0.00001405799</yy>
+            <zz>0.00007316600</zz>
+            <yz>-0.00000000841</yz>
+            <xz>0.00000001722</xz>
+            <xy>0.00000202467</xy>
+         </i>
+      </body>
+	  <body id="LeftShoulder">
+         <cm>
+            <x>-0.00178</x>
+            <y>0.02496</y>
+            <z>0.00018</z>
+         </cm>
+         <m>0.06996</m>
+         <i>
+            <xx>0.00007102499</xx>
+            <yy>0.00001405799</yy>
+            <zz>0.00007316600</zz>
+            <yz>0.00000000841</yz>
+            <xz>0.00000001722</xz>
+            <xy>-0.00000202467</xy>
+         </i>
+      </body>
+	  <body id="RightBicep">
+         <cm>
+            <x>0.01885</x>
+            <y>-0.00577</y>
+            <z>0.00065</z>
+         </cm>
+         <m>0.12309</m>
+         <i>
+            <xx>0.00008228413</xx>
+            <yy>0.00029001445</yy>
+            <zz>0.00026842331</zz>
+            <yz>0.00000152945</yz>
+            <xz>-0.00000752601</xz>
+            <xy>0.00003978057</xy>
+         </i>
+      </body>
+	  <body id="LeftBicep">
+         <cm>
+            <x>0.01885</x>
+            <y>0.00577</y>
+            <z>0.00065</z>
+         </cm>
+         <m>0.12309</m>
+         <i>
+            <xx>0.00008228413</xx>
+            <yy>0.00029001445</yy>
+            <zz>0.00026842331</zz>
+            <yz>-0.00000152945</yz>
+            <xz>-0.00000752601</xz>
+            <xy>-0.00003978057</xy>
+         </i>
+      </body>
+	  <body id="RightElbow">
+         <cm>
+            <x>-0.05971</x>
+            <y>-0.00001</y>
+            <z>-0.00019</z>
+         </cm>
+         <m>0.05971</m>
+         <i>
+            <xx>0.00000550319</xx>
+            <yy>0.00006225405</yy>
+            <zz>0.00006325124</zz>
+            <yz>-0.00000000559</yz>
+            <xz>0.00000001534</xz>
+            <xy>0.00000002243</xy>
+         </i>
+      </body>
+	  <body id="RightForeArm">
+         <cm>
+            <x>0.02556</x>
+            <y>-0.00273</y>
+            <z>0.00096</z>
+         </cm>
+         <m>0.07724</m>
+         <i>
+            <xx>0.00002519483</xx>
+            <yy>0.00008890315</yy>
+            <zz>0.00008686867</zz>
+            <yz>0.00000010809</yz>
+            <xz>-0.00000071846</xz>
+            <xy>0.00000216293</xy>
+         </i>
+      </body>
+	  <body id="LeftForeArm">
+         <cm>
+            <x>0.02556</x>
+            <y>0.00273</y>
+            <z>0.00096</z>
+         </cm>
+         <m>0.07724</m>
+         <i>
+            <xx>0.00002519483</xx>
+            <yy>0.00008890315</yy>
+            <zz>0.00008686867</zz>
+            <yz>-0.00000010809</yz>
+            <xz>-0.00000071846</xz>
+            <xy>-0.00000216293</xy>
+         </i>
+      </body>
+	  <!-- NON MOTORIZED HANDS -->
+	  <body id="RightHand">
+         <cm>
+            <x>0.06536</x>
+            <y>-0.00034</y>
+            <z>-0.00002</z>
+         </cm>
+         <m>0.18500</m>
+         <i>
+            <xx>0.00007831052</xx>
+            <yy>0.00112996801</yy>
+            <zz>0.00112695518</zz>
+            <yz>0.00000013237</yz>
+            <xz>0.00000756942</xz>
+            <xy>-0.00001006758</xy>
+         </i>
+      </body>
+	  <body id="LeftHand">
+         <cm>
+            <x>0.06536</x>
+            <y>0.00034</y>
+            <z>-0.00002</z>
+         </cm>
+         <m>0.18500</m>
+         <i>
+            <xx>0.00007831052</xx>
+            <yy>0.00112996801</yy>
+            <zz>0.00112695518</zz>
+            <yz>-0.00000013237</yz>
+            <xz>0.00000756942</xz>
+            <xy>0.00001006758</xy>
+         </i>
+      </body>
+	  <body id="RightGripper">
+         <cm>
+            <x>0.0</x>
+            <y>0.0</y>
+            <z>0.0</z>
+         </cm>
+         <m>0</m>
+         <i>
+            <xx>0.0</xx>
+            <yy>0.0</yy>
+            <zz>0.0</zz>
+            <yz>0.0</yz>
+            <xz>0.0</xz>
+            <xy>0.0</xy>
+         </i>
+      </body>
+	  
+	  <!-- Links and Joints -->
+	  <fixed id="world2base">
+			<frame>
+				<a idref="world"/>
+				<b idref="Torso"/>
+			</frame>
+			<rotation>
+				<x>0</x>
+				<y>0</y>
+				<z>0</z>
+			</rotation>
+			<translation>
+				<x>0</x>
+				<y>0</y>
+				<z>0</z>
+			</translation>
+		</fixed>
+	  <frame id= "PreNeck"/>
+	  <fixed id="Torso2PreNeck">
+			<frame>
+				<a idref="Torso"/>
+				<b idref="PreNeck"/>
+			</frame>
+			<rotation>
+				<x>0</x>
+				<y>0</y>
+				<z>0</z>
+			</rotation>
+			<translation>
+				<x>0</x>
+				<y>0</y>
+				<z>0.1265</z>
+			</translation>
+		</fixed>
+	   <revolute id="HeadYaw">
+			<frame>
+				<a idref="PreNeck"/>
+				<b idref="Neck"/>
+			</frame>
+		</revolute>
+	    <!-- To head Pitch -->
+		
+		<frame id = "PreHeadPitch"/>
+		<frame id = "PostHeadPitch"/>
+		<fixed id="Neck2PreHeadPitch">
+			<frame>
+				<a idref="Neck"/>
+				<b idref="PreHeadPitch"/>
+			</frame>
+			<rotation>
+				<x>-90</x>
+				<y>0</y>
+				<z>0</z>
+			</rotation>
+		</fixed>
+		<revolute id="HeadPitch">
+			<frame>
+				<a idref="PreHeadPitch"/>
+				<b idref="PostHeadPitch"/>
+			</frame>
+		</revolute>
+		<fixed id="PostHeadPitch2Head">
+			<frame>
+				<a idref="PostHeadPitch"/>
+				<b idref="Head"/>
+			</frame>
+			<rotation>
+				<x>90</x>
+				<y>0</y>
+				<z>0</z>
+			</rotation>
+		</fixed>
+		
+		<!-- Torso to Right Arm Chain -->
+		<frame id = "PreRShoulderPitch"/>
+		<frame id = "PostRShoulderPitch"/>
+		<fixed id="Torso2PreRShoulderPitch">
+			<frame>
+				<a idref="Torso"/>
+				<b idref="PreRShoulderPitch"/>
+			</frame>
+			<rotation>
+				<x>-90</x>
+				<y>0</y>
+				<z>0</z>
+			</rotation>
+			<translation>
+				<x>0</x>
+				<y>-0.098</y>
+				<z>0.1</z>
+			</translation>
+		</fixed>
+		<revolute id="RShoulderPitch">
+			<frame>
+				<a idref="PreRShoulderPitch"/>
+				<b idref="PostRShoulderPitch"/>
+			</frame>
+		</revolute>
+		<fixed id="PostRShoulderPitch2RightShoulder">
+			<frame>
+				<a idref="PostRShoulderPitch"/>
+				<b idref="RightShoulder"/>
+			</frame>
+			<rotation>
+				<x>90</x>
+				<y>0</y>
+				<z>0</z>
+			</rotation>
+		</fixed>
+		<revolute id="RShoulderRoll">
+			<frame>
+				<a idref="RightShoulder"/>
+				<b idref="RightBicep"/>
+			</frame>
+		</revolute>
+	    <frame id= "PreRElbowYaw"/>
+		<frame id= "PostRElbowYaw"/>
+		<fixed id="RightBicep2PreRElbowYaw">
+			<frame>
+				<a idref="RightBicep"/>
+				<b idref="PreRElbowYaw"/>
+			</frame>
+			<rotation>
+				<x>0</x>
+				<y>90</y>
+				<z>0</z>
+			</rotation>
+			<translation>
+				<x>0.105</x>
+				<y>-0.015</y>
+				<z>0</z>
+			</translation>
+		</fixed>
+		<revolute id="RElbowYaw">
+			<frame>
+				<a idref="PreRElbowYaw"/>
+				<b idref="PostRElbowYaw"/>
+			</frame>
+		</revolute>
+		<fixed id="PostRElbowYaw2RightElbow">
+			<frame>
+				<a idref="PostRElbowYaw"/>
+				<b idref="RightElbow"/>
+			</frame>
+			<rotation>
+				<x>0</x>
+				<y>-90</y>
+				<z>0</z>
+			</rotation>
+		</fixed>
+		<revolute id="RElbowRoll">
+			<frame>
+				<a idref="RightElbow"/>
+				<b idref="RightForeArm"/>
+			</frame>
+		</revolute>
+		<frame id= "PreRWristYaw"/>
+		<frame id= "PostRWristYaw"/>
+		<fixed id="RightForeArm2PreRWristYaw">
+			<frame>
+				<a idref="RightForeArm"/>
+				<b idref="PreRWristYaw"/>
+			</frame>
+			<rotation>
+				<x>0</x>
+				<y>90</y>
+				<z>0</z>
+			</rotation>
+			<translation>
+				<x>0.05595</x>
+				<y>0</y>
+				<z>0</z>
+			</translation>
+		</fixed>
+		<revolute id="RWristYaw">
+			<frame>
+				<a idref="PreRWristYaw"/>
+				<b idref="PostRWristYaw"/>
+			</frame>
+		</revolute>
+		<fixed id="PostRWristYaw2RightHand">
+			<frame>
+				<a idref="PostRWristYaw"/>
+				<b idref="RightHand"/>
+			</frame>
+			<rotation>
+				<x>0</x>
+				<y>-90</y>
+				<z>0</z>
+			</rotation>
+		</fixed>
+		<fixed id="RightHand2RightGripper">
+			<frame>
+				<a idref="RightHand"/>
+				<b idref="RightGripper"/>
+			</frame>
+			<rotation>
+				<x>0.05775</x>
+				<y>0</y>
+				<z>-0.01231</z>
+			</rotation>
+		</fixed>
+   </model>
+</rlmdl>

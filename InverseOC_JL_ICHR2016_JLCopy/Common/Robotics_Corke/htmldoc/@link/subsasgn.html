@@ -1,0 +1,162 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of subsasgn</title>
+  <meta name="keywords" content="subsasgn">
+  <meta name="description" content="SUBSASGN assignment methods on a LINK object">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../index.html">Home</a> &gt;  <a href="#">@link</a> &gt; subsasgn.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../index.html"><img alt="<" border="0" src="../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for ./@link&nbsp;<img alt=">" border="0" src="../right.png"></a></td></tr></table>-->
+
+<h1>subsasgn
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>SUBSASGN assignment methods on a LINK object</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function l = subsasgn(l, s, v) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment">SUBSASGN assignment methods on a LINK object
+
+    LINK.alpha = alpha    kinematic parameters
+    LINK.A = A
+    LINK.theta = theta
+    LINK.D = D
+    LINK.sigma = sigma    1 if joint is prismatic
+
+    LINK.I = 3x3 inertia matrix about link COG
+    LINK.I = 6x1 inertia vector [Ixx Iyy Izz Ixy Iyz Ixz] about link COG
+    LINK.m = link mass
+    LINK.r = 3vector  link COG wrt link coordinate frame
+
+    LINK.B = link viscous friction (motor referred)
+    LINK.Tc = link Coulomb friction 1 element if symmetric, else 2
+
+    LINK.G = G        gear ratio
+    LINK.Jm = Jm        gear ratio (motor referred)
+
+    LINK.qlim = 2 x 1    joint limit matrix [lower upper]
+    LINK.offset = q0    joint coordinate offset</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%SUBSASGN assignment methods on a LINK object</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">%    LINK.alpha = alpha    kinematic parameters</span>
+0004 <span class="comment">%    LINK.A = A</span>
+0005 <span class="comment">%    LINK.theta = theta</span>
+0006 <span class="comment">%    LINK.D = D</span>
+0007 <span class="comment">%    LINK.sigma = sigma    1 if joint is prismatic</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">%    LINK.I = 3x3 inertia matrix about link COG</span>
+0010 <span class="comment">%    LINK.I = 6x1 inertia vector [Ixx Iyy Izz Ixy Iyz Ixz] about link COG</span>
+0011 <span class="comment">%    LINK.m = link mass</span>
+0012 <span class="comment">%    LINK.r = 3vector  link COG wrt link coordinate frame</span>
+0013 <span class="comment">%</span>
+0014 <span class="comment">%    LINK.B = link viscous friction (motor referred)</span>
+0015 <span class="comment">%    LINK.Tc = link Coulomb friction 1 element if symmetric, else 2</span>
+0016 <span class="comment">%</span>
+0017 <span class="comment">%    LINK.G = G        gear ratio</span>
+0018 <span class="comment">%    LINK.Jm = Jm        gear ratio (motor referred)</span>
+0019 <span class="comment">%</span>
+0020 <span class="comment">%    LINK.qlim = 2 x 1    joint limit matrix [lower upper]</span>
+0021 <span class="comment">%    LINK.offset = q0    joint coordinate offset</span>
+0022 
+0023 <span class="comment">% Copyright (C) 1999-2008, by Peter I. Corke</span>
+0024 <span class="comment">%</span>
+0025 <span class="comment">% This file is part of The Robotics Toolbox for Matlab (RTB).</span>
+0026 <span class="comment">%</span>
+0027 <span class="comment">% RTB is free software: you can redistribute it and/or modify</span>
+0028 <span class="comment">% it under the terms of the GNU Lesser General Public License as published by</span>
+0029 <span class="comment">% the Free Software Foundation, either version 3 of the License, or</span>
+0030 <span class="comment">% (at your option) any later version.</span>
+0031 <span class="comment">%</span>
+0032 <span class="comment">% RTB is distributed in the hope that it will be useful,</span>
+0033 <span class="comment">% but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+0034 <span class="comment">% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+0035 <span class="comment">% GNU Lesser General Public License for more details.</span>
+0036 <span class="comment">%</span>
+0037 <span class="comment">% You should have received a copy of the GNU Leser General Public License</span>
+0038 <span class="comment">% along with RTB.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
+0039 
+0040 <a name="_sub0" href="#_subfunctions" class="code">function l = subsasgn(l, s, v)</a>
+0041 
+0042     <span class="keyword">if</span> s(1).type  ~= <span class="string">'.'</span>
+0043         error(<span class="string">'only .field supported'</span>)
+0044     <span class="keyword">end</span>
+0045     <span class="keyword">switch</span> s(1).subs,
+0046     <span class="keyword">case</span> <span class="string">'alpha'</span>,
+0047         l.alpha = v;
+0048     <span class="keyword">case</span> <span class="string">'A'</span>,
+0049         l.A = v;
+0050     <span class="keyword">case</span> <span class="string">'theta'</span>,
+0051         l.theta = v;
+0052     <span class="keyword">case</span> <span class="string">'D'</span>,
+0053         l.D = v;
+0054     <span class="keyword">case</span> <span class="string">'offset'</span>,
+0055         l.offset = v;
+0056     <span class="keyword">case</span> <span class="string">'sigma'</span>,
+0057         <span class="keyword">if</span> ischar(v)
+0058             l.sigma = lower(v) == <span class="string">'p'</span>;
+0059         <span class="keyword">else</span>
+0060             l.sigma = v;
+0061         <span class="keyword">end</span>
+0062     <span class="keyword">case</span> <span class="string">'G'</span>,
+0063         l.G = v;
+0064     <span class="keyword">case</span> <span class="string">'I'</span>,
+0065         <span class="keyword">if</span> all(size(v) == [3 3])
+0066             l.I = v;
+0067         <span class="keyword">elseif</span> length(v) == 3,
+0068             l.I = diag(v);
+0069         <span class="keyword">elseif</span> length(v) == 6,
+0070             l.I = [    v(1) v(4) v(6)
+0071                 v(4) v(2) v(5)
+0072                 v(6) v(5) v(3)];
+0073         <span class="keyword">end</span>
+0074     <span class="keyword">case</span> <span class="string">'r'</span>,
+0075         l.r = v(:);    <span class="comment">% a column vector</span>
+0076     <span class="keyword">case</span> <span class="string">'Jm'</span>,
+0077         l.Jm = v;
+0078     <span class="keyword">case</span> <span class="string">'B'</span>,
+0079         l.B = v;
+0080     <span class="keyword">case</span> <span class="string">'Tc'</span>,
+0081         <span class="keyword">if</span> length(v) == 1,
+0082             l.Tc = [v -v];
+0083         <span class="keyword">elseif</span> length(v) == 2,
+0084             l.Tc = v;
+0085         <span class="keyword">else</span>
+0086             error(<span class="string">'Coulomb friction vector can have 1 (symmetric) or 2 (asymmetric) elements only'</span>)
+0087         <span class="keyword">end</span>
+0088     <span class="keyword">case</span> <span class="string">'m'</span>,
+0089         l.m = v;
+0090     <span class="keyword">case</span> <span class="string">'qlim'</span>,
+0091         <span class="keyword">if</span> length(v) ~= 2,
+0092             error(<span class="string">'joint limit must have 2 elements'</span>);
+0093         <span class="keyword">end</span>
+0094         l.qlim = v;
+0095     <span class="keyword">otherwise</span>, error(<span class="string">'Unknown method'</span>)
+0096     <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sun 15-Feb-2009 18:09:29 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

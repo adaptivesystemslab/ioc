@@ -1,0 +1,3 @@
+LIBRARY	"DynamicsModelMatlab.mexw64"
+EXPORTS
+mexFunction @1

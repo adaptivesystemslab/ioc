@@ -1,0 +1,167 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of camcalp_c</title>
+  <meta name="keywords" content="camcalp_c">
+  <meta name="description" content="CAMCALP_C	Camera calibration matrix from parameters (central projection)">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../index.html">Home</a> &gt;  <a href="#">demos</a> &gt; camcalp_c.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../index.html"><img alt="<" border="0" src="../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for ./demos&nbsp;<img alt=">" border="0" src="../right.png"></a></td></tr></table>-->
+
+<h1>camcalp_c
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>CAMCALP_C	Camera calibration matrix from parameters (central projection)</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function C = camcalp(cp, A, B, C) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment">CAMCALP_C    Camera calibration matrix from parameters (central projection)
+
+    C = CAMCALP_C(cp)
+    C = CAMCALP_C(cp, Tcam)
+    C = CAMCALP_C(cp, pC, x, z)
+
+    Compute a 3x4 camera calibration matrix from given camera intrinsic
+    and extrinsic parameters.
+       CP is a camera parameter vector comprising:
+        cp(1)   f, the focal length of the lens (m)
+            cp(2:3) alpha is a 2-element vector of horizontal and 
+            vertical pixel pitch of the sensor (pixels/m)
+         cp(4:5) p0 is a 2-element vector of principal point (u0, v0)
+            in pixels,
+            If length(cp) == 3, then p0 defaults to (0,0)
+
+        Tcam is the pose of the camera wrt the world frame, defaults to
+        identity matrix if not given (optical axis along Z-axis).
+
+    Alternatively the camera pose can be given by specifying the coordinates
+    of the center, pC, and unit vectors for the camera's x-axis and 
+    z-axis (optical axis).
+
+    This camera calibration matrix is for the central projection as 
+    commonly used in computer vision literature where the focal point
+    is at z=0, and rays pass through the image plane at z=f.  This model
+    has no image inversion.
+
+      f, alphax and alphay are commonly known as the intrinsic camera 
+    parameters.  Tcam is commonly known as the extrinsic camera parameters.
+
+ NOTE:     that this calibration matrix includes the lens image inversion, so
+    that the camera coordinate system is:
+
+        0------------------&gt; X
+        |
+        |
+        |    + (principal point)
+        |
+        |
+        v
+ 
+ SEE ALSO:  camcalp, <a href="camera.html" class="code" title="function uv = camera(C, p, Tobj, Tcam)">camera</a>, pulnix
+
+    Copyright (c) Peter Corke, 1999  Machine Vision Toolbox for Matlab</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%CAMCALP_C    Camera calibration matrix from parameters (central projection)</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">%    C = CAMCALP_C(cp)</span>
+0004 <span class="comment">%    C = CAMCALP_C(cp, Tcam)</span>
+0005 <span class="comment">%    C = CAMCALP_C(cp, pC, x, z)</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">%    Compute a 3x4 camera calibration matrix from given camera intrinsic</span>
+0008 <span class="comment">%    and extrinsic parameters.</span>
+0009 <span class="comment">%       CP is a camera parameter vector comprising:</span>
+0010 <span class="comment">%        cp(1)   f, the focal length of the lens (m)</span>
+0011 <span class="comment">%            cp(2:3) alpha is a 2-element vector of horizontal and</span>
+0012 <span class="comment">%            vertical pixel pitch of the sensor (pixels/m)</span>
+0013 <span class="comment">%         cp(4:5) p0 is a 2-element vector of principal point (u0, v0)</span>
+0014 <span class="comment">%            in pixels,</span>
+0015 <span class="comment">%            If length(cp) == 3, then p0 defaults to (0,0)</span>
+0016 <span class="comment">%</span>
+0017 <span class="comment">%        Tcam is the pose of the camera wrt the world frame, defaults to</span>
+0018 <span class="comment">%        identity matrix if not given (optical axis along Z-axis).</span>
+0019 <span class="comment">%</span>
+0020 <span class="comment">%    Alternatively the camera pose can be given by specifying the coordinates</span>
+0021 <span class="comment">%    of the center, pC, and unit vectors for the camera's x-axis and</span>
+0022 <span class="comment">%    z-axis (optical axis).</span>
+0023 <span class="comment">%</span>
+0024 <span class="comment">%    This camera calibration matrix is for the central projection as</span>
+0025 <span class="comment">%    commonly used in computer vision literature where the focal point</span>
+0026 <span class="comment">%    is at z=0, and rays pass through the image plane at z=f.  This model</span>
+0027 <span class="comment">%    has no image inversion.</span>
+0028 <span class="comment">%</span>
+0029 <span class="comment">%      f, alphax and alphay are commonly known as the intrinsic camera</span>
+0030 <span class="comment">%    parameters.  Tcam is commonly known as the extrinsic camera parameters.</span>
+0031 <span class="comment">%</span>
+0032 <span class="comment">% NOTE:     that this calibration matrix includes the lens image inversion, so</span>
+0033 <span class="comment">%    that the camera coordinate system is:</span>
+0034 <span class="comment">%</span>
+0035 <span class="comment">%        0------------------&gt; X</span>
+0036 <span class="comment">%        |</span>
+0037 <span class="comment">%        |</span>
+0038 <span class="comment">%        |    + (principal point)</span>
+0039 <span class="comment">%        |</span>
+0040 <span class="comment">%        |</span>
+0041 <span class="comment">%        v</span>
+0042 <span class="comment">%</span>
+0043 <span class="comment">% SEE ALSO:  camcalp, camera, pulnix</span>
+0044 <span class="comment">%</span>
+0045 <span class="comment">%    Copyright (c) Peter Corke, 1999  Machine Vision Toolbox for Matlab</span>
+0046 
+0047 <a name="_sub0" href="#_subfunctions" class="code">function C = camcalp(cp, A, B, C)</a>
+0048     f = cp(1);
+0049     alpha = cp(2:3);
+0050     <span class="keyword">if</span> length(cp) &lt;=3,
+0051         p0 = [ 0 0];
+0052     <span class="keyword">else</span>
+0053         p0 = cp(4:5);
+0054     <span class="keyword">end</span>
+0055     <span class="keyword">if</span> nargin == 1,
+0056         Tcam = eye(4);
+0057     <span class="keyword">elseif</span> nargin == 2,
+0058         Tcam = A;
+0059     <span class="keyword">elseif</span> nargin == 4,
+0060         pC = A(:);
+0061         x = unit(B(:));
+0062         z = unit(C(:));
+0063         <span class="keyword">if</span> abs(dot(x,z)) &gt; 1e-10,
+0064             error(<span class="string">'x and z vectors should be orthogonal'</span>);
+0065         <span class="keyword">end</span>
+0066         R=[x unit(cross(z,x)) z];
+0067 
+0068         Tcam = transl(pC) * [R zeros(3,1); 0 0 0 1];
+0069     <span class="keyword">end</span>
+0070 
+0071      C = [    alpha(1) 0 p0(1) 0; 
+0072         0 alpha(2) p0(2) 0;
+0073         0 0 1 0
+0074         ] * [ 1 0 0 0;
+0075           0 1 0 0;
+0076           0 0 1/f 0;
+0077           0 0 0 1] * inv(Tcam);</pre></div>
+<hr><address>Generated on Sun 15-Feb-2009 18:09:29 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

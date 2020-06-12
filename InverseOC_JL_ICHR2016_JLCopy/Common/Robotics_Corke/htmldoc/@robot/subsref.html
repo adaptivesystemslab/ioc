@@ -1,0 +1,217 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of subsref</title>
+  <meta name="keywords" content="subsref">
+  <meta name="description" content="SUBSREF Reference methods on a ROBOT object">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../index.html">Home</a> &gt;  <a href="#">@robot</a> &gt; subsref.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../index.html"><img alt="<" border="0" src="../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for ./@robot&nbsp;<img alt=">" border="0" src="../right.png"></a></td></tr></table>-->
+
+<h1>subsref
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>SUBSREF Reference methods on a ROBOT object</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function v = subsref(r, s) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment">SUBSREF Reference methods on a ROBOT object
+
+    ROBOT.n            return number of links
+    ROBOT.link        return cell array of link objects
+    ROBOT.gravity         return gravity vector
+    ROBOT.base         return homog xform of robot base
+    ROBOT.tool         return homog xform of robot tool
+    ROBOT.qlim         return joint limit matrix
+    ROBOT.offset         return joint offset vector
+    ROBOT.mdh        return MDH convention boolean (0=DH, 1=MDH)
+
+    ROBOT.islimit         return joint limit boolean vector
+
+    ROBOT.name        return name of robot
+    ROBOT.manuf        return who built it
+    ROBOT.comment        return general comment
+    ROBOT.config        return joint configuration string
+
+    ROBOT.plotopt         return options for plot(robot)
+    ROBOT.lineopt         return line drawing option string for links
+    ROBOT.shadowopt     return line drawing option string for shadow
+    ROBOT.handle        return graphics handles in object
+    ROBOT.q         return joint angles for plot(robot)
+
+    ROBOT.dh        return legacy DH matrix
+    ROBOT.dyn        return legacy DYN matrix</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="char.html" class="code" title="function s = char(r)">char</a>	CHAR String representation of robot parametesrs</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%SUBSREF Reference methods on a ROBOT object</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">%    ROBOT.n            return number of links</span>
+0004 <span class="comment">%    ROBOT.link        return cell array of link objects</span>
+0005 <span class="comment">%    ROBOT.gravity         return gravity vector</span>
+0006 <span class="comment">%    ROBOT.base         return homog xform of robot base</span>
+0007 <span class="comment">%    ROBOT.tool         return homog xform of robot tool</span>
+0008 <span class="comment">%    ROBOT.qlim         return joint limit matrix</span>
+0009 <span class="comment">%    ROBOT.offset         return joint offset vector</span>
+0010 <span class="comment">%    ROBOT.mdh        return MDH convention boolean (0=DH, 1=MDH)</span>
+0011 <span class="comment">%</span>
+0012 <span class="comment">%    ROBOT.islimit         return joint limit boolean vector</span>
+0013 <span class="comment">%</span>
+0014 <span class="comment">%    ROBOT.name        return name of robot</span>
+0015 <span class="comment">%    ROBOT.manuf        return who built it</span>
+0016 <span class="comment">%    ROBOT.comment        return general comment</span>
+0017 <span class="comment">%    ROBOT.config        return joint configuration string</span>
+0018 <span class="comment">%</span>
+0019 <span class="comment">%    ROBOT.plotopt         return options for plot(robot)</span>
+0020 <span class="comment">%    ROBOT.lineopt         return line drawing option string for links</span>
+0021 <span class="comment">%    ROBOT.shadowopt     return line drawing option string for shadow</span>
+0022 <span class="comment">%    ROBOT.handle        return graphics handles in object</span>
+0023 <span class="comment">%    ROBOT.q         return joint angles for plot(robot)</span>
+0024 <span class="comment">%</span>
+0025 <span class="comment">%    ROBOT.dh        return legacy DH matrix</span>
+0026 <span class="comment">%    ROBOT.dyn        return legacy DYN matrix</span>
+0027 
+0028 <span class="comment">% Copyright (C) 1999-2008, by Peter I. Corke</span>
+0029 <span class="comment">%</span>
+0030 <span class="comment">% This file is part of The Robotics Toolbox for Matlab (RTB).</span>
+0031 <span class="comment">%</span>
+0032 <span class="comment">% RTB is free software: you can redistribute it and/or modify</span>
+0033 <span class="comment">% it under the terms of the GNU Lesser General Public License as published by</span>
+0034 <span class="comment">% the Free Software Foundation, either version 3 of the License, or</span>
+0035 <span class="comment">% (at your option) any later version.</span>
+0036 <span class="comment">%</span>
+0037 <span class="comment">% RTB is distributed in the hope that it will be useful,</span>
+0038 <span class="comment">% but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+0039 <span class="comment">% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+0040 <span class="comment">% GNU Lesser General Public License for more details.</span>
+0041 <span class="comment">%</span>
+0042 <span class="comment">% You should have received a copy of the GNU Leser General Public License</span>
+0043 <span class="comment">% along with RTB.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
+0044 
+0045 <a name="_sub0" href="#_subfunctions" class="code">function v = subsref(r, s)</a>
+0046 
+0047     <span class="keyword">if</span> s(1).type  ~= <span class="string">'.'</span>
+0048         <span class="comment">%error('only .field supported')</span>
+0049     <span class="keyword">end</span>
+0050 
+0051     <span class="comment">% NOTE WELL:  the following code can't use getfield() since</span>
+0052     <span class="comment">% getfield()  uses this, and Matlab will crash!!</span>
+0053 
+0054     el = <a href="char.html" class="code" title="function s = char(r)">char</a>(s(1).subs);
+0055     <span class="keyword">switch</span> el,
+0056     <span class="comment">%%%%%%%%% retrieve robot parameters</span>
+0057     <span class="keyword">case</span> <span class="string">'n'</span>,
+0058         v = r.n;
+0059     <span class="keyword">case</span> <span class="string">'gravity'</span>
+0060         v = r.gravity;
+0061     <span class="keyword">case</span> <span class="string">'tool'</span>
+0062         v = r.tool;
+0063     <span class="keyword">case</span> <span class="string">'base'</span>
+0064         v = r.base;
+0065     <span class="keyword">case</span> <span class="string">'mdh'</span>,
+0066         v = r.mdh;
+0067 
+0068     <span class="keyword">case</span> {<span class="string">'link'</span>, <span class="string">'links'</span>},
+0069         <span class="keyword">if</span> length(s) == 1,
+0070             v = r.link;
+0071         <span class="keyword">elseif</span> s(2).type == <span class="string">'{}'</span>
+0072             j = s(2).subs;
+0073             j = j{1};
+0074             <span class="keyword">if</span> (j &lt; 1) | (j &gt; r.n)
+0075                 error(<span class="string">'link index out of bounds'</span>)
+0076             <span class="keyword">end</span>
+0077             v = r.link{j};
+0078         <span class="keyword">end</span>
+0079     <span class="keyword">case</span> <span class="string">'offset'</span>,
+0080         L = r.link;
+0081         v = [];
+0082         <span class="keyword">for</span> i=1:r.n,
+0083             v = [v; L{i}.offset];
+0084         <span class="keyword">end</span>
+0085     <span class="keyword">case</span> <span class="string">'qlim'</span>,
+0086         L = r.link;
+0087         v = [];
+0088         <span class="keyword">for</span> i=1:r.n,
+0089             v = [v; L{i}.qlim];
+0090         <span class="keyword">end</span>
+0091 
+0092     <span class="comment">%%%%%%%%% descriptive strings</span>
+0093     <span class="keyword">case</span> <span class="string">'name'</span>,
+0094         v = r.name;
+0095     <span class="keyword">case</span> <span class="string">'manuf'</span>,
+0096         v = r.manuf;
+0097     <span class="keyword">case</span> <span class="string">'comment'</span>,
+0098         v = r.comment;
+0099     <span class="keyword">case</span> <span class="string">'config'</span>,
+0100         L = r.link;
+0101         v = <span class="string">''</span>;
+0102         <span class="keyword">for</span> i=1:r.n,
+0103             v(i) = L{i}.RP;
+0104         <span class="keyword">end</span>
+0105 
+0106     <span class="comment">%%%%%%%%% joint limit test</span>
+0107     <span class="keyword">case</span> <span class="string">'islimit'</span>,
+0108         L = r.link;
+0109         <span class="keyword">if</span> s(2).type  ~= <span class="string">'()'</span>
+0110             error(<span class="string">'expecting argument for islimit method'</span>);
+0111         <span class="keyword">end</span>
+0112         q = s(2).subs{1};
+0113         <span class="keyword">if</span> length(q) ~= r.n,
+0114             error(<span class="string">'argument for islimit method is wrong length'</span>);
+0115         <span class="keyword">end</span>
+0116         v = [];
+0117         <span class="keyword">for</span> i=1:r.n,
+0118             v = [v; L{i}.islimit(q(i))];
+0119         <span class="keyword">end</span>
+0120     <span class="comment">%%%%%%%%% legacy DH/DYN support</span>
+0121     <span class="keyword">case</span> <span class="string">'dh'</span>,
+0122         v = [];
+0123         L = r.link;
+0124         <span class="keyword">for</span> i=1:r.n,
+0125             v = [v; L{i}.dh];
+0126         <span class="keyword">end</span>
+0127     <span class="keyword">case</span> <span class="string">'dyn'</span>
+0128         v = [];
+0129         L = r.link;
+0130         <span class="keyword">for</span> i=1:r.n,
+0131             v = [v; L{i}.dyn];
+0132         <span class="keyword">end</span>
+0133 
+0134     <span class="comment">%%%%%%%%% graphics support</span>
+0135     <span class="keyword">case</span> <span class="string">'q'</span>,
+0136         v = r.q;
+0137     <span class="keyword">case</span> <span class="string">'plotopt'</span>,
+0138         v = r.plotopt;
+0139     <span class="keyword">case</span> <span class="string">'lineopt'</span>
+0140         v = r.lineopt;
+0141     <span class="keyword">case</span> <span class="string">'shadowopt'</span>
+0142         v = r.shadowopt;
+0143     <span class="keyword">case</span> {<span class="string">'show'</span>, <span class="string">'handle'</span>}
+0144         v = r.handle';
+0145     <span class="keyword">otherwise</span>, error(<span class="string">'Unknown method'</span>)
+0146     <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sun 15-Feb-2009 18:09:29 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

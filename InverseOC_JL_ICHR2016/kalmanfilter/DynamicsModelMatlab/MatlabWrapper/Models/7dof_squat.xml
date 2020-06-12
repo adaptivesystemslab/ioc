@@ -1,0 +1,301 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rlmdl>
+   <model>
+      <manufacturer>Aldebaran Robotics</manufacturer>
+      <name>Nao_Torso_V3_3</name>
+      <world id="world">
+         <rotation>
+            <x>0</x>
+            <y>0</y>
+            <z>0</z>
+         </rotation>
+         <translation>
+            <x>0</x>
+            <y>0</y>
+            <z>0</z>
+         </translation>
+         <g>
+            <x>0</x>
+            <y>0</y>
+            <z>9.8</z>
+         </g>
+      </world>
+	  <body id="LowerLeg">
+         <cm>
+            <x>0.094153</x>
+            <y>0.06737</y>
+            <z>0.013148</z>
+         </cm>
+         <m>5.74818</m>
+         <i>
+            <xx>0.023676</xx>
+            <yy>0.10761</yy>
+            <zz>0.09986</zz>
+            <yz>0.00065912</yz>
+            <xz>-0.0069856</xz>
+            <xy>-0.0065586</xy>
+         </i>
+      </body>
+	  <body id="UpperLeg">
+         <cm>
+            <x>0.094153</x>
+            <y>0.06737</y>
+            <z>0.013148</z>
+         </cm>
+         <m>5.74818</m>
+         <i>
+            <xx>0.023676</xx>
+            <yy>0.10761</yy>
+            <zz>0.09986</zz>
+            <yz>0.00065912</yz>
+            <xz>-0.0069856</xz>
+            <xy>-0.0065586</xy>
+         </i>
+      </body>
+      <body id="Body">
+         <cm>
+            <x>0.03979</x>
+            <y>-0.15795</y>
+            <z>0.024356</z>
+         </cm>
+         <m>3.51451</m>
+         <i>
+            <xx>0.0016325</xx>
+            <yy>0.024158</yy>
+            <zz>0.0229</zz>
+            <yz>2.4253e-05</yz>
+            <xz>-6.6898e-05</xz>
+            <xy>-8.1119e-05</xy>
+         </i>
+      </body>
+      
+      <frame id="LowerLeg_rx_pre"><!--Intermediate frame between world and Body right before revolute joint about X axis--></frame>
+      <fixed id="world_LowerLeg_fixed_rx">
+         <frame>
+            <a idref="world"/>
+            <b idref="LowerLeg_rx_pre"/>
+         </frame>
+         <rotation>
+            <x>0</x>
+            <y>90</y>
+            <z>0</z>
+         </rotation>
+      </fixed>
+      <frame id="LowerLeg_rx_post"/>
+      <revolute id="world_LowerLeg_rx"><!--Revolute about X axis between world and Body-->
+         <frame>
+            <a idref="LowerLeg_rx_pre"/>
+            <b idref="LowerLeg_rx_post"/>
+         </frame>
+      </revolute>
+      <frame id="LowerLeg_ry_pre"><!--Intermediate frame between world and Body right before revolute joint about Y axis--></frame>
+      <fixed id="world_LowerLeg_fixed_ry">
+         <frame>
+            <a idref="LowerLeg_rx_post"/>
+            <b idref="LowerLeg_ry_pre"/>
+         </frame>
+         <rotation>
+            <x>-90</x>
+            <y>0</y>
+            <z>0</z>
+         </rotation>
+      </fixed>
+      <frame id="LowerLeg_ry_post"/>
+      <revolute id="world_LowerLeg_ry"><!--Revolute about Y axis between world and Body-->
+         <frame>
+            <a idref="LowerLeg_ry_pre"/>
+            <b idref="LowerLeg_ry_post"/>
+         </frame>
+      </revolute>
+      <frame id="LowerLeg_rz_pre"><!--Intermediate frame between world and Body right before revolute joint about Z axis--></frame>
+      <fixed id="world_LowerLeg_fixed_rz">
+         <frame>
+            <a idref="LowerLeg_ry_post"/>
+            <b idref="LowerLeg_rz_pre"/>
+         </frame>
+         <rotation>
+            <x>90</x>
+            <y>0</y>
+            <z>-90</z>
+         </rotation>
+      </fixed>
+      <revolute id="world_LowerLeg_rz"><!--Revolute about Z axis between world and Body-->
+         <frame>
+            <a idref="LowerLeg_rz_pre"/>
+            <b idref="LowerLeg"/>
+         </frame>
+      </revolute>
+      <frame id="UpperLeg_rx_pre_pre"><!--Intermediate frame between Body and UpperLeg right before revolute joint about X axis--></frame>
+      <fixed id="LowerLeg_UpperLeg_fixed_rx">
+         <frame>
+            <a idref="LowerLeg"/>
+            <b idref="UpperLeg_rx_pre_pre"/>
+         </frame>
+         <translation>
+            <x>0</x>
+            <y>0</y>
+            <z>0.4</z>
+         </translation>
+         <rotation>
+            <x>0</x>
+            <y>0</y>
+            <z>0</z>
+         </rotation>
+      </fixed>
+      <frame id="UpperLeg_rx_pre"><!--Intermediate frame between LowerLeg and UpperLeg right before revolute joint about X axis--></frame>
+      <fixed id="UpperLeg_fixed_rx_pre">
+         <frame>
+            <a idref="UpperLeg_rx_pre_pre"/>
+            <b idref="UpperLeg_rx_pre"/>
+         </frame>
+         <rotation>
+            <x>0</x>
+            <y>90</y>
+            <z>0</z>
+         </rotation>
+      </fixed>
+      <frame id="UpperLeg_rx_post"><!--Intermediate frame between LowerLeg and UpperLeg right after revolute joint about X axis--></frame>
+      <fixed id="LowerLeg_UpperLeg_rx"><!--Revolute about X axis between LowerLeg and UpperLeg-->
+         <frame>
+            <a idref="UpperLeg_rx_pre"/>
+            <b idref="UpperLeg_rx_post"/>
+         </frame>
+      </fixed>
+      <frame id="UpperLeg_ry_pre"><!--Intermediate frame between LowerLeg and UpperLeg right before revolute joint about Y axis--></frame>
+      <fixed id="LowerLeg_UpperLeg_fixed_ry">
+         <frame>
+            <a idref="UpperLeg_rx_post"/>
+            <b idref="UpperLeg_ry_pre"/>
+         </frame>
+         <rotation>
+            <x>-90</x>
+            <y>0</y>
+            <z>0</z>
+         </rotation>
+      </fixed>
+      <frame id="UpperLeg_ry_post"/>
+      <revolute id="LowerLeg_UpperLeg_ry"><!--Revolute about Y axis between LowerLeg and UpperLeg-->
+         <frame>
+            <a idref="UpperLeg_ry_pre"/>
+            <b idref="UpperLeg_ry_post"/>
+         </frame>
+      </revolute>
+      <frame id="UpperLeg_rz_pre"><!--Intermediate frame between LowerLeg and UpperLeg right before revolute joint about Z axis--></frame>
+      <fixed id="LowerLeg_UpperLeg_fixed_rz">
+         <frame>
+            <a idref="UpperLeg_ry_post"/>
+            <b idref="UpperLeg_rz_pre"/>
+         </frame>
+         <rotation>
+            <x>90</x>
+            <y>0</y>
+            <z>-90</z>
+         </rotation>
+      </fixed>
+      <frame id="UpperLeg_rz_post"><!--Intermediate frame between LowerLeg and UpperLeg right after revolute joint about Z axis--></frame>
+      <fixed id="LowerLeg_UpperLeg_rz"><!--Revolute about Z axis between LowerLeg and UpperLeg-->
+         <frame>
+            <a idref="UpperLeg_rz_pre"/>
+            <b idref="UpperLeg_rz_post"/>
+         </frame>
+      </fixed>
+      <fixed id="LowerLeg_UpperLeg_final"><!--Fixed connection between LowerLeg and UpperLeg after revolute z joint-->
+         <frame>
+            <a idref="UpperLeg_rz_post"/>
+            <b idref="UpperLeg"/>
+         </frame>
+      </fixed>
+      <frame id="Body_rx_pre_pre"><!--Intermediate frame between UpperLeg and RightLeg2 right before revolute joint about X axis--></frame>
+      <fixed id="UpperLeg_Body_fixed_rx">
+         <frame>
+            <a idref="UpperLeg"/>
+            <b idref="Body_rx_pre_pre"/>
+         </frame>
+         <translation>
+            <x>0</x>
+            <y>0</y>
+            <z>0.4</z>
+         </translation>
+         <rotation>
+            <x>0</x>
+            <y>0</y>
+            <z>0</z>
+         </rotation>
+      </fixed>
+      <frame id="Body_rx_pre"><!--Intermediate frame between UpperLeg and Body right before revolute joint about X axis--></frame>
+      <fixed id="Body_fixed_rx_pre">
+         <frame>
+            <a idref="Body_rx_pre_pre"/>
+            <b idref="Body_rx_pre"/>
+         </frame>
+         <rotation>
+            <x>0</x>
+            <y>90</y>
+            <z>0</z>
+         </rotation>
+      </fixed>
+      <frame id="Body_rx_post"><!--Intermediate frame between UpperLeg and Body right after revolute joint about X axis--></frame>
+      <revolute id="UpperLeg_Body_rx"><!--Revolute about X axis between UpperLeg and Body-->
+         <frame>
+            <a idref="Body_rx_pre"/>
+            <b idref="Body_rx_post"/>
+         </frame>
+      </revolute>
+      <frame id="Body_ry_pre"><!--Intermediate frame between UpperLeg and Body right before revolute joint about Y axis--></frame>
+      <fixed id="UpperLeg_Body_fixed_ry">
+         <frame>
+            <a idref="Body_rx_post"/>
+            <b idref="Body_ry_pre"/>
+         </frame>
+         <rotation>
+            <x>-90</x>
+            <y>0</y>
+            <z>0</z>
+         </rotation>
+      </fixed>
+      <frame id="Body_ry_post"/>
+      <revolute id="UpperLeg_Body_ry"><!--Revolute about Y axis between UpperLeg and Body-->
+         <frame>
+            <a idref="Body_ry_pre"/>
+            <b idref="Body_ry_post"/>
+         </frame>
+      </revolute>
+      <frame id="Body_rz_pre"><!--Intermediate frame between UpperLeg and Body right before revolute joint about Z axis--></frame>
+      <fixed id="UpperLeg_Body_fixed_rz">
+         <frame>
+            <a idref="Body_ry_post"/>
+            <b idref="Body_rz_pre"/>
+         </frame>
+         <rotation>
+            <x>90</x>
+            <y>0</y>
+            <z>-90</z>
+         </rotation>
+      </fixed>
+      <frame id="Body_rz_post"><!--Intermediate frame between UpperLeg and Body right after revolute joint about Z axis--></frame>
+      <revolute id="UpperLeg_Body_rz"><!--Revolute about Z axis between UpperLeg and Body-->
+         <frame>
+            <a idref="Body_rz_pre"/>
+            <b idref="Body_rz_post"/>
+         </frame>
+      </revolute>
+      <fixed id="UpperLeg_Body_final"><!--Fixed connection between UpperLeg and Body after revolute z joint-->
+         <frame>
+            <a idref="Body_rz_post"/>
+            <b idref="Body"/>
+         </frame>
+      </fixed>
+      <frame id="Head"><!--Intermediate frame between Body and RightFoot right before revolute joint about X axis--></frame>
+      <fixed id="Body_Head_fixed">
+         <frame>
+            <a idref="Body"/>
+            <b idref="Head"/>
+         </frame>
+         <translation>
+            <x>0</x>
+            <y>0</y>
+            <z>0.5</z>
+         </translation>
+      </fixed>
+   </model>
+</rlmdl>

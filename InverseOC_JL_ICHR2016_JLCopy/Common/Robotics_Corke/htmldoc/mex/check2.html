@@ -1,0 +1,69 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of check2</title>
+  <meta name="keywords" content="check2">
+  <meta name="description" content="CHECK2 script to compare M-file and MEX-file versions of RNE">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../index.html">Home</a> &gt;  <a href="#">mex</a> &gt; check2.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../index.html"><img alt="<" border="0" src="../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for ./mex&nbsp;<img alt=">" border="0" src="../right.png"></a></td></tr></table>-->
+
+<h1>check2
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>CHECK2 script to compare M-file and MEX-file versions of RNE</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function check2(robot, n, args) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment">CHECK2 script to compare M-file and MEX-file versions of RNE</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="check1.html" class="code" title="">check1</a>	CHECK script to compare M-file and MEX-file versions of RNE</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%CHECK2 script to compare M-file and MEX-file versions of RNE</span>
+0002 
+0003 <a name="_sub0" href="#_subfunctions" class="code">function check2(robot, n, args)</a>
+0004     robot = nofriction(robot, <span class="string">'coulomb'</span>);
+0005 
+0006     <span class="comment">% create random points in state space</span>
+0007     q = rand(n, 6);
+0008     qd = rand(n, 6);
+0009     qdd = rand(n, 6);
+0010 
+0011     <span class="comment">% test M-file</span>
+0012     tic;
+0013     tau = rne(robot, q, qd, qdd, args{:});
+0014     t = toc;
+0015 
+0016     <span class="comment">% test MEX-file</span>
+0017     tic;
+0018     tau_f = frne(robot, q, qd, qdd, args{:});
+0019     t_f = toc;
+0020 
+0021     <span class="comment">% print comparative results</span>
+0022     fprintf(<span class="string">'Speedup is %10.0f, worst case error is %f\n'</span>, <span class="keyword">...</span>
+0023         t/t_f, max(max(abs(tau-tau_f))));</pre></div>
+<hr><address>Generated on Sun 15-Feb-2009 18:09:29 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

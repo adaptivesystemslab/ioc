@@ -344,11 +344,6 @@ switch param.segment_only_windows
             end
         end
         
-        if param.win_shift == 0
-            indToUse_window(1, 1) = 1;
-            indToUse_window(1, 2) = param.win_length;
-        end
-        
     case 'fixed_constraints'
            % create windows that are regular intervals and shifts
      

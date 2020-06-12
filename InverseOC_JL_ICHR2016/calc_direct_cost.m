@@ -1,7 +1,7 @@
 function [J, J_contrib, J_array, J_debug] = calc_direct_cost(c_cost, feature_use, param)
 
     if isempty(c_cost)
-        c_cost = ones(size(param.cost_function_names));
+        c_cost = ones(size(param.cost_function_names))';
     end
     
     % feature normalization only needs to occur before cost calculation

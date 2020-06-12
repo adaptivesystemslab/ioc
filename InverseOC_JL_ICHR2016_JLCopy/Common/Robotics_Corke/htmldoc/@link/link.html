@@ -1,0 +1,277 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of link</title>
+  <meta name="keywords" content="link">
+  <meta name="description" content="LINK create a new LINK object">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../index.html">Home</a> &gt;  <a href="#">@link</a> &gt; link.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../index.html"><img alt="<" border="0" src="../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for ./@link&nbsp;<img alt=">" border="0" src="../right.png"></a></td></tr></table>-->
+
+<h1>link
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>LINK create a new LINK object</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function l = link(dh, convention) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment">LINK create a new LINK object
+
+ A LINK object holds all information related to a robot link such as
+ kinematics of the joint, rigid-body inertial parameters, motor and
+ transmission parameters.
+
+    L = LINK
+    L = LINK(link)
+
+ Create a default link, or a clone of the passed link.
+
+    A = LINK(q)
+
+ Compute the link transform matrix for the link, given the joint
+ variable q.
+
+    L = LINK([alpha A theta D])
+     L =LINK([alpha A theta D sigma])
+     L =LINK([alpha A theta D sigma offset])
+     L =LINK([alpha A theta D], CONVENTION)
+     L =LINK([alpha A theta D sigma], CONVENTION)
+     L =LINK([alpha A theta D sigma offset], CONVENTION)
+
+ If sigma or offset are not provided they default to zero.  Offset is a
+ constant amount added to the joint angle variable before forward kinematics
+ and is useful if you want the robot to adopt a 'sensible' pose for zero
+ joint angle configuration.
+
+ The optional CONVENTION argument is 'standard' for standard D&amp;H parameters 
+ or 'modified' for modified D&amp;H parameters.  If not specified the default
+ 'standard'.
+ Handling the different kinematic conventions is now hidden within the LINK
+ object.
+
+ Conceivably all sorts of stuff could live in the LINK object such as
+ graphical models of links and so on.
+
+ For robot models prior to Toolbox release 5 (pre Matlab objects) the
+ following object constructors are provided.
+
+     L = LINK(DYN_ROW)        create from row of legacy DYN matrix
+    L = LINK(DYN_ROW, CONVENTION)    create from row of legacy DYN matrix
+
+ SEE ALSO: LINK/SUBSREF, LINK/SUBSASGN, <a href="showlink.html" class="code" title="function showlink(l)">SHOWLINK</a>, ROBOT.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="nofriction.html" class="code" title="function  l2 = nofriction(l, only)">nofriction</a>	NOFRICTION Return link object with zero friction</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%LINK create a new LINK object</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">% A LINK object holds all information related to a robot link such as</span>
+0004 <span class="comment">% kinematics of the joint, rigid-body inertial parameters, motor and</span>
+0005 <span class="comment">% transmission parameters.</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">%    L = LINK</span>
+0008 <span class="comment">%    L = LINK(link)</span>
+0009 <span class="comment">%</span>
+0010 <span class="comment">% Create a default link, or a clone of the passed link.</span>
+0011 <span class="comment">%</span>
+0012 <span class="comment">%    A = LINK(q)</span>
+0013 <span class="comment">%</span>
+0014 <span class="comment">% Compute the link transform matrix for the link, given the joint</span>
+0015 <span class="comment">% variable q.</span>
+0016 <span class="comment">%</span>
+0017 <span class="comment">%    L = LINK([alpha A theta D])</span>
+0018 <span class="comment">%     L =LINK([alpha A theta D sigma])</span>
+0019 <span class="comment">%     L =LINK([alpha A theta D sigma offset])</span>
+0020 <span class="comment">%     L =LINK([alpha A theta D], CONVENTION)</span>
+0021 <span class="comment">%     L =LINK([alpha A theta D sigma], CONVENTION)</span>
+0022 <span class="comment">%     L =LINK([alpha A theta D sigma offset], CONVENTION)</span>
+0023 <span class="comment">%</span>
+0024 <span class="comment">% If sigma or offset are not provided they default to zero.  Offset is a</span>
+0025 <span class="comment">% constant amount added to the joint angle variable before forward kinematics</span>
+0026 <span class="comment">% and is useful if you want the robot to adopt a 'sensible' pose for zero</span>
+0027 <span class="comment">% joint angle configuration.</span>
+0028 <span class="comment">%</span>
+0029 <span class="comment">% The optional CONVENTION argument is 'standard' for standard D&amp;H parameters</span>
+0030 <span class="comment">% or 'modified' for modified D&amp;H parameters.  If not specified the default</span>
+0031 <span class="comment">% 'standard'.</span>
+0032 <span class="comment">% Handling the different kinematic conventions is now hidden within the LINK</span>
+0033 <span class="comment">% object.</span>
+0034 <span class="comment">%</span>
+0035 <span class="comment">% Conceivably all sorts of stuff could live in the LINK object such as</span>
+0036 <span class="comment">% graphical models of links and so on.</span>
+0037 <span class="comment">%</span>
+0038 <span class="comment">% For robot models prior to Toolbox release 5 (pre Matlab objects) the</span>
+0039 <span class="comment">% following object constructors are provided.</span>
+0040 <span class="comment">%</span>
+0041 <span class="comment">%     L = LINK(DYN_ROW)        create from row of legacy DYN matrix</span>
+0042 <span class="comment">%    L = LINK(DYN_ROW, CONVENTION)    create from row of legacy DYN matrix</span>
+0043 <span class="comment">%</span>
+0044 <span class="comment">% SEE ALSO: LINK/SUBSREF, LINK/SUBSASGN, SHOWLINK, ROBOT.</span>
+0045 
+0046 <span class="comment">% Copyright (C) 1999-2008, by Peter I. Corke</span>
+0047 <span class="comment">%</span>
+0048 <span class="comment">% This file is part of The Robotics Toolbox for Matlab (RTB).</span>
+0049 <span class="comment">%</span>
+0050 <span class="comment">% RTB is free software: you can redistribute it and/or modify</span>
+0051 <span class="comment">% it under the terms of the GNU Lesser General Public License as published by</span>
+0052 <span class="comment">% the Free Software Foundation, either version 3 of the License, or</span>
+0053 <span class="comment">% (at your option) any later version.</span>
+0054 <span class="comment">%</span>
+0055 <span class="comment">% RTB is distributed in the hope that it will be useful,</span>
+0056 <span class="comment">% but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+0057 <span class="comment">% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+0058 <span class="comment">% GNU Lesser General Public License for more details.</span>
+0059 <span class="comment">%</span>
+0060 <span class="comment">% You should have received a copy of the GNU Leser General Public License</span>
+0061 <span class="comment">% along with RTB.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
+0062 
+0063 <a name="_sub0" href="#_subfunctions" class="code">function l = link(dh, convention)</a>
+0064 
+0065 
+0066     <span class="keyword">if</span> nargin == 0,
+0067         <span class="comment">% create an 'empty' link</span>
+0068         l.alpha = 0;
+0069         l.A = 0;
+0070         l.theta = 0;
+0071         l.D = 0;
+0072         l.sigma = 0;
+0073         l.mdh = 0;
+0074         l.offset = 0;
+0075         
+0076         <span class="comment">% it's a legacy DYN matrix</span>
+0077         l.m = [];
+0078         l.r = [];
+0079         v = [];
+0080         l.I = [];
+0081         l.Jm = [];
+0082         l.G = [];
+0083         l.B = 0;
+0084         l.Tc = [0 0];
+0085         l.qlim = [];
+0086 
+0087         l = class(l, <span class="string">'link'</span>);
+0088 
+0089     <span class="keyword">elseif</span> isa(dh, <span class="string">'link'</span>)
+0090         <span class="comment">% clone passed link</span>
+0091         l = dh;
+0092     <span class="keyword">elseif</span> length(dh) &lt;= 6,
+0093         <span class="comment">% legacy DH matrix</span>
+0094         <span class="comment">% link([alpha A theta D sigma])</span>
+0095 
+0096         <span class="keyword">if</span> length(dh) &lt; 4,
+0097                 error(<span class="string">'must provide &lt;alpha A theta D&gt; params'</span>);
+0098         <span class="keyword">end</span>
+0099         l.alpha = dh(1);
+0100         l.A = dh(2);
+0101         l.theta = dh(3);
+0102         l.D = dh(4);
+0103         l.sigma = 0;
+0104         <span class="keyword">if</span> length(dh) &gt;= 5,
+0105             l.sigma = dh(5);
+0106         <span class="keyword">end</span>
+0107         <span class="keyword">if</span> nargin &gt; 1
+0108             <span class="keyword">if</span> strncmp(convention, <span class="string">'mod'</span>, 3) == 1,
+0109                 l.mdh = 1;
+0110             <span class="keyword">elseif</span> strncmp(convention, <span class="string">'sta'</span>, 3) == 1,
+0111                 l.mdh = 0;
+0112             <span class="keyword">else</span>
+0113                 error(<span class="string">'convention must be modified or standard'</span>);
+0114             <span class="keyword">end</span>
+0115         <span class="keyword">else</span>
+0116                 l.mdh = 0;    <span class="comment">% default to standard D&amp;H</span>
+0117         <span class="keyword">end</span>
+0118         l.offset = 0;
+0119         <span class="keyword">if</span> length(dh) &gt;= 6,
+0120             l.offset = dh(6);
+0121         <span class="keyword">end</span>
+0122 
+0123         <span class="comment">% we know nothing about the dynamics</span>
+0124         l.m = [];
+0125         l.r = [];
+0126         v = [];
+0127         l.I = [];
+0128         l.Jm = [];
+0129         l.G = [];
+0130         l.B = 0;
+0131         l.Tc = [0 0];
+0132         l.qlim = [];
+0133 
+0134         l = class(l, <span class="string">'link'</span>);
+0135     <span class="keyword">else</span>
+0136         <span class="comment">% legacy DYN matrix</span>
+0137 
+0138         l.alpha = dh(1);
+0139         l.A = dh(2);
+0140         l.theta = dh(3);
+0141         l.D = dh(4);
+0142         <span class="keyword">if</span> length(dh) == 4,
+0143             l.sigma = 0;
+0144         <span class="keyword">else</span>
+0145             l.sigma = dh(5);
+0146         <span class="keyword">end</span>
+0147         l.mdh = 0;    <span class="comment">% default to standard D&amp;H</span>
+0148         l.offset = 0;
+0149         
+0150         <span class="comment">% it's a legacy DYN matrix</span>
+0151         l.m = dh(6);
+0152         l.r = dh(7:9)';        <span class="comment">% a column vector</span>
+0153         v = dh(10:15);
+0154         l.I = [    v(1) v(4) v(6)
+0155             v(4) v(2) v(5)
+0156             v(6) v(5) v(3)];
+0157         <span class="keyword">if</span> length(dh) &gt; 15,
+0158             l.Jm = dh(16);
+0159         <span class="keyword">end</span>
+0160         <span class="keyword">if</span> length(dh) &gt; 16,
+0161             l.G = dh(17);
+0162         <span class="keyword">else</span>
+0163             l.G = 1;
+0164         <span class="keyword">end</span>
+0165         <span class="keyword">if</span> length(dh) &gt; 17,
+0166             l.B = dh(18);
+0167         <span class="keyword">else</span>
+0168             l.B = 0.0;
+0169         <span class="keyword">end</span>
+0170         <span class="keyword">if</span> length(dh) &gt; 18,
+0171             l.Tc = dh(19:20);
+0172         <span class="keyword">else</span>
+0173             l.Tc = [0 0];
+0174         <span class="keyword">end</span>
+0175         l.qlim = [];
+0176         <span class="keyword">if</span> nargin &gt; 1
+0177             <span class="keyword">if</span> strncmp(convention, <span class="string">'mod'</span>, 3) == 1,
+0178                 l.mdh = 1;
+0179             <span class="keyword">elseif</span> strncmp(convention, <span class="string">'sta'</span>, 3) == 1,
+0180                 l.mdh = 0;
+0181             <span class="keyword">else</span>
+0182                 error(<span class="string">'convention must be modified or standard'</span>);
+0183             <span class="keyword">end</span>
+0184         <span class="keyword">else</span>
+0185                 l.mdh = 0;    <span class="comment">% default to standard D&amp;H</span>
+0186         <span class="keyword">end</span>
+0187         l = class(l, <span class="string">'link'</span>);
+0188     <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sun 15-Feb-2009 18:09:29 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

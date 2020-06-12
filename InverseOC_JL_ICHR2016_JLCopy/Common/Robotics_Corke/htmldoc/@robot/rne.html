@@ -1,0 +1,138 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of rne</title>
+  <meta name="keywords" content="rne">
+  <meta name="description" content="RNE Compute inverse dynamics via recursive Newton-Euler formulation">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../index.html">Home</a> &gt;  <a href="#">@robot</a> &gt; rne.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../index.html"><img alt="<" border="0" src="../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for ./@robot&nbsp;<img alt=">" border="0" src="../right.png"></a></td></tr></table>-->
+
+<h1>rne
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>RNE Compute inverse dynamics via recursive Newton-Euler formulation</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function tau = rne(robot, varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment">RNE Compute inverse dynamics via recursive Newton-Euler formulation
+
+    TAU = RNE(ROBOT, Q, QD, QDD)
+    TAU = RNE(ROBOT, [Q QD QDD])
+
+ Returns the joint torque required to achieve the specified joint position,
+ velocity and acceleration state.
+
+ Gravity vector is an attribute of the robot object but this may be 
+ overriden by providing a gravity acceleration vector [gx gy gz].
+
+    TAU = RNE(ROBOT, Q, QD, QDD, GRAV)
+    TAU = RNE(ROBOT, [Q QD QDD], GRAV)
+
+ An external force/moment acting on the end of the manipulator may also be
+ specified by a 6-element vector [Fx Fy Fz Mx My Mz].
+
+    TAU = RNE(ROBOT, Q, QD, QDD, GRAV, FEXT)
+    TAU = RNE(ROBOT, [Q QD QDD], GRAV, FEXT)
+
+ where Q, QD and QDD are row vectors of the manipulator state; pos, vel, 
+ and accel.
+
+ The torque computed also contains a contribution due to armature
+ inertia.
+
+ RNE can be either an M-file or a MEX-file.  See the manual for details on
+ how to configure the MEX-file.  The M-file is a wrapper which calls either
+ RNE_DH or RNE_MDH depending on the kinematic conventions used by the robot
+ object.
+
+ See also: <a href="robot.html" class="code" title="function r = robot(L, a1, a2, a3)">ROBOT</a>, ACCEL, GRAVLOAD, INERTIA.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="rne_dh.html" class="code" title="function tau = rne_dh(robot, a1, a2, a3, a4, a5)">rne_dh</a>	RNE_DH Compute inverse dynamics via recursive Newton-Euler formulation</li><li><a href="rne_mdh.html" class="code" title="function tau = rne_mdh(robot, a1, a2, a3, a4, a5)">rne_mdh</a>	RNE_MDH Compute inverse dynamics via recursive Newton-Euler formulation</li><li><a href="robot.html" class="code" title="function r = robot(L, a1, a2, a3)">robot</a>	ROBOT Robot object constructor</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%RNE Compute inverse dynamics via recursive Newton-Euler formulation</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">%    TAU = RNE(ROBOT, Q, QD, QDD)</span>
+0004 <span class="comment">%    TAU = RNE(ROBOT, [Q QD QDD])</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">% Returns the joint torque required to achieve the specified joint position,</span>
+0007 <span class="comment">% velocity and acceleration state.</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">% Gravity vector is an attribute of the robot object but this may be</span>
+0010 <span class="comment">% overriden by providing a gravity acceleration vector [gx gy gz].</span>
+0011 <span class="comment">%</span>
+0012 <span class="comment">%    TAU = RNE(ROBOT, Q, QD, QDD, GRAV)</span>
+0013 <span class="comment">%    TAU = RNE(ROBOT, [Q QD QDD], GRAV)</span>
+0014 <span class="comment">%</span>
+0015 <span class="comment">% An external force/moment acting on the end of the manipulator may also be</span>
+0016 <span class="comment">% specified by a 6-element vector [Fx Fy Fz Mx My Mz].</span>
+0017 <span class="comment">%</span>
+0018 <span class="comment">%    TAU = RNE(ROBOT, Q, QD, QDD, GRAV, FEXT)</span>
+0019 <span class="comment">%    TAU = RNE(ROBOT, [Q QD QDD], GRAV, FEXT)</span>
+0020 <span class="comment">%</span>
+0021 <span class="comment">% where Q, QD and QDD are row vectors of the manipulator state; pos, vel,</span>
+0022 <span class="comment">% and accel.</span>
+0023 <span class="comment">%</span>
+0024 <span class="comment">% The torque computed also contains a contribution due to armature</span>
+0025 <span class="comment">% inertia.</span>
+0026 <span class="comment">%</span>
+0027 <span class="comment">% RNE can be either an M-file or a MEX-file.  See the manual for details on</span>
+0028 <span class="comment">% how to configure the MEX-file.  The M-file is a wrapper which calls either</span>
+0029 <span class="comment">% RNE_DH or RNE_MDH depending on the kinematic conventions used by the robot</span>
+0030 <span class="comment">% object.</span>
+0031 <span class="comment">%</span>
+0032 <span class="comment">% See also: ROBOT, ACCEL, GRAVLOAD, INERTIA.</span>
+0033 
+0034 <span class="comment">%</span>
+0035 <span class="comment">% verified against MAPLE code, which is verified by examples</span>
+0036 <span class="comment">%</span>
+0037 
+0038 <span class="comment">% Copyright (C) 1992-2008, by Peter I. Corke</span>
+0039 <span class="comment">%</span>
+0040 <span class="comment">% This file is part of The Robotics Toolbox for Matlab (RTB).</span>
+0041 <span class="comment">%</span>
+0042 <span class="comment">% RTB is free software: you can redistribute it and/or modify</span>
+0043 <span class="comment">% it under the terms of the GNU Lesser General Public License as published by</span>
+0044 <span class="comment">% the Free Software Foundation, either version 3 of the License, or</span>
+0045 <span class="comment">% (at your option) any later version.</span>
+0046 <span class="comment">%</span>
+0047 <span class="comment">% RTB is distributed in the hope that it will be useful,</span>
+0048 <span class="comment">% but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+0049 <span class="comment">% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+0050 <span class="comment">% GNU Lesser General Public License for more details.</span>
+0051 <span class="comment">%</span>
+0052 <span class="comment">% You should have received a copy of the GNU Leser General Public License</span>
+0053 <span class="comment">% along with RTB.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
+0054 
+0055 
+0056 <a name="_sub0" href="#_subfunctions" class="code">function tau = rne(robot, varargin)</a>
+0057     <span class="keyword">if</span> robot.mdh == 0,
+0058         tau = <a href="rne_dh.html" class="code" title="function tau = rne_dh(robot, a1, a2, a3, a4, a5)">rne_dh</a>(<a href="robot.html" class="code" title="function r = robot(L, a1, a2, a3)">robot</a>, varargin{:});
+0059     <span class="keyword">else</span>
+0060         tau = <a href="rne_mdh.html" class="code" title="function tau = rne_mdh(robot, a1, a2, a3, a4, a5)">rne_mdh</a>(<a href="robot.html" class="code" title="function r = robot(L, a1, a2, a3)">robot</a>, varargin{:});
+0061     <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sun 15-Feb-2009 18:09:29 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

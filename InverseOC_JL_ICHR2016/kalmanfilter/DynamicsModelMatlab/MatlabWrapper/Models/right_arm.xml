@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- This is the right arm model, composing of
+	- 3 shoulder joints
+	- 2 elbow joints
+	- 2 wrist joints
+-->
+<rlmdl>
+    <model>
+        <manufacturer>Vlad</manufacturer>
+        <name>right_arm</name>
+        <world id="world">
+            <g>
+                <x>0</x>
+                <y>0</y>
+                <z>9.8061</z>
+            </g>
+        </world>
+		
+		<frame id="frame_rshoulder_0"/> <!-- fixed, sagittal -->
+        <frame id="frame_rshoulder_1"/> <!-- revolute, sagittal -->
+        <frame id="frame_rshoulder_2"/> <!-- fixed, transverse -->
+        <frame id="frame_rshoulder_3"/> <!-- revolute, transverse -->
+        <frame id="frame_rshoulder_4"/> <!-- fixed, IR -->
+        <frame id="frame_rshoulder_5"/> <!-- revolute, IR -->
+        <frame id="frame_rshoulder_6"/> <!-- fixed, next frame -->
+
+        <frame id="frame_relbow_0"/> <!-- fixed, sagittal -->
+        <frame id="frame_relbow_1"/> <!-- revolute, sagittal -->
+        <frame id="frame_relbow_2"/> <!-- fixed, IR -->
+        <frame id="frame_relbow_3"/> <!-- revolute, IR -->
+        <frame id="frame_relbow_4"/> <!-- fixed, next frame -->
+
+        <frame id="frame_rwrist_0"/> <!-- fixed, sagittal -->
+        <frame id="frame_rwrist_1"/> <!-- revolute, sagittal -->
+        <frame id="frame_rwrist_2"/> <!-- fixed, transverse -->
+        <frame id="frame_rwrist_3"/> <!-- revolute, transverse -->
+        <frame id="frame_rwrist_4"/> <!-- fixed, next frame -->
+        <frame id="frame_rhand_end"/>
+		
+		<body id="body_rshoulder_relbow"/>
+        <body id="body_relbow_rwrist"/>
+        <body id="body_rwrist_rhand"/>
+
+		<fixed id="world_to_base">
+			<frame> <!-- Frame rotation to sag -->
+                <a idref="world"/>
+                <b idref="frame_rshoulder_0"/>
+            </frame>
+		</fixed>
+		
+		<fixed id="fixed_rshoulder_0">
+            <frame> <!-- Frame rotation to sag -->
+                <a idref="frame_rshoulder_0"/>
+                <b idref="frame_rshoulder_1"/>
+            </frame>
+            <rotation>
+                <x>0</x>
+                <y>90</y>
+                <z>0</z>
+            </rotation>
+        </fixed>
+        <revolute id="joint_rshoulder_0">
+            <frame> <!-- Sag joint -->
+                <a idref="frame_rshoulder_1"/>
+                <b idref="frame_rshoulder_2"/>
+            </frame>
+        </revolute>
+        <fixed id="fixed_rshoulder_1">
+            <frame> <!-- Frame rotation to trans joint -->
+                <a idref="frame_rshoulder_2"/>
+                <b idref="frame_rshoulder_3"/>
+            </frame>
+            <rotation>
+                <x>-90</x>
+                <y>0</y>
+                <z>0</z>
+            </rotation>
+        </fixed>
+        <revolute id="joint_rshoulder_1">
+            <frame> <!-- Trans joint -->
+                <a idref="frame_rshoulder_3"/>
+                <b idref="frame_rshoulder_4"/>
+            </frame>
+        </revolute>
+        <fixed id="fixed_rshoulder_2">
+            <frame> <!-- Frame rotation to IR joint -->
+                <a idref="frame_rshoulder_4"/>
+                <b idref="frame_rshoulder_5"/>
+            </frame>
+            <rotation>
+                <x>0</x>
+                <y>-90</y>
+                <z>0</z>
+            </rotation>
+        </fixed>
+        <revolute id="joint_rshoulder_2">
+            <frame> <!-- IR joint-->
+                <a idref="frame_rshoulder_5"/>
+                <b idref="frame_rshoulder_6"/>
+            </frame>
+        </revolute>
+        <fixed id="fixed_rshoulder_3">
+            <frame> <!-- Frame rotation to neutral frame -->
+                <a idref="frame_rshoulder_6"/>
+                <b idref="body_rshoulder_relbow"/>
+            </frame>
+            <rotation>
+                <x>0</x>
+                <y>0</y>
+                <z>-90</z>
+            </rotation>
+        </fixed>
+        <fixed id="length_rshoulder_relbow">
+            <frame> <!-- Offset to RElbow frame -->
+                <a idref="body_rshoulder_relbow"/>
+                <b idref="frame_relbow_0"/>
+            </frame>
+			<translation>
+				<x>0</x>
+				<y>0</y>
+				<z>-0.243</z>
+			</translation>				
+        </fixed>
+
+        <fixed id="fixed_relbow_0">
+            <frame> <!-- Frame rotation to sag -->
+                <a idref="frame_relbow_0"/>
+                <b idref="frame_relbow_1"/>
+            </frame>
+            <rotation>
+                <x>0</x>
+                <y>90</y>
+                <z>0</z>
+            </rotation>
+        </fixed>
+        <revolute id="joint_relbow_0">
+            <frame> <!-- Sag joint -->
+                <a idref="frame_relbow_1"/>
+                <b idref="frame_relbow_2"/>
+            </frame>
+        </revolute>
+        <fixed id="fixed_relbow_1">
+            <frame> <!-- Frame rotation to IR joint -->
+                <a idref="frame_relbow_2"/>
+                <b idref="frame_relbow_3"/>
+            </frame>
+            <rotation>
+                <x>-90</x>
+                <y>0</y>
+                <z>90</z>
+            </rotation>
+        </fixed>
+        <revolute id="joint_relbow_1">
+            <frame> <!-- Trans joint -->
+                <a idref="frame_relbow_3"/>
+                <b idref="frame_relbow_4"/>
+            </frame>
+        </revolute>
+        <fixed id="fixed_relbow_2">
+            <frame> <!-- Frame rotation to neutral frame -->
+                <a idref="frame_relbow_4"/>
+                <b idref="body_relbow_rwrist"/>
+            </frame>
+            <rotation>
+                <x>0</x>
+                <y>0</y>
+                <z>-90</z>
+            </rotation>
+        </fixed>
+        <fixed id="length_relbow_rwrist">
+            <frame> <!-- Offset to RWrist frame -->
+                <a idref="body_relbow_rwrist"/>
+                <b idref="frame_rwrist_0"/>
+            </frame>
+			<translation>
+				<x>0</x>
+				<y>0</y>
+				<z>-0.247</z>
+			</translation>				
+        </fixed>
+
+        <fixed id="fixed_rwrist_0">
+            <frame> <!-- Frame rotation to sag -->
+                <a idref="frame_rwrist_0"/>
+                <b idref="frame_rwrist_1"/>
+            </frame>
+            <rotation>
+                <x>0</x>
+                <y>90</y>
+                <z>0</z>
+            </rotation>
+        </fixed>
+        <revolute id="joint_rwrist_0">
+            <frame> <!-- Sag joint -->
+                <a idref="frame_rwrist_1"/>
+                <b idref="frame_rwrist_2"/>
+            </frame>
+        </revolute>
+        <fixed id="fixed_rwrist_1">
+            <frame> <!-- Frame rotation to trans joint -->
+                <a idref="frame_rwrist_2"/>
+                <b idref="frame_rwrist_3"/>
+            </frame>
+            <rotation>
+                <x>-90</x>
+                <y>0</y>
+                <z>0</z>
+            </rotation>
+        </fixed>
+        <revolute id="joint_rwrist_1">
+            <frame> <!-- Trans joint -->
+                <a idref="frame_rwrist_3"/>
+                <b idref="frame_rwrist_4"/>
+            </frame>
+        </revolute>
+        <fixed id="fixed_rwrist_2">
+            <frame> <!-- Frame rotation to neutral frame -->
+                <a idref="frame_rwrist_4"/>
+                <b idref="body_rwrist_rhand"/>
+            </frame>
+            <rotation>
+                <x>90</x>
+                <y>0</y>
+                <z>-90</z>
+            </rotation>
+        </fixed>
+        <fixed id="length_rwrist_rhand">
+            <frame> <!-- Frame rotation to neutral frame -->
+                <a idref="body_rwrist_rhand"/>
+                <b idref="frame_rhand_end"/>
+            </frame>
+			<translation>
+				<x>0</x>
+				<y>0</y>
+				<z>-0.071</z>
+			</translation>				
+        </fixed>
+    </model>
+</rlmdl>

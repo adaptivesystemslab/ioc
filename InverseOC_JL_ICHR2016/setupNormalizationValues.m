@@ -16,9 +16,6 @@ function param = setupNormalizationValues(param, traj_load, segmentInfo, config_
    [~, indEnd] = findClosestValue(segmentInfo.timeEnd(end), feature_full.t); % ...to last frame of last window 
 
     feature_win = feature_windowed(feature_full, indStart, indEnd, param_nonorm);
-
-    param_nonorm.cost_function_names = {'ddq', 'dddq', 'dddx', 'tau', 'dtau', 'ddtau', ...
-       'dq_tau', 'kinetic_en_sqrt'};
     
 %     param_nonorm.cost_function_names = {'ddq', 'dddq', 'ddx', 'dddx', 'tau', 'dtau', 'ddtau', ...
 %         'potential_en', 'kinetic_en', 'kinetic_en_sqrt', 'dq_tau', 'cop', 'dcop', ...
@@ -30,10 +27,10 @@ function param = setupNormalizationValues(param, traj_load, segmentInfo, config_
 %         'ddq_tor', 'dddq_tor', 'tau_tor', 'dq_tau_tor', 'kinetic_en_sqrt_tor', ...
 %         'ang_mom', 'dang_mom', 'ddang_mom'};
    
-%    param_nonorm.cost_function_names = {'ddq', 'dddq', 'ddx', 'dddx', 'tau', 'dtau', 'ddtau', 'kinetic_en', 'kinetic_en_sqrt', 'dq_tau',...
-%     'quantity_motion_dx', 'volume_bounding_box', 'weight_effort', ...
-%      'time_effort', 'space_effort', 'flow_effort', 'x_anchor_1', 'x_anchor_2', 'com', ...
-%      'rot_anchor_1', 'rot_anchor_2','x_displace', 'dx_displace', 'cartCurv', 'dcom', 'shapeDir', 'x_cartCurv'};
+   param_nonorm.cost_function_names = {'ddq', 'dddq', 'ddx', 'dddx', 'tau', 'dtau', 'ddtau', 'kinetic_en', 'kinetic_en_sqrt', 'dq_tau',...
+    'quantity_motion_dx', 'volume_bounding_box', 'weight_effort', ...
+     'time_effort', 'space_effort', 'flow_effort', 'x_anchor_1', 'x_anchor_2', 'com', ...
+     'rot_anchor_1', 'rot_anchor_2','x_displace', 'dx_displace', 'cartCurv', 'dcom', 'shapeDir', 'x_cartCurv'};
 
     [~, ~, J_cost_array] = calc_direct_cost(ones(size(param_nonorm.cost_function_names)), feature_win, param_nonorm);
     
@@ -266,19 +263,15 @@ end
 
 function array = param2array(param)
 
-    array = [param.coeff_cf.ddq param.coeff_cf.dddq param.coeff_cf.dddx ...
+    array = [param.coeff_cf.ddq param.coeff_cf.dddq param.coeff_cf.ddx param.coeff_cf.dddx ...
         param.coeff_cf.tau param.coeff_cf.dtau param.coeff_cf.ddtau ...
-        param.coeff_cf.geo param.coeff_cf.en];
+        param.coeff_cf.ek param.coeff_cf.geo param.coeff_cf.en, ...
+        param.coeff_cf.quantity_motion_dx, param.coeff_cf.volume_bounding_box, param.coeff_cf.weight_effort, ...
+        param.coeff_cf.time_effort, param.coeff_cf.space_effort, param.coeff_cf.flow_effort, ...
+        param.coeff_cf.x_anchor_1, param.coeff_cf.x_anchor_2, param.coeff_cf.rot_anchor_1, param.coeff_cf.rot_anchor_2, param.coeff_cf.com, ...
+        param.coeff_cf.x_displace,  param.coeff_cf.dx_displace,  param.coeff_cf.cartCurv,  param.coeff_cf.dcom,  param.coeff_cf.shapeDir,...
+        param.coeff_cf.x_cartCurv];
 
-%         coeff_cf.ddq = array(1);
-%     coeff_cf.dddq = array(2);
-%     coeff_cf.dddx = array(3);
-%     coeff_cf.tau = array(4);
-%     coeff_cf.dtau = array(5);
-%     coeff_cf.ddtau = array(6);
-%     coeff_cf.geo = array(7);
-%     coeff_cf.en = array(8);
-    
 %     array = [param.coeff_cf.tau param.coeff_cf.en param.coeff_cf.geo, ...         
 %         param.coeff_cf.quantity_motion_dx, param.coeff_cf.volume_bounding_box, param.coeff_cf.weight_effort, ...         
 %         param.coeff_cf.time_effort, param.coeff_cf.space_effort, ...         
@@ -291,13 +284,31 @@ end
 function coeff_cf = array2param(array)
     coeff_cf.ddq = array(1);
     coeff_cf.dddq = array(2);
-    coeff_cf.dddx = array(3);
-    coeff_cf.tau = array(4);
-    coeff_cf.dtau = array(5);
-    coeff_cf.ddtau = array(6);
-    coeff_cf.geo = array(7);
-    coeff_cf.en = array(8);
-   
+    coeff_cf.ddx = array(3);
+    coeff_cf.dddx = array(4);
+    coeff_cf.tau = array(5);
+    coeff_cf.dtau = array(6);
+    coeff_cf.ddtau = array(7);
+    coeff_cf.ek = array(8);
+    coeff_cf.geo = array(9);
+    coeff_cf.en = array(10);
+    coeff_cf.quantity_motion_dx = array(11);
+    coeff_cf.volume_bounding_box = array(12);
+    coeff_cf.weight_effort = array(13);
+    coeff_cf.time_effort = array(14);
+    coeff_cf.space_effort = array(15);
+    coeff_cf.flow_effort = array(16);
+    coeff_cf.x_anchor_1 = array(17);
+    coeff_cf.x_anchor_2 = array(18);
+    coeff_cf.rot_anchor_1 = array(19);
+    coeff_cf.rot_anchor_2 = array(20);
+    coeff_cf.com = array(21);
+    coeff_cf.x_displace = array(22);
+    coeff_cf.dx_displace = array(23);
+    coeff_cf.cartCurv = array(24);
+    coeff_cf.dcom = array(25);
+    coeff_cf.shapeDir = array(26);
+    coeff_cf.x_cartCurv = array(27);
 %       coeff_cf.tau = array(1);   
 %       coeff_cf.en = array(2);     
 %       coeff_cf.geo = array(3);     

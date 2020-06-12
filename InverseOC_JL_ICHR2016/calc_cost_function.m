@@ -135,7 +135,7 @@ switch function_name
         J = J * param.coeff_cf.ek;
         
     case 'ddqddx'
-        Jddq = calc_cost_function('ddq', feature_use, param);
+        Jddq = calc_cost_function('ddq', ure_use, param);
         Jddx = calc_cost_function('ddx', feature_use, param);
         J = Jddq + Jddx;
         
