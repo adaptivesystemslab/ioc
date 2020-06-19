@@ -56,10 +56,32 @@ param.weights.shapeDir = massWeights;
 
 lenWin = length(saveVar.feature_win_save);
 for ind_win = 1:lenWin
-   loadStuff(saveVar, ind_win, param);
+   [cf_name{ind_win}, len{ind_win}, feat{ind_win}, J_all{ind_win}, ...
+       J_norm{ind_win}, J_ind{ind_win}, c_use{ind_win}] = loadStuff(saveVar, ind_win, param);
 end
 
-function loadStuff(saveVar, ind_win, param)
+% generate the time varying weights
+weight_avg = [];
+counter_avg = [];
+t = saveVar.feature_full.t;
+for ind_t = 1:length(t)
+    currWeight = [];
+    avgCount = 0;
+    curr_t = t(ind_t);
+    for ind_win = 1:lenWin
+        t_curr_array = saveVar.t_recon_plot_array{ind_win};
+        if find(abs(t_curr_array - curr_t) < 0.005)
+            avgCount = avgCount + 1;
+            currWeight = [currWeight; c_use{ind_win}];
+        end
+    end
+    
+    meanedWeight = mean(currWeight, 1);
+    weight_avg(ind_t, :) = meanedWeight;
+    counter_avg(ind_t) = avgCount;
+end
+
+function [cf_name, len, feat, J_all, J_norm, J_ind, c_use] = loadStuff(saveVar, ind_win, param)
     % README so the original IOC features are generataed by taking the
     % original path, resample it as a spline trajectory, then calculate the
     % features from that. I had a lot of trouble duplicating the proper
@@ -149,13 +171,13 @@ function loadStuff(saveVar, ind_win, param)
     % PAMELA THE VARIABLES YOU WANT ARE... (AT EACH WINDOW)
     % J_all = sum w * J_ind/J_norm
     % J_ind = sum(sum(feat .^ 2)) / len
-    param.cost_function_names % order of the cfs
-    len % len
-    feat % the individual features used to calc the basis cf...sort of. some have been squared and some have not, so it'll be inconsistent unless you want to copy them all out
-    J_all % the total J val
-    J_norm % the normalization coeff for each basis cf
-    J_ind % individual cf terms
-    c_use % the weights, 
+    cf_name = param.cost_function_names; % order of the cfs
+%     len % len
+%     feat % the individual features used to calc the basis cf...sort of. some have been squared and some have not, so it'll be inconsistent unless you want to copy them all out
+%     J_all % the total J val
+%     J_norm % the normalization coeff for each basis cf
+%     J_ind % individual cf terms
+%     c_use % the weights, 
 end
 
 function J = cost_fct_calc_sq(feat, len)
