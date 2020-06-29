@@ -1,0 +1,105 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of perturb</title>
+  <meta name="keywords" content="perturb">
+  <meta name="description" content="PERTURB Return robot object with perturbed dynamic parameters">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../index.html">Home</a> &gt;  <a href="#">@robot</a> &gt; perturb.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../index.html"><img alt="<" border="0" src="../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for ./@robot&nbsp;<img alt=">" border="0" src="../right.png"></a></td></tr></table>-->
+
+<h1>perturb
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>PERTURB Return robot object with perturbed dynamic parameters</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function  r2 = perturb(r, p) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment">PERTURB Return robot object with perturbed dynamic parameters
+
+    ROBOT = PERTURB(ROBOT, P)
+
+ Return a new robot object in which the dynamic parameters (link mass and
+ inertia) have been perturbed.  The perturbation is multiplicative so that
+ values are multiplied by random numbers in the interval (1-P) to (1+P).
+
+ Useful for investigating the robustness of various model-based control 
+ schemes.
+
+ The name string of the perturbed robot is prefixed by 'P/'.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="robot.html" class="code" title="function r = robot(L, a1, a2, a3)">robot</a>	ROBOT Robot object constructor</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%PERTURB Return robot object with perturbed dynamic parameters</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">%    ROBOT = PERTURB(ROBOT, P)</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% Return a new robot object in which the dynamic parameters (link mass and</span>
+0006 <span class="comment">% inertia) have been perturbed.  The perturbation is multiplicative so that</span>
+0007 <span class="comment">% values are multiplied by random numbers in the interval (1-P) to (1+P).</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">% Useful for investigating the robustness of various model-based control</span>
+0010 <span class="comment">% schemes.</span>
+0011 <span class="comment">%</span>
+0012 <span class="comment">% The name string of the perturbed robot is prefixed by 'P/'.</span>
+0013 <span class="comment">%</span>
+0014 
+0015 <span class="comment">% Copyright (C) 1999-2008, by Peter I. Corke</span>
+0016 <span class="comment">%</span>
+0017 <span class="comment">% This file is part of The Robotics Toolbox for Matlab (RTB).</span>
+0018 <span class="comment">%</span>
+0019 <span class="comment">% RTB is free software: you can redistribute it and/or modify</span>
+0020 <span class="comment">% it under the terms of the GNU Lesser General Public License as published by</span>
+0021 <span class="comment">% the Free Software Foundation, either version 3 of the License, or</span>
+0022 <span class="comment">% (at your option) any later version.</span>
+0023 <span class="comment">%</span>
+0024 <span class="comment">% RTB is distributed in the hope that it will be useful,</span>
+0025 <span class="comment">% but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+0026 <span class="comment">% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+0027 <span class="comment">% GNU Lesser General Public License for more details.</span>
+0028 <span class="comment">%</span>
+0029 <span class="comment">% You should have received a copy of the GNU Leser General Public License</span>
+0030 <span class="comment">% along with RTB.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
+0031 
+0032 <a name="_sub0" href="#_subfunctions" class="code">function  r2 = perturb(r, p)</a>
+0033 
+0034     <span class="keyword">if</span> nargin == 1,
+0035         p = 0.1;    <span class="comment">% 10 percent disturb by default</span>
+0036     <span class="keyword">end</span>
+0037 
+0038 
+0039     <span class="keyword">for</span> i=1:r.n,
+0040         l2{i} = r.link{i};
+0041         s = (2*rand-1)*p + 1;
+0042         l2{i}.m = l2{i}.m * s;
+0043         s = (2*rand-1)*p + 1;
+0044         l2{i}.I = l2{i}.I * s;
+0045     <span class="keyword">end</span>
+0046 
+0047     r2 = <a href="robot.html" class="code" title="function r = robot(L, a1, a2, a3)">robot</a>(r, l2);        <span class="comment">% clone the robot</span>
+0048     r2.name = [<span class="string">'P/'</span> r.name];</pre></div>
+<hr><address>Generated on Sun 15-Feb-2009 18:09:29 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

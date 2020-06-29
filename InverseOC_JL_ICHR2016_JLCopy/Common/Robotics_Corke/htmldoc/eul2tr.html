@@ -1,0 +1,100 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of eul2tr</title>
+  <meta name="keywords" content="eul2tr">
+  <meta name="description" content="EUL2TR Convert Euler angles to homogeneous transformation">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="./m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="./index.html">Home</a> &gt;  <a href="index.html">.</a> &gt; eul2tr.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="./index.html"><img alt="<" border="0" src="./left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for .&nbsp;<img alt=">" border="0" src="./right.png"></a></td></tr></table>-->
+
+<h1>eul2tr
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="./up.png"></a></h2>
+<div class="box"><strong>EUL2TR Convert Euler angles to homogeneous transformation</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="./up.png"></a></h2>
+<div class="box"><strong>function T = eul2tr(phi, theta, psi) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="./up.png"></a></h2>
+<div class="fragment"><pre class="comment">EUL2TR Convert Euler angles to homogeneous transformation
+
+     TR = EUL2TR([PHI THETA PSI])
+     TR = EUL2TR(PHI, THETA, PSI)
+
+ Returns a homogeneous tranformation for the specified Euler angles.  These 
+ correspond to rotations about the Z, Y, Z axes respectively.
+
+ See also: <a href="tr2eul.html" class="code" title="function euler = tr2eul(m)">TR2EUL</a>, <a href="rpy2tr.html" class="code" title="function T = rpy2tr(roll, pitch, yaw)">RPY2TR</a></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="./up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(./matlabicon.gif)">
+<li><a href="numcols.html" class="code" title="function c = numcols(m)">numcols</a>	NUMCOLS(m)</li><li><a href="numrows.html" class="code" title="function r = numrows(m)">numrows</a>	NUMROWS(m)</li><li><a href="r2t.html" class="code" title="function T = r2t(R)">r2t</a>	R2T Return a homogeneous transformation from a rotation</li><li><a href="roty.html" class="code" title="function r = roty(t)">roty</a>	ROTY Rotation about Y axis</li><li><a href="rotz.html" class="code" title="function r = rotz(t)">rotz</a>	ROTZ Rotation about Z axis</li></ul>
+This function is called by:
+<ul style="list-style-image:url(./matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="./up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%EUL2TR Convert Euler angles to homogeneous transformation</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">%     TR = EUL2TR([PHI THETA PSI])</span>
+0004 <span class="comment">%     TR = EUL2TR(PHI, THETA, PSI)</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">% Returns a homogeneous tranformation for the specified Euler angles.  These</span>
+0007 <span class="comment">% correspond to rotations about the Z, Y, Z axes respectively.</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">% See also: TR2EUL, RPY2TR</span>
+0010 
+0011 <span class="comment">% Copyright (C) 1993-2008, by Peter I. Corke</span>
+0012 <span class="comment">%</span>
+0013 <span class="comment">% This file is part of The Robotics Toolbox for Matlab (RTB).</span>
+0014 <span class="comment">%</span>
+0015 <span class="comment">% RTB is free software: you can redistribute it and/or modify</span>
+0016 <span class="comment">% it under the terms of the GNU Lesser General Public License as published by</span>
+0017 <span class="comment">% the Free Software Foundation, either version 3 of the License, or</span>
+0018 <span class="comment">% (at your option) any later version.</span>
+0019 <span class="comment">%</span>
+0020 <span class="comment">% RTB is distributed in the hope that it will be useful,</span>
+0021 <span class="comment">% but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+0022 <span class="comment">% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+0023 <span class="comment">% GNU Lesser General Public License for more details.</span>
+0024 <span class="comment">%</span>
+0025 <span class="comment">% You should have received a copy of the GNU Leser General Public License</span>
+0026 <span class="comment">% along with RTB.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
+0027 
+0028 <a name="_sub0" href="#_subfunctions" class="code">function T = eul2tr(phi, theta, psi)</a>
+0029     <span class="keyword">if</span> (nargin == 1),
+0030         <span class="keyword">if</span> <a href="numcols.html" class="code" title="function c = numcols(m)">numcols</a>(phi) ~= 3,
+0031             error(<span class="string">'bad arguments'</span>)
+0032         <span class="keyword">end</span>
+0033         theta = phi(:,2);
+0034         psi = phi(:,3);
+0035         phi = phi(:,1);
+0036     <span class="keyword">end</span>
+0037 
+0038     <span class="keyword">if</span> <a href="numrows.html" class="code" title="function r = numrows(m)">numrows</a>(phi) == 1,
+0039                 r = <a href="rotz.html" class="code" title="function r = rotz(t)">rotz</a>(phi) * <a href="roty.html" class="code" title="function r = roty(t)">roty</a>(theta) * <a href="rotz.html" class="code" title="function r = rotz(t)">rotz</a>(psi);
+0040         T = <a href="r2t.html" class="code" title="function T = r2t(R)">r2t</a>(r);
+0041     <span class="keyword">else</span>
+0042         <span class="keyword">for</span> i=1:<a href="numrows.html" class="code" title="function r = numrows(m)">numrows</a>(phi),
+0043             r = <a href="rotz.html" class="code" title="function r = rotz(t)">rotz</a>(phi) * <a href="roty.html" class="code" title="function r = roty(t)">roty</a>(theta) * <a href="rotz.html" class="code" title="function r = rotz(t)">rotz</a>(psi);
+0044             T(:,:,1) = <a href="r2t.html" class="code" title="function T = r2t(R)">r2t</a>(r);
+0045         <span class="keyword">end</span>
+0046     <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sun 15-Feb-2009 18:09:29 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

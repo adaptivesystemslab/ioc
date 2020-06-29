@@ -102,48 +102,70 @@ algorithmParam.endEffectorName = 'frame_rhand_end';
 
 switch param.dataset
     case 'expressive_ioc'
-        filepathModel = '../Libraries/rl/ik_framework/instance_expressive/model/ioc_v4_rightarm_fixedbase.xml';
-%         filepathModel = '../Libraries/rl/ik_framework/instance_expressive/model/ioc_v4_2dofplanar.xml';
+        %filepathModel = '../../../PoseEstimation/kalmanfilter/ik_framework/instance_expressiveioc/model/ioc_v4_rightarm_fixedbase.xml';
+        filepathModel = '../../../kalmanfilter/ik_framework/instance_expressiveioc/model/ioc_v4_rightarm_fixedbase.xml';
+        %filepathModel = 'D:/aslab_gitlab/kalmanfilter/ik_framework/instance_expressiveioc/model/ioc_v4_rightarm_fixedbase.xml';
 
             % initialize the model instance and load marker data
             %     modelInstance = rlModelInstance_expressiveioc(currFileEntry.subjectNumber);
         modelInstance = rlModelInstance_expressiveioc_rightArm('');
         modelInstance.loadModelFromModelSpecsNoSensor(filepathModel, filesToload.fullPathMat);
-
-        % MODIFY THIS
-        load(filesToload.fullPathAng); % load mat file containing the joint angles
-        loadFeatureSet.q = saveVar.jointAngle.array(:, 4:end); % load the joint angles to use
-        dt = saveVar.dt;
-        modelInstance.model.bodies(1).name % here is how to modify the dynamic parameters
-        modelInstance.model.bodies(1).m = 0;
-        modelInstance.model.bodies(1).I = eye(3);
-        modelInstance.model.bodies(1).com = zeros(3, 1);
         
-        param.dofsFull = 1:size(loadFeatureSet.q, 2);
-        param.dofsFromFull = 1:size(loadFeatureSet.q, 2);
+%         dataInstance_trc = rlDataInstance_trc(modelInstance);
+%         dataInstance_trc.loadData(filesToload.fullPathTrc, algorithmParam);
+%         dataInstance_trc.dataProcessing(algorithmParam);
+
+        % link the data instance into the model and create model to init XML model
+        % linkage length and sensor attachments
+%         [kinematicTransform, dynamicTransform, sensorTransform] = ...
+%             modelInstance.makeModel(filepathModel, dataInstance_trc, algorithmParam);
+        
+        loadFeatureSet = rlFeatureSet_ioc();
+        loadFeatureSet.loadDataFromFile(filesToload.fullPathMat);
+        
+        % resample data to 100 Hz
+        loadFeatureSet.resample(1/100);
+        loadFeatureSet.q = loadFeatureSet.q(:, 4:end); % remove the prismatic joint
+        
+        param.dofsFull = 1:7;
+        param.dofsFromFull = 1:7;
         
         param.endEffectorName = algorithmParam.endEffectorName;
+
+        dt = loadFeatureSet.dt;
         
         param.win_shift = external_win_shift;
         param.NbSample = size(loadFeatureSet.q, 1);
+                
+        if ~isempty(fieldnames(extraSettings)) && extraSettings.use
+            pickFrame = round(extraSettings.pickTarget/2);
+            placementFrame = round(extraSettings.placementTarget/2);
+        end
 end
+
 
 % time params
-param.ti_full = 0;  
+param.ti_full = 0;
 param.dt_full = dt;
         
-if external_dataLoadLength == 0
-    param.dataLoadLength = 1:param.NbSample;
-else
-    param.dataLoadLength = external_dataLoadLength;
-end
-
-loadFeatureSet.q = loadFeatureSet.q(param.dataLoadLength, :);
-param.tf_full = (size(loadFeatureSet.q, 1)-param.dt_full)*param.dt_full;
+% switch mode
+%     case 'sim'        
+%         param.tf_full = param.doc_sim_win_length - param.dt_full;
+% 
+%     case 'win'
+%         loadFeatureSet.q = loadFeatureSet.q';
+        param.tf_full = (size(loadFeatureSet.q, 1)-param.dt_full)*param.dt_full;
+        
+        if external_dataLoadLength == 0
+            param.dataLoadLength = [];
+        else
+            param.dataLoadLength = external_dataLoadLength;
+        end
+% end
 
 traj_load.t = 0:dt:param.tf_full;
 fullDataAngles = loadFeatureSet.q;
-traj_load.q =  filter_dualpassBW(fullDataAngles, 0.04, 0, 4)';
+traj_load.q =  filter_dualpassBW(fullDataAngles, 0.05, 0, 4)';
 traj_load.dq = calcDeriv(traj_load.q, dt);
 traj_load.ddq = calcDeriv(traj_load.dq, dt);
 traj_load.dddq = calcDeriv(traj_load.ddq, dt);
@@ -184,16 +206,86 @@ if 0
     end
 end
 
-if external_win_length == 0
-    external_win_length = numel(traj_load.t);
-end
-
-if external_spline_length == 0
-    external_spline_length = numel(traj_load.t);
-end
-
 param.win_shift = external_win_shift;
 param = update_length(param, external_win_length, external_spline_length);
+
+
+if ~isempty(fieldnames(extraSettings)) && extraSettings.use
+    % Get pick pose
+    modelInstance.model.position(param.dofsFromFull) = traj_load.q(:, pickFrame);
+    modelInstance.model.forwardPosition();
+    pickPose = modelInstance.model.getFrameByName(algorithmParam.endEffectorName).t;
+
+    % Get placement pose
+    modelInstance.model.position(param.dofsFromFull) = traj_load.q(:, placementFrame);
+    modelInstance.model.forwardPosition();
+    placementPose = modelInstance.model.getFrameByName(algorithmParam.endEffectorName).t;
+
+else
+    
+    strsplitStr = strsplit(filesToload.id, '_');
+    subject = strsplitStr(1);
+    
+    switch subject{1}
+        case 'Subject01'
+            pickPose = [0.9405    0.3285   -0.0873    0.1286; 
+                       -0.1124    0.0582   -0.9920    0.3439;
+                       -0.3207    0.9427    0.0917   -0.2761; 
+                             0         0         0    1.0000];
+            placementPose = [0.8497    0.2090    0.4842    0.0965; 
+                             0.4769    0.0872   -0.8746    0.3725;
+                            -0.2250    0.9740   -0.0256   -0.1028; 
+                                  0         0         0    1.0000];
+        case 'Subject02'
+            pickPose = [0.6467    0.2697   -0.7135    0.2186;
+                       -0.7055   -0.1440   -0.6939    0.3974;
+                       -0.2899    0.9521    0.0971   -0.3756;
+                             0         0         0    1.0000];
+           placementPose = [0.8758    0.4688    0.1150    0.0002;
+                            0.1286    0.0031   -0.9917    0.4112;
+                           -0.4652    0.8833   -0.0575   -0.3017;
+                                 0         0         0    1.0000];
+        case 'Subject03'
+            pickPose = [0.7349    0.1300   -0.6656    0.3103;
+                       -0.6484   -0.1529   -0.7458    0.3072;
+                       -0.1988    0.9796   -0.0281   -0.4120;
+                             0         0         0    1.0000];
+            placementPose = [0.6273    0.7425    0.2352   -0.1200;
+                             0.3798   -0.0280   -0.9246    0.3304;
+                            -0.6799    0.6693   -0.2996   -0.3209;
+                                  0         0         0    1.0000];
+        case 'Subject04'
+            pickPose = [0.9692    0.0888   -0.2298    0.1751;
+                       -0.2463    0.3487   -0.9043    0.4004;
+                       -0.0002    0.9330    0.3598   -0.3279;
+                             0         0         0    1.0000];
+            placementPose = [0.7780   -0.2995    0.5522   -0.0199;
+                             0.6274    0.3247   -0.7078    0.3944;
+                             0.0327    0.8971    0.4405   -0.2490;
+                                  0         0         0    1.0000];
+        case 'Subject05'
+            pickPose = [0.7948    0.3007   -0.5272    0.0691;
+                       -0.5238   -0.0990   -0.8461    0.3810;
+                       -0.3066    0.9486    0.0788   -0.5646;
+                             0         0         0    1.0000];
+            placementPose = [0.6586    0.4822    0.5777   -0.1408;
+                             0.4816    0.3198   -0.8160    0.3307;
+                            -0.5782    0.8156   -0.0216   -0.4527;
+                                  0         0         0   1.0000];
+    end
+%     % Default locations
+%     param.x_anchor_1 = [-0.39075143  0.03671429 -0.46354857]'; 
+%     param.x_anchor_2 = [-0.40905143 -0.04970571 -0.40449714]';
+%     param.rot_anchor_1 = eye(3);
+%     param.rot_anchor_2 = eye(3);
+end
+
+
+% Target locations
+param.x_anchor_1 = pickPose(1:3, 4);
+param.rot_anchor_1 = pickPose(1:3, 1:3);
+param.x_anchor_2 = placementPose(1:3, 4);
+param.rot_anchor_2 = placementPose(1:3, 1:3);
 
 % Subwindow size for expressive parameters
 param = setupNormalizationValues(param, traj_load, segmentInfo, param.normalizationMethod_feature, param.normalizationMethod_cf);

@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rlmdl xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="rlmdl.xsd">
+	<model>
+		<manufacturer>Rollen</manufacturer>
+		<name>CameraArm</name>
+		<world id="frameworld">
+			<rotation>
+				<x>0</x>
+				<y>0</y>
+				<z>0</z>
+			</rotation>
+			<translation>
+				<x>0</x>
+				<y>0</y>
+				<z>0</z>
+			</translation>
+			<g>
+				<x>0</x>
+				<y>0</y>
+				<z>9.80665</z>
+			</g>
+		</world>
+
+		<frame id="framebot"/>
+		<frame id="framepole"/>
+		<frame id="frameshoulder"/>
+		<frame id="frameupperarm"/>
+		<frame id="framecamera"/>
+		<frame id="framecamera2"/>
+
+		<fixed id="linkrobot">
+			<frame>
+				<a idref="frameworld"/>
+				<b idref="framebot"/>
+			</frame>
+			<rotation>
+				<x>0</x>
+				<y>0</y>
+				<z>0</z>
+			</rotation>
+			<translation>
+				<x>0</x>
+				<y>0</y>
+				<z>0</z>
+			</translation>
+		</fixed>
+		<revolute id="jointshoulderyaw">
+			<frame>
+				<a idref="framebot"/>
+				<b idref="framepole"/>
+			</frame>
+		</revolute>
+		<fixed id="linkpole">
+			<frame>
+				<a idref="framepole"/>
+				<b idref="frameshoulder"/>
+			</frame>
+			<rotation>
+				<x>-90</x>
+				<y>0</y>
+				<z>0</z>
+			</rotation>
+			<translation>
+				<x>0</x>
+				<y>0</y>
+				<z>2</z>
+			</translation>
+		</fixed>
+
+		<revolute id="jointshoulderpitch">
+			<frame>
+				<a idref="frameshoulder"/>
+				<b idref="frameupperarm"/>
+			</frame>
+		</revolute>
+
+		<fixed id="linkupperarm">
+			<frame>
+				<a idref="frameupperarm"/>
+				<b idref="framecamera"/>
+			</frame>
+			<rotation>
+				<x>180</x>
+				<y>-90</y>
+				<z>0</z>
+			</rotation>
+			<translation>
+				<x>1</x>
+				<y>0</y>
+				<z>0</z>
+			</translation>
+		</fixed>
+
+
+		<prismatic id="jointprism">
+			<frame>
+				<a idref="framecamera"/>
+				<b idref="framecamera2"/>
+			</frame>
+		</prismatic>
+
+	</model>
+</rlmdl>

@@ -1,0 +1,75 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of check1</title>
+  <meta name="keywords" content="check1">
+  <meta name="description" content="CHECK script to compare M-file and MEX-file versions of RNE">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../index.html">Home</a> &gt;  <a href="#">mex</a> &gt; check1.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../index.html"><img alt="<" border="0" src="../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for ./mex&nbsp;<img alt=">" border="0" src="../right.png"></a></td></tr></table>-->
+
+<h1>check1
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>CHECK script to compare M-file and MEX-file versions of RNE</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment">CHECK script to compare M-file and MEX-file versions of RNE</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="check2.html" class="code" title="function check2(robot, n, args)">check2</a>	CHECK2 script to compare M-file and MEX-file versions of RNE</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="check.html" class="code" title="">check</a>	</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%CHECK script to compare M-file and MEX-file versions of RNE</span>
+0002 
+0003 <span class="comment">% load the model and remove non-linear friction</span>
+0004 rdh = nofriction(rdh, <span class="string">'coulomb'</span>);
+0005 rmdh = nofriction(rdh, <span class="string">'coulomb'</span>);
+0006 
+0007 <span class="comment">% number of trials</span>
+0008 n = 10;
+0009 
+0010 fprintf(<span class="string">'************************ normal case *****************************\n'</span>)
+0011 args = {};
+0012 fprintf(<span class="string">'DH:  '</span>)
+0013 <a href="check2.html" class="code" title="function check2(robot, n, args)">check2</a>(rdh, n, args);
+0014 fprintf(<span class="string">'MDH: '</span>)
+0015 <a href="check2.html" class="code" title="function check2(robot, n, args)">check2</a>(rmdh, n, args);
+0016 
+0017 fprintf(<span class="string">'************************ no gravity *****************************\n'</span>)
+0018 args = {[0 0 0]};
+0019 fprintf(<span class="string">'DH:  '</span>)
+0020 <a href="check2.html" class="code" title="function check2(robot, n, args)">check2</a>(rdh, n, args);
+0021 fprintf(<span class="string">'MDH: '</span>)
+0022 <a href="check2.html" class="code" title="function check2(robot, n, args)">check2</a>(rmdh, n, args);
+0023 
+0024 fprintf(<span class="string">'************************ ext force *****************************\n'</span>)
+0025 args = {[0 0 9.81], [10 10 10 10 10 10]'};
+0026 fprintf(<span class="string">'DH:  '</span>)
+0027 <a href="check2.html" class="code" title="function check2(robot, n, args)">check2</a>(rdh, n, args);
+0028 fprintf(<span class="string">'MDH: '</span>)
+0029 <a href="check2.html" class="code" title="function check2(robot, n, args)">check2</a>(rmdh, n, args);</pre></div>
+<hr><address>Generated on Sun 15-Feb-2009 18:09:29 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

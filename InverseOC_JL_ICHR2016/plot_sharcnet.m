@@ -3,11 +3,11 @@ function al
     clc
 
     addpath(genpath(fullfile('Common')));
-    addpath(genpath('Libraries/rl/ik_framework/common'));
-    addpath(genpath('Libraries/rl/ik_framework/instance_expressive'));
-    addpath(genpath('Libraries/rl/General_FKEKF/DynamicsModelMatlab/MatlabWrapper'));
+    addpath(genpath('../../../kalmanfilter/ik_framework/common'));
+    addpath(genpath('../../../kalmanfilter/ik_framework/instance_expressiveioc'));
+    addpath(genpath('../../../kalmanfilter/General_FKEKF/DynamicsModelMatlab/MatlabWrapper'));
 
-     baseSourceFolder = '../results/ioc';
+     baseSourceFolder = '../../expressiveiocData/results/';
     %baseSourceFolder = 'D:/results/expressive_ioc/PamelasIOCResults/';
     commentsArray = {''};
     SVDArray = {'10000'};
@@ -117,9 +117,9 @@ function al
                                 continue
                             end
 
-%                             if ~strcmp(currDir_layer2.name, '20190725_074549')
-%                                 continue
-%                             end
+                            if ~strcmp(currDir_layer2.name, '20191126_111924')
+                                continue
+                            end
                             
                             dir_layer3 = dir([currDir_layer2_fullName]);
 
@@ -179,19 +179,19 @@ function al
         end
     end
     
-    outputPath = '../../expressiveiocData/results/expressive_ioc/';
-    
-    for i = 1:length(outputStruct)
-        time = outputStruct(i).indices_forward;
-        avgRatio = outputStruct(i).ratio_forward';
-        avgWeight = outputStruct(i).weights_forward';
-        writeTrajectoryToFile(outputPath, ['forward_' nowStr '_' outputStruct(i).currInstName], cost_function_names_sorted, time, avgWeight, avgRatio);
-%         
-%         time = outputStruct(i).indices_back;
-%         avgRatio = outputStruct(i).weights_back';
-%         avgWeight = zeros(size(avgRatio));
-%         writeTrajectoryToFile(outputPath, ['back_' nowStr '_' outputStruct(i).currInstName], cost_function_names_sorted, time, avgWeight, avgRatio);
-    end
+%     outputPath = '../../expressiveiocData/results/expressive_ioc/';
+%     
+%     for i = 1:length(outputStruct)
+%         time = outputStruct(i).indices_forward;
+%         avgRatio = outputStruct(i).ratio_forward';
+%         avgWeight = outputStruct(i).weights_forward';
+%         writeTrajectoryToFile(outputPath, ['forward_' nowStr '_' outputStruct(i).currInstName], cost_function_names_sorted, time, avgWeight, avgRatio);
+% %         
+% %         time = outputStruct(i).indices_back;
+% %         avgRatio = outputStruct(i).weights_back';
+% %         avgWeight = zeros(size(avgRatio));
+% %         writeTrajectoryToFile(outputPath, ['back_' nowStr '_' outputStruct(i).currInstName], cost_function_names_sorted, time, avgWeight, avgRatio);
+%     end
 %     
 %     
 %     arousalScore = [0.522628122

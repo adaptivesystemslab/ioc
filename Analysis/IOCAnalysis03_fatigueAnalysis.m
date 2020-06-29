@@ -2,7 +2,7 @@ function IOCAnalysis()
     setPaths();
 %     nowstr = datestr(now, 'yyyymmddHHMMSS');
     sourceSuffix = '20200413_FatigueFull_3CF';
-    targetSuffix = '20200413_FatigueFull_3CF_2';
+    targetSuffix = '20200413_FatigueFull_3CF_4';
       
     basePath = ['D:\results\fatigue_ioc02_weightsAssembled\' sourceSuffix '\'];
     outputPath = ['D:\results\fatigue_ioc03_weightsPattern\' targetSuffix '\'];
@@ -89,31 +89,31 @@ function calculateMetrics(filepathCurrDataInd, filepathCurrWeiCum, filepathCurrW
     
     dt = 0.01;
     
-%     for i = 1:size(traj.q, 2)
-%         featureLabel = ['q_' num2str(i) '_' allJointNames{i}];
-%         featureTime = traj.trajT;
-%         featureData = traj.q(:, i);
-%         stats_q(i) = featureCalc1(trialInfo, featureLabel, featureTime, featureData, segmentInfo, outputPath, outCsv, outFileSpec);
-%     end
-%     for i = 1:size(traj.q, 2)
-%         featureLabel = ['dq_' num2str(i) '_' allJointNames{i}];
-%         featureTime = traj.trajT;
-%         featureData = calcDerivVert(traj.q(:, i), dt);
-%         stats_dq(i) = featureCalc1(trialInfo, featureLabel, featureTime, featureData, segmentInfo, outputPath, outCsv, outFileSpec);
-%     end
-%     
-%     for i = 1:size(traj.tau, 2)
-%         featureLabel = ['tau_' num2str(i) '_' allJointNames{i}];
-%         featureTime = traj.trajT;
-%         featureData = traj.tau(:, i);
-%         stats_tau(i) = featureCalc1(trialInfo, featureLabel, featureTime, featureData, segmentInfo, outputPath, outCsv, outFileSpec);
-%     end
-%     for i = 1:size(traj.tau, 2)
-%         featureLabel = ['dtau_' num2str(i) '_' allJointNames{i}];
-%         featureTime = traj.trajT;
-%         featureData = calcDerivVert(traj.tau(:, i), dt);
-%         stats_dtau(i) = featureCalc1(trialInfo, featureLabel, featureTime, featureData, segmentInfo, outputPath, outCsv, outFileSpec);
-%     end
+    for i = 1:size(traj.q, 2)
+        featureLabel = ['q_' num2str(i) '_' allJointNames{i}];
+        featureTime = traj.trajT;
+        featureData = traj.q(:, i);
+        stats_q(i) = featureCalc1(trialInfo, featureLabel, featureTime, featureData, segmentInfo, outputPath, outIndCsv, outCumCsv, outFileSpec);
+    end
+    for i = 1:size(traj.q, 2)
+        featureLabel = ['dq_' num2str(i) '_' allJointNames{i}];
+        featureTime = traj.trajT;
+        featureData = calcDerivVert(traj.q(:, i), dt);
+        stats_dq(i) = featureCalc1(trialInfo, featureLabel, featureTime, featureData, segmentInfo, outputPath, outIndCsv, outCumCsv, outFileSpec);
+    end
+    
+    for i = 1:size(traj.tau, 2)
+        featureLabel = ['tau_' num2str(i) '_' allJointNames{i}];
+        featureTime = traj.trajT;
+        featureData = traj.tau(:, i);
+        stats_tau(i) = featureCalc1(trialInfo, featureLabel, featureTime, featureData, segmentInfo, outputPath, outIndCsv, outCumCsv, outFileSpec);
+    end
+    for i = 1:size(traj.tau, 2)
+        featureLabel = ['dtau_' num2str(i) '_' allJointNames{i}];
+        featureTime = traj.trajT;
+        featureData = calcDerivVert(traj.tau(:, i), dt);
+        stats_dtau(i) = featureCalc1(trialInfo, featureLabel, featureTime, featureData, segmentInfo, outputPath, outIndCsv, outCumCsv, outFileSpec);
+    end
     
     for i = 1:size(matSave.weights, 2)
         featureLabel = ['weights_' matData.featureLabels{i}];
@@ -128,8 +128,8 @@ function calculateMetrics(filepathCurrDataInd, filepathCurrWeiCum, filepathCurrW
         stats_dweights(i) = featureCalc1(trialInfo, featureLabel, featureTime, featureData, segmentInfo, outputPath, outIndCsv, outCumCsv, outFileSpec);
     end
     
-%     save(outMat, 'trialInfo', 'segmentInfo', 'stats_q', 'stats_dq', 'stats_tau', 'stats_dtau', 'stats_weights', 'stats_dweights');
-    save(outMat, 'trialInfo', 'segmentInfo', 'stats_weights', 'stats_dweights');
+    save(outMat, 'trialInfo', 'segmentInfo', 'stats_q', 'stats_dq', 'stats_tau', 'stats_dtau', 'stats_weights', 'stats_dweights');
+%     save(outMat, 'trialInfo', 'segmentInfo', 'stats_weights', 'stats_dweights');
 end
 
 function stats = featureCalc1(trialInfo, name, t, feature, segData, outputPath, outIndCsv, outCumCsv, outFileSpec)

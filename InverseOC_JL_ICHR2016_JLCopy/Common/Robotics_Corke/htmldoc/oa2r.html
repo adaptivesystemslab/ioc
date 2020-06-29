@@ -1,0 +1,89 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of oa2r</title>
+  <meta name="keywords" content="oa2r">
+  <meta name="description" content="OA2R Convert O/A vectors to rotation matrix">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="./m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="./index.html">Home</a> &gt;  <a href="index.html">.</a> &gt; oa2r.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="./index.html"><img alt="<" border="0" src="./left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for .&nbsp;<img alt=">" border="0" src="./right.png"></a></td></tr></table>-->
+
+<h1>oa2r
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="./up.png"></a></h2>
+<div class="box"><strong>OA2R Convert O/A vectors to rotation matrix</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="./up.png"></a></h2>
+<div class="box"><strong>function r = oa2r(o, a) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="./up.png"></a></h2>
+<div class="fragment"><pre class="comment">OA2R Convert O/A vectors to rotation matrix
+
+     R = OA2R(O, A)
+
+ Returns a rotation matrix for the specified orientation and 
+ approach vectors formed from 3 vectors such that
+ R = [N O A] and N = O x A.  
+ The submatrix is guaranteed to be orthonormal so long as O and A are 
+ not parallel.
+
+ See also: <a href="rpy2r.html" class="code" title="function r = rpy2r(roll, pitch, yaw)">RPY2R</a>, <a href="eul2r.html" class="code" title="function r = eul2r(phi, theta, psi)">EUL2R</a>, <a href="oa2tr.html" class="code" title="function r = oa2tr(o, a)">OA2TR</a></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="./up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(./matlabicon.gif)">
+<li><a href="unit.html" class="code" title="function u = unit(v)">unit</a>	UNIT Unitize a vector</li></ul>
+This function is called by:
+<ul style="list-style-image:url(./matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="./up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%OA2R Convert O/A vectors to rotation matrix</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">%     R = OA2R(O, A)</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% Returns a rotation matrix for the specified orientation and</span>
+0006 <span class="comment">% approach vectors formed from 3 vectors such that</span>
+0007 <span class="comment">% R = [N O A] and N = O x A.</span>
+0008 <span class="comment">% The submatrix is guaranteed to be orthonormal so long as O and A are</span>
+0009 <span class="comment">% not parallel.</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">% See also: RPY2R, EUL2R, OA2TR</span>
+0012 
+0013 <span class="comment">% Copyright (C) 1993-2008, by Peter I. Corke</span>
+0014 <span class="comment">%</span>
+0015 <span class="comment">% This file is part of The Robotics Toolbox for Matlab (RTB).</span>
+0016 <span class="comment">%</span>
+0017 <span class="comment">% RTB is free software: you can redistribute it and/or modify</span>
+0018 <span class="comment">% it under the terms of the GNU Lesser General Public License as published by</span>
+0019 <span class="comment">% the Free Software Foundation, either version 3 of the License, or</span>
+0020 <span class="comment">% (at your option) any later version.</span>
+0021 <span class="comment">%</span>
+0022 <span class="comment">% RTB is distributed in the hope that it will be useful,</span>
+0023 <span class="comment">% but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+0024 <span class="comment">% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+0025 <span class="comment">% GNU Lesser General Public License for more details.</span>
+0026 <span class="comment">%</span>
+0027 <span class="comment">% You should have received a copy of the GNU Leser General Public License</span>
+0028 <span class="comment">% along with RTB.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
+0029 
+0030 <a name="_sub0" href="#_subfunctions" class="code">function r = oa2r(o, a)</a>
+0031     n = cross(o, a);
+0032     o = cross(a, n);
+0033     r = [<a href="unit.html" class="code" title="function u = unit(v)">unit</a>(n(:)) <a href="unit.html" class="code" title="function u = unit(v)">unit</a>(o(:)) <a href="unit.html" class="code" title="function u = unit(v)">unit</a>(a(:))];</pre></div>
+<hr><address>Generated on Sun 15-Feb-2009 18:09:29 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

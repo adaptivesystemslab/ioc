@@ -1,0 +1,124 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of plot</title>
+  <meta name="keywords" content="plot">
+  <meta name="description" content="PLOT Plot a quaternion object">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../index.html">Home</a> &gt;  <a href="#">@quaternion</a> &gt; plot.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../index.html"><img alt="<" border="0" src="../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for ./@quaternion&nbsp;<img alt=">" border="0" src="../right.png"></a></td></tr></table>-->
+
+<h1>plot
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>PLOT Plot a quaternion object</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function plot(Q, off, fmt, color) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment">PLOT Plot a quaternion object 
+
+    PLOT(Q)
+
+ Display the quaternion as a rotated coordinate frame.
+
+ SEE ALSO: <a href="quaternion.html" class="code" title="function q = quaternion(a1, a2)">QUATERNION</a></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%PLOT Plot a quaternion object</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">%    PLOT(Q)</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% Display the quaternion as a rotated coordinate frame.</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">% SEE ALSO: QUATERNION</span>
+0008 
+0009 <span class="comment">% Copyright (C) 1999-2008, by Peter I. Corke</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">% This file is part of The Robotics Toolbox for Matlab (RTB).</span>
+0012 <span class="comment">%</span>
+0013 <span class="comment">% RTB is free software: you can redistribute it and/or modify</span>
+0014 <span class="comment">% it under the terms of the GNU Lesser General Public License as published by</span>
+0015 <span class="comment">% the Free Software Foundation, either version 3 of the License, or</span>
+0016 <span class="comment">% (at your option) any later version.</span>
+0017 <span class="comment">%</span>
+0018 <span class="comment">% RTB is distributed in the hope that it will be useful,</span>
+0019 <span class="comment">% but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+0020 <span class="comment">% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+0021 <span class="comment">% GNU Lesser General Public License for more details.</span>
+0022 <span class="comment">%</span>
+0023 <span class="comment">% You should have received a copy of the GNU Leser General Public License</span>
+0024 <span class="comment">% along with RTB.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
+0025 
+0026 <a name="_sub0" href="#_subfunctions" class="code">function plot(Q, off, fmt, color)</a>
+0027     <span class="comment">%axis([-1 1 -1 1 -1 1])</span>
+0028 
+0029     <span class="keyword">if</span> nargin &lt; 2,
+0030         off = [0 0 0];
+0031     <span class="keyword">end</span>
+0032     <span class="keyword">if</span> nargin &lt; 3,
+0033         fmt = <span class="string">'%c'</span>;
+0034     <span class="keyword">end</span>
+0035     <span class="keyword">if</span> nargin &lt; 4,
+0036         color = <span class="string">'b'</span>;
+0037     <span class="keyword">end</span>
+0038     <span class="comment">% create unit vectors</span>
+0039     o = [0 0 0]';
+0040     x1 = Q*[1 0 0]';
+0041     y1 = Q*[0 1 0]';
+0042     z1 = Q*[0 0 1]';
+0043 
+0044     get(gca, <span class="string">'Tag'</span>)
+0045     <span class="keyword">if</span> strcmp(get(gca, <span class="string">'Tag'</span>), <span class="string">'trplot'</span>) == 0,
+0046         fprintf(<span class="string">'No tag\n'</span>);
+0047         clf
+0048         axes
+0049         set(gca, <span class="string">'Tag'</span>, <span class="string">'trplot'</span>)
+0050         fprintf(<span class="string">'set tag\n'</span>);
+0051         xlabel( <span class="string">'X'</span>);
+0052         ylabel( <span class="string">'Y'</span>);
+0053         zlabel( <span class="string">'Z'</span>);
+0054     <span class="keyword">end</span>
+0055     ih = ishold;
+0056     hold on
+0057     plot3([0;x1(1)]+off(1), [0; x1(2)]+off(2), [0; x1(3)]+off(3), color);
+0058     h = text(off(1)+x1(1), off(2)+x1(2), off(3)+x1(3), sprintf(fmt, <span class="string">'X'</span>));
+0059     set(h, <span class="string">'Color'</span>, color);
+0060 
+0061     plot3([0;y1(1)]+off(1), [0; y1(2)]+off(2), [0; y1(3)]+off(3), color);
+0062     h = text(off(1)+y1(1), off(2)+y1(2), off(3)+y1(3), sprintf(fmt, <span class="string">'Y'</span>));
+0063     set(h, <span class="string">'Color'</span>, color);
+0064 
+0065     plot3([0;z1(1)]+off(1), [0; z1(2)]+off(2), [0; z1(3)]+off(3), color);
+0066     h = text(off(1)+z1(1), off(2)+z1(2), off(3)+z1(3), sprintf(fmt, <span class="string">'Z'</span>));
+0067     set(h, <span class="string">'Color'</span>, color);
+0068     grid on
+0069     <span class="keyword">if</span> ~ishold,
+0070         hold off
+0071     <span class="keyword">end</span>
+0072     axis equal</pre></div>
+<hr><address>Generated on Sun 15-Feb-2009 18:09:29 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

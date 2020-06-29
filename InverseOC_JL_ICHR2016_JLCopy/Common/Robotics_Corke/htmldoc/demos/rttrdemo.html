@@ -1,0 +1,99 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of rttrdemo</title>
+  <meta name="keywords" content="rttrdemo">
+  <meta name="description" content="RTTRDEMO Transforms and quaternion demo">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../index.html">Home</a> &gt;  <a href="#">demos</a> &gt; rttrdemo.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../index.html"><img alt="<" border="0" src="../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for ./demos&nbsp;<img alt=">" border="0" src="../right.png"></a></td></tr></table>-->
+
+<h1>rttrdemo
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>RTTRDEMO Transforms and quaternion demo</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment">RTTRDEMO Transforms and quaternion demo</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%RTTRDEMO Transforms and quaternion demo</span>
+0002 
+0003 <span class="comment">% Copyright (C) 1993-2002, by Peter I. Corke</span>
+0004 <span class="comment">% $Log: not supported by cvs2svn $</span>
+0005 <span class="comment">% Revision 1.2  2002-04-01 11:47:18  pic</span>
+0006 <span class="comment">% General cleanup of code: help comments, see also, copyright, remnant dh/dyn</span>
+0007 <span class="comment">% references, clarification of functions.</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">% $Revision: 1.1 $</span>
+0010 echo on
+0011 <span class="comment">%</span>
+0012 <span class="comment">% In the field of robotics there are many possible ways of representing</span>
+0013 <span class="comment">% positions and orientations, but the homogeneous transformation is well</span>
+0014 <span class="comment">% matched to MATLABs powerful tools for matrix manipulation.</span>
+0015 <span class="comment">%</span>
+0016 <span class="comment">% Homogeneous transformations describe the relationships between Cartesian</span>
+0017 <span class="comment">% coordinate frames in terms of translation and orientation.</span>
+0018 
+0019 <span class="comment">%  A pure translation of 0.5m in the X direction is represented by</span>
+0020     transl(0.5, 0.0, 0.0)
+0021 <span class="comment">%</span>
+0022 <span class="comment">% a rotation of 90degrees about the Y axis by</span>
+0023     troty(pi/2)
+0024 <span class="comment">%</span>
+0025 <span class="comment">% and a rotation of -90degrees about the Z axis by</span>
+0026     trotz(-pi/2)
+0027 <span class="comment">%</span>
+0028 <span class="comment">%  these may be concatenated by multiplication</span>
+0029     t = transl(0.5, 0.0, 0.0) * troty(pi/2) * trotz(-pi/2)
+0030 
+0031 <span class="comment">%</span>
+0032 <span class="comment">% If this transformation represented the origin of a new coordinate frame with respect</span>
+0033 <span class="comment">% to the world frame origin (0, 0, 0), that new origin would be given by</span>
+0034 
+0035         t * [0 0 0 1]'
+0036 pause <span class="comment">% any key to continue</span>
+0037 <span class="comment">%</span>
+0038 <span class="comment">% the orientation of the new coordinate frame may be expressed in terms of</span>
+0039 <span class="comment">% Euler angles</span>
+0040     tr2eul(t)
+0041 <span class="comment">%</span>
+0042 <span class="comment">% or roll/pitch/yaw angles</span>
+0043     tr2rpy(t)
+0044 pause <span class="comment">% any key to continue</span>
+0045 <span class="comment">%</span>
+0046 <span class="comment">% It is important to note that tranform multiplication is in general not</span>
+0047 <span class="comment">% commutative as shown by the following example</span>
+0048     trotx(pi/2) * trotz(-pi/8)
+0049     trotz(-pi/8) * trotx(pi/2)
+0050 <span class="comment">%</span>
+0051 <span class="comment">%</span>
+0052 pause <span class="comment">% any key to continue</span>
+0053 echo off</pre></div>
+<hr><address>Generated on Sun 15-Feb-2009 18:09:29 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

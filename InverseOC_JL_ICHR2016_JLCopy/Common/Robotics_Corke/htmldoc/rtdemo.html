@@ -1,0 +1,133 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of rtdemo</title>
+  <meta name="keywords" content="rtdemo">
+  <meta name="description" content="RTDEMO 	Robot toolbox demonstrations">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="./m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="./index.html">Home</a> &gt;  <a href="index.html">.</a> &gt; rtdemo.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="./index.html"><img alt="<" border="0" src="./left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for .&nbsp;<img alt=">" border="0" src="./right.png"></a></td></tr></table>-->
+
+<h1>rtdemo
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="./up.png"></a></h2>
+<div class="box"><strong>RTDEMO 	Robot toolbox demonstrations</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="./up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="./up.png"></a></h2>
+<div class="fragment"><pre class="comment">RTDEMO     Robot toolbox demonstrations
+
+ Displays popup menu of toolbox demonstration scripts that illustrate:
+   * homogeneous transformations
+   * trajectories
+   * forward kinematics
+   * inverse kinematics
+   * robot animation
+   * inverse dynamics
+   * forward dynamics
+
+ The scripts require the user to periodically hit &lt;Enter&gt; in order to move
+ through the explanation.  Set PAUSE OFF if you want the scripts to run
+ completely automatically.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="./up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(./matlabicon.gif)">
+<li><a href="puma560.html" class="code" title="">puma560</a>	PUMA560 Load kinematic and dynamic data for a Puma 560 manipulator</li></ul>
+This function is called by:
+<ul style="list-style-image:url(./matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="./up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%RTDEMO     Robot toolbox demonstrations</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">% Displays popup menu of toolbox demonstration scripts that illustrate:</span>
+0004 <span class="comment">%   * homogeneous transformations</span>
+0005 <span class="comment">%   * trajectories</span>
+0006 <span class="comment">%   * forward kinematics</span>
+0007 <span class="comment">%   * inverse kinematics</span>
+0008 <span class="comment">%   * robot animation</span>
+0009 <span class="comment">%   * inverse dynamics</span>
+0010 <span class="comment">%   * forward dynamics</span>
+0011 <span class="comment">%</span>
+0012 <span class="comment">% The scripts require the user to periodically hit &lt;Enter&gt; in order to move</span>
+0013 <span class="comment">% through the explanation.  Set PAUSE OFF if you want the scripts to run</span>
+0014 <span class="comment">% completely automatically.</span>
+0015 
+0016 <span class="comment">% $Log: not supported by cvs2svn $</span>
+0017 <span class="comment">% Revision 1.3  2002-04-02 12:26:48  pic</span>
+0018 <span class="comment">% Handle figures better, control echo at end of each script.</span>
+0019 <span class="comment">% Fix bug in calling ctraj.</span>
+0020 <span class="comment">%</span>
+0021 <span class="comment">% Revision 1.2  2002/04/01 11:47:17  pic</span>
+0022 <span class="comment">% General cleanup of code: help comments, see also, copyright, remnant dh/dyn</span>
+0023 <span class="comment">% references, clarification of functions.</span>
+0024 <span class="comment">%</span>
+0025 <span class="comment">% $Revision: 1.1 $</span>
+0026 <span class="comment">% Copyright (C) 1993-2002, by Peter I. Corke</span>
+0027 
+0028 <span class="comment">% if demos are not already in the path, add them to the path</span>
+0029 <span class="keyword">if</span> exist(<span class="string">'rttrdemo'</span>) == 0
+0030     tbpath = fileparts(which(<span class="string">'fkine'</span>));
+0031     demopath = fullfile(tbpath, <span class="string">'demos'</span>);
+0032     addpath( demopath );
+0033     disp([<span class="string">'** Adding Robotics Toolbox demos to your Matlab path '</span> demopath]);
+0034 <span class="keyword">end</span>
+0035 
+0036 echo off
+0037 clear all
+0038 delete( get(0, <span class="string">'Children'</span>) );
+0039 
+0040 <a href="puma560.html" class="code" title="">puma560</a>
+0041 <span class="keyword">while</span> 1,
+0042  selection = menu(<span class="string">'Robot Toolbox demonstrations'</span>, <span class="keyword">...</span>
+0043      <span class="string">'Transformations'</span>, <span class="keyword">...</span>
+0044      <span class="string">'Trajectory'</span>, <span class="keyword">...</span>
+0045      <span class="string">'Forward kinematics'</span>, <span class="keyword">...</span>
+0046      <span class="string">'Animation'</span>, <span class="keyword">...</span>
+0047      <span class="string">'Inverse kinematics'</span>, <span class="keyword">...</span>
+0048      <span class="string">'Jacobians'</span>, <span class="keyword">...</span>
+0049      <span class="string">'Inverse dynamics'</span>, <span class="keyword">...</span>
+0050      <span class="string">'Forward dynamics'</span>, <span class="keyword">...</span>
+0051      <span class="string">'Exit'</span>);
+0052 
+0053  <span class="keyword">switch</span> selection,
+0054  <span class="keyword">case</span> 1,
+0055      rttrdemo
+0056  <span class="keyword">case</span> 2,
+0057      rttgdemo
+0058  <span class="keyword">case</span> 3,
+0059      rtfkdemo
+0060  <span class="keyword">case</span> 4,
+0061      rtandemo
+0062  <span class="keyword">case</span> 5,
+0063      rtikdemo
+0064  <span class="keyword">case</span> 6,
+0065      rtjademo
+0066  <span class="keyword">case</span> 7,
+0067      rtidemo
+0068  <span class="keyword">case</span> 8,
+0069      rtfddemo
+0070  <span class="keyword">case</span> 9,
+0071     delete( get(0, <span class="string">'Children'</span>) );
+0072      <span class="keyword">break</span>;
+0073  <span class="keyword">end</span>
+0074 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sun 15-Feb-2009 18:09:29 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

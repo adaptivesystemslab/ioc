@@ -73,7 +73,7 @@ function feature_out = calc_features_RL(splineFit, feature_win, param)
     
     % Jump-specific variables
     model = inputData(model, q_full(:, 1), dq_full(:, 1), ddq_full(:, 1));
-%     transformNames = {model.transforms.name};
+    transformNames = {model.transforms.name};
 %     toeTrNum = find(ismember(transformNames,'rAnkle2Toe')==1);
 %     toe_pos = [];
 %     
@@ -95,29 +95,29 @@ function feature_out = calc_features_RL(splineFit, feature_win, param)
         % Cartesian position of end-effector
         t_curr = model.getFrameByName(param.endEffectorName).t;
         x_curr = t_curr(1:3, 4);
-%         rot_curr = t_curr(1:3, 1:3);
+        rot_curr = t_curr(1:3, 1:3);
         
         % Distance between end-effector and pick (anchor 1) and place (anchor 2) locations
-%         x_anchorDiff1(i, :) = norm(x_curr - param.x_anchor_1); %% CF: Distance to target location 1
-%         x_anchorDiff2(i, :) = norm(x_curr - param.x_anchor_2); %% CF: Distance to target location 2
+        x_anchorDiff1(i, :) = norm(x_curr - param.x_anchor_1); %% CF: Distance to target location 1
+        x_anchorDiff2(i, :) = norm(x_curr - param.x_anchor_2); %% CF: Distance to target location 2
         
         % Distance between end-effector rotation at pick (anchor 1) and
         % placement (anchor 2) locations
-%         x_rotDiff1(i, :) = acos((trace(rot_curr*param.rot_anchor_1') -1)/2);
-%         x_rotDiff2(i, :) = acos((trace(rot_curr*param.rot_anchor_2') -1)/2);
+        x_rotDiff1(i, :) = acos((trace(rot_curr*param.rot_anchor_1') -1)/2);
+        x_rotDiff2(i, :) = acos((trace(rot_curr*param.rot_anchor_2') -1)/2);
                 
-%         for j = 1:size(param.end_eff_frames, 2)
-%             ft = model.getFrameByName(param.end_eff_frames{j}).t(1:3, 4);
-%             % Get Cartesian positions of all anatomical joints (needed for curvature)
-%             x_listTemp(param.end_eff_framesInds{j}, i) = ft;
-%             % Compute displacement of end-effector relative to other joints
-%             x_displace(param.end_eff_framesInds{j}, i) = ft - x_curr; %% CF: Displacement
-%         end
+        for j = 1:size(param.end_eff_frames, 2)
+            ft = model.getFrameByName(param.end_eff_frames{j}).t(1:3, 4);
+            % Get Cartesian positions of all anatomical joints (needed for curvature)
+            x_listTemp(param.end_eff_framesInds{j}, i) = ft;
+            % Compute displacement of end-effector relative to other joints
+            x_displace(param.end_eff_framesInds{j}, i) = ft - x_curr; %% CF: Displacement
+        end
                 
         model.calculateMassMatrix(); % Get inertial matrix for kinecti energy CF         
         M(:, :, i) = model.M;
         
-%         com(i, :) = com_calc(model); % Get COM position
+        com(i, :) = com_calc(model); % Get COM position
         
         % CoM and angular momentum
 %         if(calcAngMom)
@@ -176,34 +176,34 @@ function feature_out = calc_features_RL(splineFit, feature_win, param)
 %     end
 
       % % Getting coordinates of bounding box        
-%       x_max(1, :) = max(abs(x_listTemp([1 4 7], :)), [], 1);
-%       x_max(2, :) = max(abs(x_listTemp([2 5 8], :)), [], 1);
-%       x_max(3, :) = max(abs(x_listTemp([3 6 9], :)), [], 1);
-% 
-%       dx_listTemp = calcDeriv(x_listTemp, param.dt_spline); % Cartesian velocity
-%       ddx_listTemp = calcDeriv(dx_listTemp, param.dt_spline); % Cartesian acceleration
-%       dddx_listTemp = calcDeriv(ddx_listTemp, param.dt_spline); % Cartesian jerk
-%         
-%         for j = 1:size(param.end_eff_frames, 2)
-%             x_all(j, :) = normVector(x_listTemp(param.end_eff_framesInds{j}, :)')';    
-%             dx_all(j, :) = normVector(dx_listTemp(param.end_eff_framesInds{j}, :)')';    
-%             ddx_all(j, :) = normVector(ddx_listTemp(param.end_eff_framesInds{j}, :)')';
-%             dddx_all(j, :) = normVector(dddx_listTemp(param.end_eff_framesInds{j}, :)')';
-%         end
-%          
-%         cartCurv = calcCfCartCurvature(dx_listTemp, ddx_listTemp, param.end_eff_framesInds);
-%         shapeDir = calcCfShapeDirectionSumSqu(x_listTemp, dx_listTemp, ddx_listTemp, param.end_eff_framesInds);
-%         
-%         dx_displace = calcDeriv(x_displace, param.dt_spline);
-%         ddx_displace = calcDeriv(dx_displace, param.dt_spline);
-%         dddx_displace = calcDeriv(ddx_displace, param.dt_spline);
-%         
-%         for j = 1:size(param.end_eff_frames, 2)
-%             x_displaceNorm(j, :) = normVector(x_displace(param.end_eff_framesInds{j}, :)')';
-%             dx_displaceNorm(j, :) = normVector(dx_displace(param.end_eff_framesInds{j}, :)')';
-%             ddx_displaceNorm(j, :) = normVector(ddx_displace(param.end_eff_framesInds{j}, :)')';
-%             dddx_displaceNorm(j, :) = normVector(dddx_displace(param.end_eff_framesInds{j}, :)')';
-%         end
+      x_max(1, :) = max(abs(x_listTemp([1 4 7], :)), [], 1);
+      x_max(2, :) = max(abs(x_listTemp([2 5 8], :)), [], 1);
+      x_max(3, :) = max(abs(x_listTemp([3 6 9], :)), [], 1);
+
+      dx_listTemp = calcDeriv(x_listTemp, param.dt_spline); % Cartesian velocity
+      ddx_listTemp = calcDeriv(dx_listTemp, param.dt_spline); % Cartesian acceleration
+      dddx_listTemp = calcDeriv(ddx_listTemp, param.dt_spline); % Cartesian jerk
+        
+        for j = 1:size(param.end_eff_frames, 2)
+            x_all(j, :) = normVector(x_listTemp(param.end_eff_framesInds{j}, :)')';    
+            dx_all(j, :) = normVector(dx_listTemp(param.end_eff_framesInds{j}, :)')';    
+            ddx_all(j, :) = normVector(ddx_listTemp(param.end_eff_framesInds{j}, :)')';
+            dddx_all(j, :) = normVector(dddx_listTemp(param.end_eff_framesInds{j}, :)')';
+        end
+         
+        cartCurv = calcCfCartCurvature(dx_listTemp, ddx_listTemp, param.end_eff_framesInds);
+        shapeDir = calcCfShapeDirectionSumSqu(x_listTemp, dx_listTemp, ddx_listTemp, param.end_eff_framesInds);
+        
+        dx_displace = calcDeriv(x_displace, param.dt_spline);
+        ddx_displace = calcDeriv(dx_displace, param.dt_spline);
+        dddx_displace = calcDeriv(ddx_displace, param.dt_spline);
+        
+        for j = 1:size(param.end_eff_frames, 2)
+            x_displaceNorm(j, :) = normVector(x_displace(param.end_eff_framesInds{j}, :)')';
+            dx_displaceNorm(j, :) = normVector(dx_displace(param.end_eff_framesInds{j}, :)')';
+            ddx_displaceNorm(j, :) = normVector(ddx_displace(param.end_eff_framesInds{j}, :)')';
+            dddx_displaceNorm(j, :) = normVector(dddx_displace(param.end_eff_framesInds{j}, :)')';
+        end
     
     dx = calcDeriv(x, param.dt_spline); % CF: End-effector velocity
     ddx = calcDeriv(dx, param.dt_spline); % CF: End-effector acceleration
@@ -214,11 +214,9 @@ function feature_out = calc_features_RL(splineFit, feature_win, param)
     ddtau = calcDeriv(dtau, param.dt_spline); % CF: Torque effort
 %     dcop = calcDeriv(cop, param.dt_spline);
 %     ddcop = calcDeriv(dcop, param.dt_spline);
-%     dcom = calcDeriv(com, param.dt_spline);
-%     ddcom = calcDeriv(dcom, param.dt_spline);
-    dcom = [];
-    ddcom = [];
-
+    dcom = calcDeriv(com, param.dt_spline);
+    ddcom = calcDeriv(dcom, param.dt_spline);
+    
 %     dCOM = calcDeriv(COM, param.dt_spline); % COM cartesian trajectories
 %     ddCOM = calcDeriv(dCOM, param.dt_spline);
 %     dddCOM = calcDeriv(ddCOM, param.dt_spline);
@@ -288,26 +286,26 @@ function feature_out = calc_features_RL(splineFit, feature_win, param)
     feature_out.dx = dx;
     feature_out.ddx = ddx; % ISSUE
     feature_out.dddx = dddx; % ISSUE
-%     
-%     feature_out.x_anchor_1 = x_anchorDiff1;
-%     feature_out.x_anchor_2 = x_anchorDiff2;
-%     feature_out.rot_anchor_1 = x_rotDiff1;
-%     feature_out.rot_anchor_2 = x_rotDiff2;
     
-%     feature_out.x_max = x_max;
-%     feature_out.x_all = x_all;
-%     feature_out.dx_all = dx_all;
-%     feature_out.ddx_all = ddx_all;
-%     feature_out.dddx_all = dddx_all;
+    feature_out.x_anchor_1 = x_anchorDiff1;
+    feature_out.x_anchor_2 = x_anchorDiff2;
+    feature_out.rot_anchor_1 = x_rotDiff1;
+    feature_out.rot_anchor_2 = x_rotDiff2;
     
-%     feature_out.x_displace = x_displaceNorm;
-%     feature_out.dx_displace = dx_displaceNorm;
-%     feature_out.ddx_displace = ddx_displaceNorm;
-%     feature_out.dddx_displace = dddx_displaceNorm;
+    feature_out.x_max = x_max;
+    feature_out.x_all = x_all;
+    feature_out.dx_all = dx_all;
+    feature_out.ddx_all = ddx_all;
+    feature_out.dddx_all = dddx_all;
     
-%     feature_out.cartCurv = cartCurv;
-%     feature_out.shapeDir = shapeDir;
-%     feature_out.x_cartCurv = x_cartCurv;
+    feature_out.x_displace = x_displaceNorm;
+    feature_out.dx_displace = dx_displaceNorm;
+    feature_out.ddx_displace = ddx_displaceNorm;
+    feature_out.dddx_displace = dddx_displaceNorm;
+    
+    feature_out.cartCurv = cartCurv;
+    feature_out.shapeDir = shapeDir;
+    feature_out.x_cartCurv = x_cartCurv;
     
     
     feature_out.tau = tau; % (close)
@@ -316,9 +314,9 @@ function feature_out = calc_features_RL(splineFit, feature_win, param)
 %     feature_out.cop = cop;
 %     feature_out.dcop = dcop;
 %     feature_out.ddcop = ddcop;
-%     feature_out.com = com;
-%     feature_out.dcom = dcom;
-%     feature_out.ddcom = ddcom;
+    feature_out.com = com;
+    feature_out.dcom = dcom;
+    feature_out.ddcom = ddcom;
 %     feature_out.ep = ep;
     feature_out.ek = ek;
     feature_out.geo = geo; % coresponds to "kinetic_en_sqrt"

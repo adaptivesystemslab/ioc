@@ -1,0 +1,102 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of camera</title>
+  <meta name="keywords" content="camera">
+  <meta name="description" content="CAMERA	 Camera imaging model">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../index.html">Home</a> &gt;  <a href="#">simulink</a> &gt; camera.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../index.html"><img alt="<" border="0" src="../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for ./simulink&nbsp;<img alt=">" border="0" src="../right.png"></a></td></tr></table>-->
+
+<h1>camera
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>CAMERA	 Camera imaging model</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function uv = camera(C, p, Tobj, Tcam) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment">CAMERA     Camera imaging model
+
+    uv = CAMERA(C, p)
+    uv = CAMERA(C, p, T)
+
+    Implement the perspective, scaling and offset encapsulated in the
+    camera calibration matrix C.  P is a list of 3D world points and
+    the corresponding image plane points are returned in UV.
+    The data in P is one point per row in X, Y, Z order.
+
+       T is a homogeneous transformation of the object coordinate frame
+    wrt to the camera coordinate frame, and can be used to transform
+    the points prior to imaging.
+
+ SEE ALSO:    <a href="gcamera.html" class="code" title="function ovar = gcamera(a1, a2, a3, a4)">gcamera</a>, camcalp, pulnix
+
+    Copyright (c) Peter Corke, 1999  Machine Vision Toolbox for Matlab</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="gcamera.html" class="code" title="function ovar = gcamera(a1, a2, a3, a4)">gcamera</a>	GCAMERA	graphical camera model</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%CAMERA     Camera imaging model</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">%    uv = CAMERA(C, p)</span>
+0004 <span class="comment">%    uv = CAMERA(C, p, T)</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">%    Implement the perspective, scaling and offset encapsulated in the</span>
+0007 <span class="comment">%    camera calibration matrix C.  P is a list of 3D world points and</span>
+0008 <span class="comment">%    the corresponding image plane points are returned in UV.</span>
+0009 <span class="comment">%    The data in P is one point per row in X, Y, Z order.</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">%       T is a homogeneous transformation of the object coordinate frame</span>
+0012 <span class="comment">%    wrt to the camera coordinate frame, and can be used to transform</span>
+0013 <span class="comment">%    the points prior to imaging.</span>
+0014 <span class="comment">%</span>
+0015 <span class="comment">% SEE ALSO:    gcamera, camcalp, pulnix</span>
+0016 <span class="comment">%</span>
+0017 <span class="comment">%    Copyright (c) Peter Corke, 1999  Machine Vision Toolbox for Matlab</span>
+0018 
+0019 <span class="comment">%    pic 1993</span>
+0020 <a name="_sub0" href="#_subfunctions" class="code">function uv = camera(C, p, Tobj, Tcam)</a>
+0021 
+0022     np = numrows(p);
+0023 
+0024     <span class="comment">% do the camera perspective transform</span>
+0025         
+0026     p = [p'; ones(1, np)];
+0027 
+0028     <span class="comment">% optionally transform all the points</span>
+0029     <span class="keyword">switch</span> nargin,
+0030         <span class="keyword">case</span> 3,
+0031             Tcam =  eye(4,4);
+0032         <span class="keyword">case</span> 2,
+0033             Tcam =  eye(4,4);
+0034             Tobj = eye(4,4);
+0035     <span class="keyword">end</span>
+0036     p = inv(Tcam)*Tobj * p;
+0037 
+0038     x = C * p;        <span class="comment">% camera transform</span>
+0039     iXY = x(1:2,:) ./ [x(3,:); x(3,:)];
+0040     uv = iXY';</pre></div>
+<hr><address>Generated on Sun 15-Feb-2009 18:09:29 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>
