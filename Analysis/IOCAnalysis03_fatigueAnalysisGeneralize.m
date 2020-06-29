@@ -2,7 +2,7 @@ function IOCAnalysis()
     setPaths();
 %     nowstr = datestr(now, 'yyyymmddHHMMSS');
     sourceSuffix = '20200413_FatigueFull_3CF';
-    targetSuffix = '20200413_FatigueFull_3CF_4';
+    targetSuffix = '20200413_FatigueFull_3CF_3';
       
     basePath = ['D:\results\fatigue_ioc02_weightsAssembled\' sourceSuffix '\'];
     outputPath = ['D:\results\fatigue_ioc03_weightsPattern\' targetSuffix '\'];
@@ -14,6 +14,7 @@ function IOCAnalysis()
     checkMkdir(outputPath);
     
     currBasePathDir = dir([basePath searchString]);
+    
     for j = 1:length(currBasePathDir)
         currFileName = currBasePathDir(j).name;
         
@@ -28,23 +29,119 @@ function IOCAnalysis()
         filepathCumCsv = fullfile(outputPath, 'ioc03_cum_analysis.csv');
         filepathIndCsv = fullfile(outputPath, 'ioc03_ind_analysis.csv');
 %         try
+            % aggregate the weights
             calculateMetrics(filepathCurrDataInd, filepathCurrWeiCum, filepathCurrWeiInd, filepathSegments, outputPath, filepathCumCsv, filepathIndCsv);
+        
+            % run the regressions
+            runRegressions(filepathCurrDataInd, filepathCurrWeiCum, filepathCurrWeiInd, filepathSegments, outputPath, filepathCumCsv, filepathIndCsv)
+            
 %         catch err
 %             err
 %         end
     end
-end
-
-function loadAndPlotStuff(filepath)
-    load(filepath);
+    
     
 end
 
-function calculateMetrics(filepathCurrDataInd, filepathCurrWeiCum, filepathCurrWeiInd, filepathSegments, outputPath, filepathCumCsv, filepathIndCsv)
-%     outFileSpec = filepathCurrWeiCum(end-27:end-10);
+function runRegressions(filepathCurrDataInd, filepathCurrWeiCum, filepathCurrWeiInd, filepathSegments, outputPath, filepathCumCsv, filepathIndCsv)
     strsplitStr = strsplit(filepathCurrWeiCum, '_');
     outFileSpec = [strsplitStr{end-2} '_' strsplitStr{end-1} '_' strsplitStr{end}(1:3)];
-%     outputPath = [outputPath outFileSpec '\'];
+    
+    subjectId = strsplitStr{end-2}(end-1:end);
+    
+    outMat = [outputPath, 'mat\', 'mat_', outFileSpec, '.mat'];
+    outIndCsv = [filepathIndCsv];
+    outCumCsv = [filepathCumCsv];
+    checkExistDir = dir(outMat);
+    
+    load(outMat);
+    
+    regressionTypes = {'linear', 'logistic'};
+    regressionNormalize = {'0', '1'};
+    regressionPCA = {'0', '1'};
+    
+    regressionSetsInd = 0;
+    
+    % single entry
+    for i = 1:length(featureArray)
+        for j = 1:length(regressionTypes)
+            regressionSetsInd = regressionSetsInd + 1;
+            regressionSets(regressionSetsInd).label = ['Single_' feataureArray(i).featureLabel '_' featureArray(i).segmentType];
+            regressionSets(regressionSetsInd).ind = [i];
+            regressionSets(regressionSetsInd).type = regressionTypes{j};
+            regressionSets(regressionSetsInd).normalize = regressionNormalize{1};
+                regressionSets(regressionSetsInd).normalize = regressionNormalize{1};
+        end
+    end
+    
+    % all seg weights
+    regInd = [];
+    for i = 1:length(featureArray)
+        if strcmpi(featureArray(i).segmentType, 'seg') && strcmpi(featureArray(i).featureLabel(1:3), 'wei')
+            regInd = [regInd i];
+        end
+    end
+    regressionSetsInd = regressionSetsInd + 1;
+    regressionSets(regressionSetsInd).label = ['AllSeg_weights_' featureArray(i).segmentType];
+    regressionSets(regressionSetsInd).ind = regInd;
+    regressionSets(regressionSetsInd).type = regressionTypes{j};
+    
+    % all seg dweights
+    regInd = [];
+    for i = 1:length(featureArray)
+        if strcmpi(featureArray(i).segmentType, 'seg') && strcmpi(featureArray(i).featureLabel(1:3), 'dwe')
+            regInd = [regInd i];
+        end
+    end
+    regressionSetsInd = regressionSetsInd + 1;
+    regressionSets(regressionSetsInd).label = ['AllSeg_dweights_' featureArray(i).segmentType];
+    regressionSets(regressionSetsInd).ind = regInd;
+    regressionSets(regressionSetsInd).type = regressionTypes{j};
+    
+     % all rest weights
+    regInd = [];
+    for i = 1:length(featureArray)
+        if strcmpi(featureArray(i).segmentType, 'rest') && strcmpi(featureArray(i).featureLabel(1:3), 'wei')
+            regInd = [regInd i];
+        end
+    end
+    regressionSetsInd = regressionSetsInd + 1;
+    regressionSets(regressionSetsInd).label = ['AllRest_weights_' featureArray(i).segmentType];
+    regressionSets(regressionSetsInd).ind = regInd;
+    regressionSets(regressionSetsInd).type = regressionTypes{j};
+    
+    % all seg dweights
+    regInd = [];
+    for i = 1:length(featureArray)
+        if strcmpi(featureArray(i).segmentType, 'rest') && strcmpi(featureArray(i).featureLabel(1:3), 'dwe')
+            regInd = [regInd i];
+        end
+    end
+    regressionSetsInd = regressionSetsInd + 1;
+    regressionSets(regressionSetsInd).label = ['AllRest_dweights_' featureArray(i).segmentType];
+    regressionSets(regressionSetsInd).ind = regInd;
+    regressionSets(regressionSetsInd).type = regressionTypes{j};
+    
+    % now run things
+    for i = 1:length(regressionSets)
+        runCurrRegression(featureArray, regressionSets(i))
+    end
+end
+
+function runCurrRegression(featureArray, currRegressionSet)
+    switch currRegressionSet.type
+        case 'linear'
+            
+        case 'logistic'
+    end
+end
+
+
+function outMat = calculateMetrics(filepathCurrDataInd, filepathCurrWeiCum, filepathCurrWeiInd, filepathSegments, outputPath, filepathCumCsv, filepathIndCsv)
+    strsplitStr = strsplit(filepathCurrWeiCum, '_');
+    outFileSpec = [strsplitStr{end-2} '_' strsplitStr{end-1} '_' strsplitStr{end}(1:3)];
+    
+    subjectId = strsplitStr{end-2}(end-1:end);
     
     outMat = [outputPath, 'mat\', 'mat_', outFileSpec, '.mat'];
     outIndCsv = [filepathIndCsv];
@@ -89,61 +186,107 @@ function calculateMetrics(filepathCurrDataInd, filepathCurrWeiCum, filepathCurrW
     
     dt = 0.01;
     
-    for i = 1:size(traj.q, 2)
-        featureLabel = ['q_' num2str(i) '_' allJointNames{i}];
-        featureTime = traj.trajT;
-        featureData = traj.q(:, i);
-        stats_q(i) = featureCalc1(trialInfo, featureLabel, featureTime, featureData, segmentInfo, outputPath, outIndCsv, outCumCsv, outFileSpec);
-    end
-    for i = 1:size(traj.q, 2)
-        featureLabel = ['dq_' num2str(i) '_' allJointNames{i}];
-        featureTime = traj.trajT;
-        featureData = calcDerivVert(traj.q(:, i), dt);
-        stats_dq(i) = featureCalc1(trialInfo, featureLabel, featureTime, featureData, segmentInfo, outputPath, outIndCsv, outCumCsv, outFileSpec);
-    end
+    featureArrayInd = 0;
     
-    for i = 1:size(traj.tau, 2)
-        featureLabel = ['tau_' num2str(i) '_' allJointNames{i}];
-        featureTime = traj.trajT;
-        featureData = traj.tau(:, i);
-        stats_tau(i) = featureCalc1(trialInfo, featureLabel, featureTime, featureData, segmentInfo, outputPath, outIndCsv, outCumCsv, outFileSpec);
-    end
-    for i = 1:size(traj.tau, 2)
-        featureLabel = ['dtau_' num2str(i) '_' allJointNames{i}];
-        featureTime = traj.trajT;
-        featureData = calcDerivVert(traj.tau(:, i), dt);
-        stats_dtau(i) = featureCalc1(trialInfo, featureLabel, featureTime, featureData, segmentInfo, outputPath, outIndCsv, outCumCsv, outFileSpec);
-    end
+%     for i = 1:size(traj.q, 2)
+%         featureLabel = ['q_' num2str(i) '_' allJointNames{i}];
+%         featureTime = traj.trajT;
+%         featureData = traj.q(:, i);
+%         [segOnlyDataTable, restOnlyDataTable] = featureCalc1(trialInfo, featureLabel, featureTime, featureData, segmentInfo, outputPath, outIndCsv, outCumCsv, outFileSpec);
+%         
+%         featureArrayInd = featureArrayInd + 1;
+%         featureArray(featureArrayInd).featureLabel = featureLabel;
+%         featureArray(featureArrayInd).segOnlyDataTable = segOnlyDataTable;
+%         featureArray(featureArrayInd).restOnlyDataTable = restOnlyDataTable;
+%     end
+%     for i = 1:size(traj.q, 2)
+%         featureLabel = ['dq_' num2str(i) '_' allJointNames{i}];
+%         featureTime = traj.trajT;
+%         featureData = calcDerivVert(traj.q(:, i), dt);
+%         [segOnlyDataTable, restOnlyDataTable] = featureCalc1(trialInfo, featureLabel, featureTime, featureData, segmentInfo, outputPath, outIndCsv, outCumCsv, outFileSpec);
+%         
+%         featureArrayInd = featureArrayInd + 1;
+%         featureArray(featureArrayInd).featureLabel = featureLabel;
+%         featureArray(featureArrayInd).segOnlyDataTable = segOnlyDataTable;
+%         featureArray(featureArrayInd).restOnlyDataTable = restOnlyDataTable;  
+%     end
+%     
+%     for i = 1:size(traj.tau, 2)
+%         featureLabel = ['tau_' num2str(i) '_' allJointNames{i}];
+%         featureTime = traj.trajT;
+%         featureData = traj.tau(:, i);
+%         [segOnlyDataTable, restOnlyDataTable] = featureCalc1(trialInfo, featureLabel, featureTime, featureData, segmentInfo, outputPath, outIndCsv, outCumCsv, outFileSpec);
+%         
+%         featureArrayInd = featureArrayInd + 1;
+%         featureArray(featureArrayInd).featureLabel = featureLabel;
+%         featureArray(featureArrayInd).segOnlyDataTable = segOnlyDataTable;
+%         featureArray(featureArrayInd).restOnlyDataTable = restOnlyDataTable;   
+%     end
+%     for i = 1:size(traj.tau, 2)
+%         featureLabel = ['dtau_' num2str(i) '_' allJointNames{i}];
+%         featureTime = traj.trajT;
+%         featureData = calcDerivVert(traj.tau(:, i), dt);
+%         [segOnlyDataTable, restOnlyDataTable] = featureCalc1(trialInfo, featureLabel, featureTime, featureData, segmentInfo, outputPath, outIndCsv, outCumCsv, outFileSpec);
+%         
+%         featureArrayInd = featureArrayInd + 1;
+%         featureArray(featureArrayInd).featureLabel = featureLabel;
+%         featureArray(featureArrayInd).segOnlyDataTable = segOnlyDataTable;
+%         featureArray(featureArrayInd).restOnlyDataTable = restOnlyDataTable;    
+%     end
     
     for i = 1:size(matSave.weights, 2)
         featureLabel = ['weights_' matData.featureLabels{i}];
         featureTime = matSave.t;
         featureData = matSave.weights(:, i);
-        stats_weights(i) = featureCalc1(trialInfo, featureLabel, featureTime, featureData, segmentInfo, outputPath, outIndCsv, outCumCsv, outFileSpec);
+        [segOnlyDataTable, restOnlyDataTable] = featureCalc1(trialInfo, featureLabel, featureTime, featureData, segmentInfo, outputPath, outIndCsv, outCumCsv, outFileSpec);
+        
+        featureArrayInd = featureArrayInd + 1;
+        featureArray(featureArrayInd).subjectId = subjectId;
+        featureArray(featureArrayInd).featureLabel = featureLabel;
+        featureArray(featureArrayInd).segmentType = 'seg';
+        featureArray(featureArrayInd).dataTable = segOnlyDataTable;
+        
+        featureArrayInd = featureArrayInd + 1;
+        featureArray(featureArrayInd).subjectId = subjectId;
+        featureArray(featureArrayInd).featureLabel = featureLabel;
+        featureArray(featureArrayInd).segmentType = 'rest';
+        featureArray(featureArrayInd).dataTable = restOnlyDataTable;
     end
     for i = 1:size(matSave.weights, 2)
         featureLabel = ['dweights_' matData.featureLabels{i}];
         featureTime = matSave.t;
         featureData = calcDerivVert(matSave.weights(:, i), dt);
-        stats_dweights(i) = featureCalc1(trialInfo, featureLabel, featureTime, featureData, segmentInfo, outputPath, outIndCsv, outCumCsv, outFileSpec);
+        [segOnlyDataTable, restOnlyDataTable] = featureCalc1(trialInfo, featureLabel, featureTime, featureData, segmentInfo, outputPath, outIndCsv, outCumCsv, outFileSpec);
+        
+        featureArrayInd = featureArrayInd + 1;
+        featureArray(featureArrayInd).subjectId = subjectId;
+        featureArray(featureArrayInd).featureLabel = featureLabel;
+        featureArray(featureArrayInd).segmentType = 'seg';
+        featureArray(featureArrayInd).dataTable = segOnlyDataTable;
+        
+        featureArrayInd = featureArrayInd + 1;
+        featureArray(featureArrayInd).subjectId = subjectId;
+        featureArray(featureArrayInd).featureLabel = featureLabel;
+        featureArray(featureArrayInd).segmentType = 'rest';
+        featureArray(featureArrayInd).dataTable = restOnlyDataTable;
     end
     
-    save(outMat, 'trialInfo', 'segmentInfo', 'stats_q', 'stats_dq', 'stats_tau', 'stats_dtau', 'stats_weights', 'stats_dweights');
-%     save(outMat, 'trialInfo', 'segmentInfo', 'stats_weights', 'stats_dweights');
+%     save(outMat, 'trialInfo', 'segmentInfo', 'stats_q', 'stats_dq', 'stats_tau', 'stats_dtau', 'stats_weights', 'stats_dweights');
+    save(outMat, 'trialInfo', 'segmentInfo', 'featureArray');
 end
 
-function stats = featureCalc1(trialInfo, name, t, feature, segData, outputPath, outIndCsv, outCumCsv, outFileSpec)
-    figFileSingleWindowSeg =  [name '_singleWindowSeg_' outFileSpec];
-    figFileSingleWindowRest =  [name '_singleWindowRest_' outFileSpec];
-    figFileMultipleWindowSeg =  [name '_multipleWindowSeg_' outFileSpec];
-    figFileMultipleWindowRest =  [name '_multipleWindowRest_' outFileSpec];
+function [segOnlyDataTable, restOnlyDataTable] = featureCalc1(trialInfo, name, t, feature, segData, outputPath, outIndCsv, outCumCsv, outFileSpec)
+%     figFileSingleWindowSeg =  [name '_singleWindowSeg_' outFileSpec];
+%     figFileSingleWindowRest =  [name '_singleWindowRest_' outFileSpec];
+%     figFileMultipleWindowSeg =  [name '_multipleWindowSeg_' outFileSpec];
+%     figFileMultipleWindowRest =  [name '_multipleWindowRest_' outFileSpec];
 
-    figSegSinglePath = [outputPath, '\fig\', figFileSingleWindowSeg];
-    figRestSinglePath = [outputPath, '\fig\', figFileSingleWindowRest];
-    figSegMultiplePath = [outputPath, '\fig\', figFileMultipleWindowSeg];
-    figRestMultiplePath = [outputPath, '\fig\', figFileMultipleWindowRest];
-    
-    checkMkdir([outputPath, '\fig\']);
+%     figSegSinglePath = [outputPath, '\fig\', figFileSingleWindowSeg];
+%     figRestSinglePath = [outputPath, '\fig\', figFileSingleWindowRest];
+%     figSegMultiplePath = [outputPath, '\fig\', figFileMultipleWindowSeg];
+%     figRestMultiplePath = [outputPath, '\fig\', figFileMultipleWindowRest];
+%     
+%     checkMkdir([outputPath, '\fig\']);
     
     stats.name = name;
     stats.t = t;
@@ -152,19 +295,21 @@ function stats = featureCalc1(trialInfo, name, t, feature, segData, outputPath, 
     
     % calculate metrics on single window level
     segStats_SingleWindow = featureCalc_singleWindow(segData, t, feature);
-    stats.segStats_SingleWindow = segStats_SingleWindow;
+    [segOnlyDataTable, restOnlyDataTable, segMask, restMask] = sepSegRest(segStats_SingleWindow);
+      
+%     stats.segStats_SingleWindow = segStats_SingleWindow;
     
-    [regression_individual_singleWindow, regression_cumulative_singleWindow] = genRegression(segStats_SingleWindow);
-    stats.regression_individual_singleWindow = regression_individual_singleWindow;
-    stats.regression_cumulative_singleWindow = regression_cumulative_singleWindow;
+%     [regression_individual_singleWindow, regression_cumulative_singleWindow] = genRegression(segStats_SingleWindow);
+%     stats.regression_individual_singleWindow = regression_individual_singleWindow;
+%     stats.regression_cumulative_singleWindow = regression_cumulative_singleWindow;
     
-    [h_segSingle, h_restSingle] = plotData_SingleWindow(stats);
-    saveas(h_segSingle, figSegSinglePath, 'png');
-    saveas(h_segSingle, figSegSinglePath, 'fig');
-    close(h_segSingle); 
-    saveas(h_restSingle, figRestSinglePath, 'png');
-    saveas(h_restSingle, figRestSinglePath, 'fig');
-    close(h_restSingle);
+%     [h_segSingle, h_restSingle] = plotData_SingleWindow(stats);
+%     saveas(h_segSingle, figSegSinglePath, 'png');
+%     saveas(h_segSingle, figSegSinglePath, 'fig');
+%     close(h_segSingle); 
+%     saveas(h_restSingle, figRestSinglePath, 'png');
+%     saveas(h_restSingle, figRestSinglePath, 'fig');
+%     close(h_restSingle);
     
 %     % calculate between window correlations
 %     segStats_MultipleWindow = featureCalc_multipleWindow(segData, t, feature);
@@ -182,8 +327,8 @@ function stats = featureCalc1(trialInfo, name, t, feature, segData, outputPath, 
 %     saveas(h_restMultiple, figRestMultiplePath, 'fig');
 %     close(h_restMultiple);
     
-    writeCumCsv(stats, outCumCsv, trialInfo, name);
-    writeIndCsv(stats, outIndCsv, trialInfo, name);
+%     writeCumCsv(stats, outCumCsv, trialInfo, name);
+%     writeIndCsv(stats, outIndCsv, trialInfo, name);
 end
 
 function writeCumCsv(stats, outCsv, trialInfo, name)
