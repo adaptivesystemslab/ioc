@@ -1,0 +1,183 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of robot</title>
+  <meta name="keywords" content="robot">
+  <meta name="description" content="ROBOT Robot object constructor">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../index.html">Home</a> &gt;  <a href="#">@robot</a> &gt; robot.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../index.html"><img alt="<" border="0" src="../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for ./@robot&nbsp;<img alt=">" border="0" src="../right.png"></a></td></tr></table>-->
+
+<h1>robot
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>ROBOT Robot object constructor</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function r = robot(L, a1, a2, a3) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment">ROBOT Robot object constructor
+
+    ROBOT            create a ROBOT object with no links
+    ROBOT(robot)        create a copy of an existing ROBOT object
+    ROBOT(robot, LINK)    replaces links for robot object
+    ROBOT(LINK, ...)    create from a cell array of LINK objects
+    ROBOT(DH, ...)        create from legacy DH matrix
+    ROBOT(DYN, ...)        create from legacy DYN matrix
+
+ Optional trailing arguments are:
+     Name            robot type or name
+     Manufacturer        who built it
+     Comment            general comment
+
+ If the legacy matrix forms are used the default name is the workspace
+ matrix that held the data.
+
+ See also: ROBOT/SUBSREF, ROBOT/SUBSASGN, LINK.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="mtimes.html" class="code" title="function r2 = mtimes(r, l)">mtimes</a>	MTIMES Multiply robot objects</li><li><a href="nofriction.html" class="code" title="function  r2 = nofriction(r, varargin)">nofriction</a>	NOFRICTION Return robot object with zero link friction</li><li><a href="perturb.html" class="code" title="function  r2 = perturb(r, p)">perturb</a>	PERTURB Return robot object with perturbed dynamic parameters</li><li><a href="plot.html" class="code" title="function rnew = plot(robot, tg, varargin)">plot</a>	PLOT Graphical robot animation</li><li><a href="rne.html" class="code" title="function tau = rne(robot, varargin)">rne</a>	RNE Compute inverse dynamics via recursive Newton-Euler formulation</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%ROBOT Robot object constructor</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">%    ROBOT            create a ROBOT object with no links</span>
+0004 <span class="comment">%    ROBOT(robot)        create a copy of an existing ROBOT object</span>
+0005 <span class="comment">%    ROBOT(robot, LINK)    replaces links for robot object</span>
+0006 <span class="comment">%    ROBOT(LINK, ...)    create from a cell array of LINK objects</span>
+0007 <span class="comment">%    ROBOT(DH, ...)        create from legacy DH matrix</span>
+0008 <span class="comment">%    ROBOT(DYN, ...)        create from legacy DYN matrix</span>
+0009 <span class="comment">%</span>
+0010 <span class="comment">% Optional trailing arguments are:</span>
+0011 <span class="comment">%     Name            robot type or name</span>
+0012 <span class="comment">%     Manufacturer        who built it</span>
+0013 <span class="comment">%     Comment            general comment</span>
+0014 <span class="comment">%</span>
+0015 <span class="comment">% If the legacy matrix forms are used the default name is the workspace</span>
+0016 <span class="comment">% matrix that held the data.</span>
+0017 <span class="comment">%</span>
+0018 <span class="comment">% See also: ROBOT/SUBSREF, ROBOT/SUBSASGN, LINK.</span>
+0019 
+0020 <span class="comment">% Copyright (C) 1999-2008, by Peter I. Corke</span>
+0021 <span class="comment">%</span>
+0022 <span class="comment">% This file is part of The Robotics Toolbox for Matlab (RTB).</span>
+0023 <span class="comment">%</span>
+0024 <span class="comment">% RTB is free software: you can redistribute it and/or modify</span>
+0025 <span class="comment">% it under the terms of the GNU Lesser General Public License as published by</span>
+0026 <span class="comment">% the Free Software Foundation, either version 3 of the License, or</span>
+0027 <span class="comment">% (at your option) any later version.</span>
+0028 <span class="comment">%</span>
+0029 <span class="comment">% RTB is distributed in the hope that it will be useful,</span>
+0030 <span class="comment">% but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+0031 <span class="comment">% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+0032 <span class="comment">% GNU Lesser General Public License for more details.</span>
+0033 <span class="comment">%</span>
+0034 <span class="comment">% You should have received a copy of the GNU Leser General Public License</span>
+0035 <span class="comment">% along with RTB.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
+0036 
+0037 <a name="_sub0" href="#_subfunctions" class="code">function r = robot(L, a1, a2, a3)</a>
+0038 
+0039     <span class="keyword">if</span> nargin == 0
+0040         r.name = <span class="string">'noname'</span>;
+0041         r.manuf = <span class="string">''</span>;
+0042         r.comment = <span class="string">''</span>;
+0043         r.link = {};
+0044         r.n = 0;
+0045         r.mdh = 0;
+0046         r.gravity = [0; 0; 9.81];
+0047         r.base = eye(4,4);
+0048         r.tool = eye(4,4);
+0049         r.handle = [];    <span class="comment">% graphics handles</span>
+0050         r.q = [];    <span class="comment">% current joint angles</span>
+0051         r.plotopt = {};
+0052         r.lineopt = {<span class="string">'Color'</span>, <span class="string">'black'</span>, <span class="string">'Linewidth'</span>, 4};
+0053         r.shadowopt = {<span class="string">'Color'</span>, <span class="string">'black'</span>, <span class="string">'Linewidth'</span>, 1};
+0054         r = class(r, <span class="string">'robot'</span>);
+0055     <span class="keyword">elseif</span> isa(L, <span class="string">'robot'</span>)
+0056         r = L;
+0057         <span class="keyword">if</span> nargin == 2,
+0058             r.link = a1;
+0059         <span class="keyword">end</span>
+0060     <span class="keyword">else</span>
+0061         <span class="comment">% assume arguments are: name, manuf, comment</span>
+0062         <span class="keyword">if</span> nargin &gt; 1,
+0063             r.name = a1;
+0064         <span class="keyword">else</span>
+0065             r.name = <span class="string">'noname'</span>;
+0066         <span class="keyword">end</span>
+0067         <span class="keyword">if</span> nargin &gt; 2,
+0068             r.manuf = a2;
+0069         <span class="keyword">else</span>
+0070             r.manuf = <span class="string">''</span>;
+0071         <span class="keyword">end</span>
+0072         <span class="keyword">if</span> nargin &gt; 3,
+0073             r.comment = a3;
+0074         <span class="keyword">else</span>
+0075             r.comment = <span class="string">''</span>;
+0076         <span class="keyword">end</span>
+0077 
+0078         <span class="keyword">if</span> isa(L, <span class="string">'double'</span>)
+0079             <span class="comment">% legacy matrix</span>
+0080             dh_dyn = L;
+0081             clear L
+0082             <span class="keyword">for</span> j=1:numrows(dh_dyn)
+0083                 L{j} = link(dh_dyn(j,:));
+0084             <span class="keyword">end</span>
+0085             <span class="comment">% get name of variable</span>
+0086             r.name = inputname(1);
+0087             r.link = L;
+0088         <span class="keyword">elseif</span> iscell(L) &amp; isa(L{1}, <span class="string">'link'</span>)
+0089 
+0090             r.link = L;
+0091         <span class="keyword">else</span>
+0092             error(<span class="string">'unknown type passed to robot'</span>);
+0093         <span class="keyword">end</span>
+0094         r.n = length(L);
+0095 
+0096         <span class="comment">% set the robot object mdh status flag</span>
+0097         mdh = [];
+0098         <span class="keyword">for</span> j = 1:length(L)
+0099             mdh = [mdh L{j}.mdh];
+0100         <span class="keyword">end</span>
+0101         <span class="keyword">if</span> all(mdh == 0)
+0102             r.mdh = mdh(1);
+0103         <span class="keyword">elseif</span> all (mdh == 1)
+0104             r.mdh = mdh(1);
+0105         <span class="keyword">else</span>
+0106             error(<span class="string">'robot has mixed D&amp;H link conventions'</span>);
+0107         <span class="keyword">end</span>
+0108 
+0109         <span class="comment">% fill in default base and gravity direction</span>
+0110         r.gravity = [0; 0; 9.81];
+0111         r.base = eye(4,4);
+0112         r.tool = eye(4,4);
+0113         r.handle = [];
+0114         r.q = [];
+0115         r.plotopt = {};
+0116         r.lineopt = {<span class="string">'Color'</span>, <span class="string">'black'</span>, <span class="string">'Linewidth'</span>, 4};
+0117         r.shadowopt = {<span class="string">'Color'</span>, <span class="string">'black'</span>, <span class="string">'Linewidth'</span>, 1};
+0118 
+0119         r = class(r, <span class="string">'robot'</span>);
+0120     <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sun 15-Feb-2009 18:09:29 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

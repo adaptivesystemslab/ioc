@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rlmdl>
+   <model>
+      <manufacturer>Animatrik</manufacturer>
+      <name>Subj17</name>
+      <world id="world">
+         <rotation>
+            <x>0</x>
+            <y>0</y>
+            <z>0</z>
+         </rotation>
+         <translation>
+            <x>0</x>
+            <y>0</y>
+            <z>0</z>
+         </translation>
+		 <g>
+            <x>0</x>
+            <y>0</y>
+            <z>9.81</z>
+         </g>
+      </world>
+	   <frame id="prism_x" />
+		<!-- Make the first revolute joint around x -->
+		<fixed id="world_to_base">
+			<frame>
+				<a idref="world"/>
+				<b idref="prism_x"/>
+			</frame>
+			<rotation>
+				<x>0</x>
+				<y>90</y>
+				<z>0</z>
+			</rotation>
+		</fixed>
+      <frame id="rhumerus"/>
+      <prismatic id="prism_x_to_rhumerus">
+         <frame>
+            <a idref="prism_x"/>
+            <b idref="rhumerus"/>
+         </frame>
+      </prismatic>      
+      <frame id="post:rhumerus"/>
+      <frame id="rhumerus_rz"/>
+      <frame id="pre:rhumerus_to_rhumerus_rz_rev_rz"/>
+      <frame id="post:rhumerus_to_rhumerus_rz_rev_rz"/>
+      <fixed id="rhumerus_to_pre:rhumerus_to_rhumerus_rz_rev_rz">
+         <frame>
+            <a idref="rhumerus"/>
+            <b idref="pre:rhumerus_to_rhumerus_rz_rev_rz"/>
+         </frame>
+         <rotation>
+            <x>0</x>
+            <y>-90</y>
+            <z>0</z>
+         </rotation>
+         <translation>
+            <x>0</x>
+            <y>0</y>
+            <z>0</z>
+         </translation>
+      </fixed>
+      <revolute id="pre:rhumerus_to_rhumerus_rz_rev_rz_to_post:rhumerus_to_rhumerus_rz_rev_rz">
+         <frame>
+            <a idref="pre:rhumerus_to_rhumerus_rz_rev_rz"/>
+            <b idref="post:rhumerus_to_rhumerus_rz_rev_rz"/>
+         </frame>
+      </revolute>
+      <fixed id="post:rhumerus_to_rhumerus_rz_rev_rz_to_rhumerus_rz">
+         <frame>
+            <a idref="post:rhumerus_to_rhumerus_rz_rev_rz"/>
+            <b idref="rhumerus_rz"/>
+         </frame>
+         <rotation>
+            <x>0</x>
+            <y>0</y>
+            <z>0</z>
+         </rotation>
+         <translation>
+            <x>0</x>
+            <y>0</y>
+            <z>0</z>
+         </translation>
+      </fixed>
+      <frame id="rhumerus_ry"/>
+      <frame id="pre:rhumerus_rz_to_rhumerus_ry_rev_ry"/>
+      <frame id="post:rhumerus_rz_to_rhumerus_ry_rev_ry"/>
+      <fixed id="rhumerus_rz_to_pre:rhumerus_rz_to_rhumerus_ry_rev_ry">
+         <frame>
+            <a idref="rhumerus_rz"/>
+            <b idref="pre:rhumerus_rz_to_rhumerus_ry_rev_ry"/>
+         </frame>
+         <rotation>
+            <x>-90</x>
+            <y>0</y>
+            <z>0</z>
+         </rotation>
+         <translation>
+            <x>0</x>
+            <y>0</y>
+            <z>0</z>
+         </translation>
+      </fixed>
+      <revolute id="pre:rhumerus_rz_to_rhumerus_ry_rev_ry_to_post:rhumerus_rz_to_rhumerus_ry_rev_ry">
+         <frame>
+            <a idref="pre:rhumerus_rz_to_rhumerus_ry_rev_ry"/>
+            <b idref="post:rhumerus_rz_to_rhumerus_ry_rev_ry"/>
+         </frame>
+      </revolute>
+      <fixed id="post:rhumerus_rz_to_rhumerus_ry_rev_ry_to_rhumerus_ry">
+         <frame>
+            <a idref="post:rhumerus_rz_to_rhumerus_ry_rev_ry"/>
+            <b idref="rhumerus_ry"/>
+         </frame>
+         <rotation>
+            <x>90</x>
+            <y>0</y>
+            <z>0</z>
+         </rotation>
+         <translation>
+            <x>0</x>
+            <y>0</y>
+            <z>0</z>
+         </translation>
+      </fixed>
+      <frame id="rhumerus_rx"/>
+      <frame id="pre:rhumerus_ry_to_rhumerus_rx_rev_rx"/>
+      <frame id="post:rhumerus_ry_to_rhumerus_rx_rev_rx"/>
+      <fixed id="rhumerus_ry_to_pre:rhumerus_ry_to_rhumerus_rx_rev_rx">
+         <frame>
+            <a idref="rhumerus_ry"/>
+            <b idref="pre:rhumerus_ry_to_rhumerus_rx_rev_rx"/>
+         </frame>
+         <rotation>
+            <x>0</x>
+            <y>90</y>
+            <z>0</z>
+         </rotation>
+         <translation>
+            <x>0</x>
+            <y>0</y>
+            <z>0</z>
+         </translation>
+      </fixed>
+      <revolute id="pre:rhumerus_ry_to_rhumerus_rx_rev_rx_to_post:rhumerus_ry_to_rhumerus_rx_rev_rx">
+         <frame>
+            <a idref="pre:rhumerus_ry_to_rhumerus_rx_rev_rx"/>
+            <b idref="post:rhumerus_ry_to_rhumerus_rx_rev_rx"/>
+         </frame>
+      </revolute>
+      <fixed id="post:rhumerus_ry_to_rhumerus_rx_rev_rx_to_rhumerus_rx">
+         <frame>
+            <a idref="post:rhumerus_ry_to_rhumerus_rx_rev_rx"/>
+            <b idref="rhumerus_rx"/>
+         </frame>
+         <rotation>
+            <x>0</x>
+            <y>-90</y>
+            <z>0</z>
+         </rotation>
+         <translation>
+            <x>0</x>
+            <y>0</y>
+            <z>0</z>
+         </translation>
+      </fixed>
+      <fixed id="rhumerus_rx_to_post:rhumerus">
+         <frame>
+            <a idref="rhumerus_rx"/>
+            <b idref="post:rhumerus"/>
+         </frame>
+         <rotation>
+            <x>210</x>
+            <y>0</y>
+            <z>90</z>
+         </rotation>
+         <translation>
+            <x>-1.340168166299991e-11</x>
+            <y>-0.3446892888888889</y>
+            <z>7.737464515726667e-12</z>
+         </translation>
+      </fixed>
+      <frame id="rradius"/>
+      <frame id="post:rradius"/>
+      <fixed id="post:rhumerus_to_rradius">
+         <frame>
+            <a idref="post:rhumerus"/>
+            <b idref="rradius"/>
+         </frame>
+         <rotation>
+            <x>180</x>
+            <y>30</y>
+            <z>90</z>
+         </rotation>
+         <translation>
+            <x>0</x>
+            <y>0</y>
+            <z>0</z>
+         </translation>
+      </fixed>
+      <frame id="rradius_rx"/>
+      <frame id="pre:rradius_to_rradius_rx_rev_rx"/>
+      <frame id="post:rradius_to_rradius_rx_rev_rx"/>
+      <fixed id="rradius_to_pre:rradius_to_rradius_rx_rev_rx">
+         <frame>
+            <a idref="rradius"/>
+            <b idref="pre:rradius_to_rradius_rx_rev_rx"/>
+         </frame>
+         <rotation>
+            <x>0</x>
+            <y>90</y>
+            <z>0</z>
+         </rotation>
+         <translation>
+            <x>0</x>
+            <y>0</y>
+            <z>0</z>
+         </translation>
+      </fixed>
+      <revolute id="pre:rradius_to_rradius_rx_rev_rx_to_post:rradius_to_rradius_rx_rev_rx">
+         <frame>
+            <a idref="pre:rradius_to_rradius_rx_rev_rx"/>
+            <b idref="post:rradius_to_rradius_rx_rev_rx"/>
+         </frame>
+      </revolute>
+      <fixed id="post:rradius_to_rradius_rx_rev_rx_to_rradius_rx">
+         <frame>
+            <a idref="post:rradius_to_rradius_rx_rev_rx"/>
+            <b idref="rradius_rx"/>
+         </frame>
+         <rotation>
+            <x>0</x>
+            <y>-90</y>
+            <z>0</z>
+         </rotation>
+         <translation>
+            <x>0</x>
+            <y>0</y>
+            <z>0</z>
+         </translation>
+      </fixed>
+      <fixed id="rradius_rx_to_post:rradius">
+         <frame>
+            <a idref="rradius_rx"/>
+            <b idref="post:rradius"/>
+         </frame>
+         <rotation>
+            <x>210</x>
+            <y>0</y>
+            <z>90</z>
+         </rotation>
+         <translation>
+            <x>-7.967880778646194e-12</x>
+            <y>-0.2049226844444445</y>
+            <z>4.600258112422223e-12</z>
+         </translation>
+      </fixed>
+   </model>
+</rlmdl>

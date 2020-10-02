@@ -1,6 +1,6 @@
-function [specStruct, variableFactors] = script3_testingSpec
+function [specStru  ct, variableFactors] = script3_testingSpec
 % set up base settings
-setting_costfunction = '8';
+setting_costfunction = '5_task';
 setting_dataset = 'expressive_ioc';
 setting_iocvalidation = 'resnorm';
 setting_outputstring = 'test';
@@ -25,6 +25,15 @@ switch setting_costfunction
         ccost_array{2} = [0 1 0];
         ccost_array{3} = [0 0 1];
         ccost_array{4} = [1 1 1];
+        
+    case '5_task'
+        cost_function_names{1} = 'tau';
+        cost_function_names{2} = 'x_anchor_1';
+        cost_function_names{3} = 'rot_anchor_1';
+        cost_function_names{4} = 'x_anchor_2';
+        cost_function_names{5} = 'rot_anchor_2';
+     
+        ccost_array{1} = [1 0 0 0 0];    
        
     case '8'
         cost_function_names{1} = 'ddq';

@@ -1,0 +1,237 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{CF86ADB1-B212-4555-AD50-E9E7D5B39237}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>DynamicsModelMatlab</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0.14393.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\Props\libxml2_x64d.props" />
+    <Import Project="..\Props\matlab_mex_x64d.props" />
+    <Import Project="..\Props\robotics_lib_x64d.props" />
+    <Import Project="..\Props\mrpt_x64d.props" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\Props\matlab_mex.props" />
+    <Import Project="..\Props\robotics_lib_release.props" />
+    <Import Project="..\Props\mrpt_release.props" />
+    <Import Project="..\Props\libxml2.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\Props\libxml2_x64.props" />
+    <Import Project="..\Props\matlab_mex_x64.props" />
+    <Import Project="..\Props\robotics_lib_x64.props" />
+    <Import Project="..\Props\mrpt_x64.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <IncludePath>C:\aslab\projects\vjoukov\General_FKEKF\Src;D:\aslab\projects\vjoukov\General_FKEKF\Src\kalman;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+    <TargetExt>.mexw64</TargetExt>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <TargetExt>.mexw32</TargetExt>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+    <TargetExt>.mexw64</TargetExt>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;DYNAMICSMODELMATLAB_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\aslab\projects\vjoukov\General_FKEKF\Src;D:\aslab\projects\vjoukov\General_FKEKF\Src\kalman;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ModuleDefinitionFile>DynamicsModelMatlab.def</ModuleDefinitionFile>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>MATLAB;_WIN64;_DEBUG;_WINDOWS;_USRDLL;DYNAMICSMODELMATLAB_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <AdditionalIncludeDirectories>C:\asl_git\kalmanfilter\General_FKEKF\Src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PrecompiledHeaderFile />
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ModuleDefinitionFile>DynamicsModelMatlab.def</ModuleDefinitionFile>
+      <AdditionalOptions>-lboost_filesystem %(AdditionalOptions)</AdditionalOptions>
+    </Link>
+    <PostBuildEvent>
+      <Command>copy /Y "$(TargetDir)$(TargetName).mexw64" "$(SolutionDir)$(TargetName)\MatlabWrapper\$(TargetName).mexw64"
+copy /Y "$(TargetDir)$(TargetName).pdb" "$(SolutionDir)$(TargetName)\MatlabWrapper\$(TargetName).pdb"</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;DYNAMICSMODELMATLAB_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\aslab\projects\vjoukov\General_FKEKF\Src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <ModuleDefinitionFile>DynamicsModelMatlab_x86.def</ModuleDefinitionFile>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;DYNAMICSMODELMATLAB_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\asl_git\kalmanfilter\General_FKEKF\Src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <ModuleDefinitionFile>DynamicsModelMatlab.def</ModuleDefinitionFile>
+    </Link>
+    <PostBuildEvent>
+      <Command>copy /Y "$(TargetDir)$(TargetName).mexw64" "$(SolutionDir)$(TargetName)\MatlabWrapper\$(TargetName).mexw64"</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <None Include="DynamicsModelMatlab.def" />
+    <None Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\Src\CameraSensor.h" />
+    <ClInclude Include="..\Src\mexCout.h" />
+    <ClInclude Include="..\Src\Model.h" />
+    <ClInclude Include="..\Src\SensorAbstract.h" />
+    <ClInclude Include="..\Src\SensorAccelerometer.h" />
+    <ClInclude Include="..\Src\SensorAngularVelocity.h" />
+    <ClInclude Include="..\Src\SensorCore.h" />
+    <ClInclude Include="..\Src\SensorDecorator.h" />
+    <ClInclude Include="..\Src\SensorGyroscope.h" />
+    <ClInclude Include="..\Src\SensorOrientation.h" />
+    <ClInclude Include="..\Src\SensorPosition.h" />
+    <ClInclude Include="..\Src\SensorQuaternion.h" />
+    <ClInclude Include="..\Src\SensorVelocity.h" />
+    <ClInclude Include="..\Src\SensorYaw.h" />
+    <ClInclude Include="..\Src\Visualizer.h" />
+    <ClInclude Include="BodyWrapper.h" />
+    <ClInclude Include="CCameraWrapper.h" />
+    <ClInclude Include="CModelWrapper.h" />
+    <ClInclude Include="DynamicsModelMatlab.h" />
+    <ClInclude Include="DynModelWrapper.h" />
+    <ClInclude Include="FrameWrapper.h" />
+    <ClInclude Include="JointWrapper.h" />
+    <ClInclude Include="KinModelWrapper.h" />
+    <ClInclude Include="ModelWrapper.h" />
+    <ClInclude Include="SensorWrapper.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="targetver.h" />
+    <ClInclude Include="TransformWrapper.h" />
+    <ClInclude Include="VisualizerWrapper.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\Src\CameraSensor.cpp" />
+    <ClCompile Include="..\Src\Model.cpp" />
+    <ClCompile Include="..\Src\SensorAccelerometer.cpp" />
+    <ClCompile Include="..\Src\SensorAngularVelocity.cpp" />
+    <ClCompile Include="..\Src\SensorCore.cpp" />
+    <ClCompile Include="..\Src\SensorDecorator.cpp" />
+    <ClCompile Include="..\Src\SensorGyroscope.cpp" />
+    <ClCompile Include="..\Src\SensorOrientation.cpp" />
+    <ClCompile Include="..\Src\SensorPosition.cpp" />
+    <ClCompile Include="..\Src\SensorQuaternion.cpp" />
+    <ClCompile Include="..\Src\SensorVelocity.cpp" />
+    <ClCompile Include="..\Src\SensorYaw.cpp" />
+    <ClCompile Include="..\Src\Visualizer.cpp" />
+    <ClCompile Include="BodyWrapper.cpp" />
+    <ClCompile Include="CCameraWrapper.cpp" />
+    <ClCompile Include="CModelWrapper.cpp" />
+    <ClCompile Include="DynamicsModelMatlab.cpp" />
+    <ClCompile Include="DynModelWrapper.cpp" />
+    <ClCompile Include="FrameWrapper.cpp" />
+    <ClCompile Include="JointWrapper.cpp" />
+    <ClCompile Include="KinModelWrapper.cpp" />
+    <ClCompile Include="ModelWrapper.cpp" />
+    <ClCompile Include="SensorWrapper.cpp" />
+    <ClCompile Include="TransformWrapper.cpp" />
+    <ClCompile Include="VisualizerWrapper.cpp" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

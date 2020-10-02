@@ -1,0 +1,133 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of rtidemo</title>
+  <meta name="keywords" content="rtidemo">
+  <meta name="description" content="RTIDDEMO Inverse dynamics demo">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../index.html">Home</a> &gt;  <a href="#">demos</a> &gt; rtidemo.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../index.html"><img alt="<" border="0" src="../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for ./demos&nbsp;<img alt=">" border="0" src="../right.png"></a></td></tr></table>-->
+
+<h1>rtidemo
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>RTIDDEMO Inverse dynamics demo</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment">RTIDDEMO Inverse dynamics demo</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%RTIDDEMO Inverse dynamics demo</span>
+0002 
+0003 <span class="comment">% Copyright (C) 1993-2002, by Peter I. Corke</span>
+0004 echo off
+0005 <span class="comment">% 6/99    fix syntax errors</span>
+0006 <span class="comment">% $Log: not supported by cvs2svn $</span>
+0007 <span class="comment">% Revision 1.3  2002-04-02 12:26:49  pic</span>
+0008 <span class="comment">% Handle figures better, control echo at end of each script.</span>
+0009 <span class="comment">% Fix bug in calling ctraj.</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">% Revision 1.2  2002/04/01 11:47:17  pic</span>
+0012 <span class="comment">% General cleanup of code: help comments, see also, copyright, remnant dh/dyn</span>
+0013 <span class="comment">% references, clarification of functions.</span>
+0014 <span class="comment">%</span>
+0015 <span class="comment">% $Revision: 1.1 $</span>
+0016 figure(2)
+0017 echo on
+0018 <span class="comment">%</span>
+0019 <span class="comment">% Inverse dynamics computes the joint torques required to achieve the specified</span>
+0020 <span class="comment">% state of joint position, velocity and acceleration.</span>
+0021 <span class="comment">% The recursive Newton-Euler formulation is an efficient matrix oriented</span>
+0022 <span class="comment">% algorithm for computing the inverse dynamics, and is implemented in the</span>
+0023 <span class="comment">% function rne().</span>
+0024 <span class="comment">%</span>
+0025 <span class="comment">% Inverse dynamics requires inertial and mass parameters of each link, as well</span>
+0026 <span class="comment">% as the kinematic parameters.  This is achieved by augmenting the kinematic</span>
+0027 <span class="comment">% description matrix with additional columns for the inertial and mass</span>
+0028 <span class="comment">% parameters for each link.</span>
+0029 <span class="comment">%</span>
+0030 <span class="comment">% For example, for a Puma 560 in the zero angle pose, with all joint velocities</span>
+0031 <span class="comment">% of 5rad/s and accelerations of 1rad/s/s, the joint torques required are</span>
+0032 <span class="comment">%</span>
+0033     tau = rne(p560, qz, 5*ones(1,6), ones(1,6))
+0034 pause <span class="comment">% any key to continue</span>
+0035 
+0036 <span class="comment">% As with other functions the inverse dynamics can be computed for each point</span>
+0037 <span class="comment">% on a trajectory.  Create a joint coordinate trajectory and compute velocity</span>
+0038 <span class="comment">% and acceleration as well</span>
+0039     t = [0:.056:2];         <span class="comment">% create time vector</span>
+0040     [q,qd,qdd] = jtraj(qz, qr, t); <span class="comment">% compute joint coordinate trajectory</span>
+0041     tau = rne(p560, q, qd, qdd); <span class="comment">% compute inverse dynamics</span>
+0042 <span class="comment">%</span>
+0043 <span class="comment">%  Now the joint torques can be plotted as a function of time</span>
+0044     plot(t, tau(:,1:3))
+0045     xlabel(<span class="string">'Time (s)'</span>);
+0046     ylabel(<span class="string">'Joint torque (Nm)'</span>)
+0047 pause <span class="comment">% any key to continue</span>
+0048 
+0049 <span class="comment">%</span>
+0050 <span class="comment">% Much of the torque on joints 2 and 3 of a Puma 560 (mounted conventionally) is</span>
+0051 <span class="comment">% due to gravity.  That component can be computed using gravload()</span>
+0052     taug = gravload(p560, q);
+0053     plot(t, taug(:,1:3))
+0054     xlabel(<span class="string">'Time (s)'</span>);
+0055     ylabel(<span class="string">'Gravity torque (Nm)'</span>)
+0056 pause <span class="comment">% any key to continue</span>
+0057 
+0058 <span class="comment">% Now lets plot that as a fraction of the total torque required over the</span>
+0059 <span class="comment">% trajectory</span>
+0060     subplot(2,1,1)
+0061     plot(t,[tau(:,2) taug(:,2)])
+0062     xlabel(<span class="string">'Time (s)'</span>);
+0063     ylabel(<span class="string">'Torque on joint 2 (Nm)'</span>)
+0064     subplot(2,1,2)
+0065     plot(t,[tau(:,3) taug(:,3)])
+0066     xlabel(<span class="string">'Time (s)'</span>);
+0067     ylabel(<span class="string">'Torque on joint 3 (Nm)'</span>)
+0068 pause <span class="comment">% any key to continue</span>
+0069 <span class="comment">%</span>
+0070 <span class="comment">% The inertia seen by the waist (joint 1) motor changes markedly with robot</span>
+0071 <span class="comment">% configuration.  The function inertia() computes the manipulator inertia matrix</span>
+0072 <span class="comment">% for any given configuration.</span>
+0073 <span class="comment">%</span>
+0074 <span class="comment">%  Let's compute the variation in joint 1 inertia, that is M(1,1), as the</span>
+0075 <span class="comment">% manipulator moves along the trajectory (this may take a few minutes)</span>
+0076     M = inertia(p560, q);
+0077     M11 = squeeze(M(1,1,:));
+0078     plot(t, M11);
+0079     xlabel(<span class="string">'Time (s)'</span>);
+0080     ylabel(<span class="string">'Inertia on joint 1 (kgms2)'</span>)
+0081 <span class="comment">% Clearly the inertia seen by joint 1 varies considerably over this path.</span>
+0082 <span class="comment">% This is one of many challenges to control design in robotics, achieving</span>
+0083 <span class="comment">% stability and high-performance in the face of plant variation.  In fact</span>
+0084 <span class="comment">% for this example the inertia varies by a factor of</span>
+0085     max(M11)/min(M11)
+0086 pause <span class="comment">% any key to continue</span>
+0087 echo off</pre></div>
+<hr><address>Generated on Sun 15-Feb-2009 18:09:29 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

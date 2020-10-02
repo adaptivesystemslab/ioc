@@ -1,0 +1,3400 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- This model has all the joints rotated so that they are global XYZ order. -->	
+
+<!-- Active joints are:
+-->	
+
+<rlmdl>
+    <model>
+        <manufacturer>CardonRehab</manufacturer>
+        <name>Avatar</name>
+        <world id="world">
+            <rotation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+			<g>
+				<x>0</x>
+				<y>0</y>
+				<z>9.80665</z>
+			</g>
+        </world>
+        <frame id="pre:b_pelvis"/>
+        <body id="post:b_pelvis"/>
+        <frame id="pre:b_left_upperleg"/>
+        <body id="post:b_left_upperleg"/>
+        <frame id="pre:b_left_calf"/>
+        <body id="post:b_left_calf"/>
+        <frame id="pre:b_left_foot"/>
+        <body id="post:b_left_foot"/>
+        <frame id="pre:b_left_toe"/>
+        <body id="post:b_left_toe"/>
+        <fixed id="post:b_left_foot_to_pre:b_left_toe">
+            <frame>
+                <a idref="post:b_left_foot"/>
+                <b idref="pre:b_left_toe"/>
+            </frame>
+            <rotation>
+                <x>2.92086230757604e-08</x>
+                <y>10.0006818771362</y>
+                <z>61.4198913574219</z>
+            </rotation>
+            <translation>
+                <x>0.09778442170805567</x>
+                <y>0.06209703545427964</y>
+                <z>-0.004188956215630328</z>
+            </translation>
+        </fixed>
+        <fixed id="pre:b_left_toe_to_post:b_left_toe">
+            <frame>
+                <a idref="pre:b_left_toe"/>
+                <b idref="post:b_left_toe"/>
+            </frame>
+        </fixed>	  	  
+        <fixed id="post:b_left_calf_to_pre:b_left_foot">
+            <frame>
+                <a idref="post:b_left_calf"/>
+                <b idref="pre:b_left_foot"/>
+            </frame>
+            <rotation>
+                <x>0.00213569356128573</x>
+                <y>-0.000658411590848118</y>
+                <z>37.5857353210449</z>
+            </rotation>
+            <translation>
+                <x>0.2664671770969392</x>
+                <y>-9.5367431640625e-09</y>
+                <z>9.536740890325941e-09</z>
+            </translation>
+        </fixed>
+        <frame id="pre:b_left_foot:rotateX"/>
+        <frame id="post:b_left_foot:rotateX"/>
+        <revolute id="pre:b_left_foot:rotateX_to_post:b_left_foot:rotateX">
+            <frame>
+                <a idref="pre:b_left_foot:rotateX"/>
+                <b idref="post:b_left_foot:rotateX"/>
+            </frame>
+        </revolute>
+        <frame id="pre:b_left_foot:rotateY"/>
+        <frame id="post:b_left_foot:rotateY"/>
+        <fixed id="pre:b_left_foot:rotateY_to_post:b_left_foot:rotateY">
+            <frame>
+                <a idref="pre:b_left_foot:rotateY"/>
+                <b idref="post:b_left_foot:rotateY"/>
+            </frame>
+        </fixed>
+        <frame id="pre:b_left_foot:rotateZ"/>
+        <frame id="post:b_left_foot:rotateZ"/>
+        <revolute id="pre:b_left_foot:rotateZ_to_post:b_left_foot:rotateZ">
+            <frame>
+                <a idref="pre:b_left_foot:rotateZ"/>
+                <b idref="post:b_left_foot:rotateZ"/>
+            </frame>
+        </revolute>
+        <fixed id="pre:b_left_foot_to_pre:b_left_foot:rotateX">
+            <frame>
+                <a idref="pre:b_left_foot"/>
+                <b idref="pre:b_left_foot:rotateX"/>
+            </frame>
+            <rotation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <fixed id="post:b_left_foot:rotateX_to_pre:b_left_foot:rotateY">
+            <frame>
+                <a idref="post:b_left_foot:rotateX"/>
+                <b idref="pre:b_left_foot:rotateY"/>
+            </frame>
+            <rotation>
+                <x>-90</x>
+                <y>0</y>
+                <z>0</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <fixed id="post:b_left_foot:rotateY_to_pre:b_left_foot:rotateZ">
+            <frame>
+                <a idref="post:b_left_foot:rotateY"/>
+                <b idref="pre:b_left_foot:rotateZ"/>
+            </frame>
+            <rotation>
+                <x>90</x>
+                <y>0</y>
+                <z>-90</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <fixed id="post:b_left_foot:rotateZ_to_post:b_left_foot">
+            <frame>
+                <a idref="post:b_left_foot:rotateZ"/>
+                <b idref="post:b_left_foot"/>
+            </frame>
+            <rotation>
+                <x>0</x>
+                <y>90</y>
+                <z>0</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <fixed id="post:b_left_upperleg_to_pre:b_left_calf">
+            <frame>
+                <a idref="post:b_left_upperleg"/>
+                <b idref="pre:b_left_calf"/>
+            </frame>
+            <rotation>
+                <x>-0.000192877181689255</x>
+                <y>-0.00682295439764857</y>
+                <z>-8.997623443603519</z>
+            </rotation>
+            <translation>
+                <x>0.3112793360615531</x>
+                <y>-2.38418579101563e-09</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <frame id="pre:b_left_calf:rotateX"/>
+        <frame id="post:b_left_calf:rotateX"/>
+        <revolute id="pre:b_left_calf:rotateX_to_post:b_left_calf:rotateX">
+            <frame>
+                <a idref="pre:b_left_calf:rotateX"/>
+                <b idref="post:b_left_calf:rotateX"/>
+            </frame>
+        </revolute>
+        <frame id="pre:b_left_calf:rotateY"/>
+        <frame id="post:b_left_calf:rotateY"/>
+        <fixed id="pre:b_left_calf:rotateY_to_post:b_left_calf:rotateY">
+            <frame>
+                <a idref="pre:b_left_calf:rotateY"/>
+                <b idref="post:b_left_calf:rotateY"/>
+            </frame>
+        </fixed>
+        <frame id="pre:b_left_calf:rotateZ"/>
+        <frame id="post:b_left_calf:rotateZ"/>
+        <fixed id="pre:b_left_calf:rotateZ_to_post:b_left_calf:rotateZ">
+            <frame>
+                <a idref="pre:b_left_calf:rotateZ"/>
+                <b idref="post:b_left_calf:rotateZ"/>
+            </frame>
+        </fixed>
+        <fixed id="pre:b_left_calf_to_pre:b_left_calf:rotateX">
+            <frame>
+                <a idref="pre:b_left_calf"/>
+                <b idref="pre:b_left_calf:rotateX"/>
+            </frame>
+            <rotation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <fixed id="post:b_left_calf:rotateX_to_pre:b_left_calf:rotateY">
+            <frame>
+                <a idref="post:b_left_calf:rotateX"/>
+                <b idref="pre:b_left_calf:rotateY"/>
+            </frame>
+            <rotation>
+                <x>-90</x>
+                <y>0</y>
+                <z>0</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <fixed id="post:b_left_calf:rotateY_to_pre:b_left_calf:rotateZ">
+            <frame>
+                <a idref="post:b_left_calf:rotateY"/>
+                <b idref="pre:b_left_calf:rotateZ"/>
+            </frame>
+            <rotation>
+                <x>90</x>
+                <y>0</y>
+                <z>-90</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <fixed id="post:b_left_calf:rotateZ_to_post:b_left_calf">
+            <frame>
+                <a idref="post:b_left_calf:rotateZ"/>
+                <b idref="post:b_left_calf"/>
+            </frame>
+            <rotation>
+                <x>0</x>
+                <y>90</y>
+                <z>0</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <fixed id="post:b_pelvis_to_pre:b_left_upperleg">
+            <frame>
+                <a idref="post:b_pelvis"/>
+                <b idref="pre:b_left_upperleg"/>
+            </frame>
+            <rotation>
+                <x>0.0002899169921875</x>
+                <y>-179.995864868164</y>
+                <z>0.0879974365234375</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0.0799999952316284</z>
+            </translation>
+        </fixed>
+        <frame id="pre:b_left_upperleg:rotateZ"/>
+        <frame id="post:b_left_upperleg:rotateZ"/>
+        <revolute id="pre:b_left_upperleg:rotateZ_to_post:b_left_upperleg:rotateZ">
+            <frame>
+                <a idref="pre:b_left_upperleg:rotateZ"/>
+                <b idref="post:b_left_upperleg:rotateZ"/>
+            </frame>
+        </revolute>
+        <frame id="pre:b_left_upperleg:rotateY"/>
+        <frame id="post:b_left_upperleg:rotateY"/>
+        <revolute id="pre:b_left_upperleg:rotateY_to_post:b_left_upperleg:rotateY">
+            <frame>
+                <a idref="pre:b_left_upperleg:rotateY"/>
+                <b idref="post:b_left_upperleg:rotateY"/>
+            </frame>
+        </revolute>
+        <frame id="pre:b_left_upperleg:rotateX"/>
+        <frame id="post:b_left_upperleg:rotateX"/>
+        <revolute id="pre:b_left_upperleg:rotateX_to_post:b_left_upperleg:rotateX">
+            <frame>
+                <a idref="pre:b_left_upperleg:rotateX"/>
+                <b idref="post:b_left_upperleg:rotateX"/>
+            </frame>
+        </revolute>
+        <fixed id="pre:b_left_upperleg_to_pre:b_left_upperleg:rotateZ">
+            <frame>
+                <a idref="pre:b_left_upperleg"/>
+                <b idref="pre:b_left_upperleg:rotateZ"/>
+            </frame>
+            <rotation>
+                <x>0</x>
+                <y>-90</y>
+                <z>0</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <fixed id="post:b_left_upperleg:rotateZ_to_pre:b_left_upperleg:rotateY">
+            <frame>
+                <a idref="post:b_left_upperleg:rotateZ"/>
+                <b idref="pre:b_left_upperleg:rotateY"/>
+            </frame>
+            <rotation>
+                <x>-90</x>
+                <y>0</y>
+                <z>0</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <fixed id="post:b_left_upperleg:rotateY_to_pre:b_left_upperleg:rotateX">
+            <frame>
+                <a idref="post:b_left_upperleg:rotateY"/>
+                <b idref="pre:b_left_upperleg:rotateX"/>
+            </frame>
+            <rotation>
+                <x>90</x>
+                <y>0</y>
+                <z>-90</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <fixed id="post:b_left_upperleg:rotateX_to_post:b_left_upperleg">
+            <frame>
+                <a idref="post:b_left_upperleg:rotateX"/>
+                <b idref="post:b_left_upperleg"/>
+            </frame>
+            <rotation>
+                <x>0</x>
+                <y>180</y>
+                <z>0</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <frame id="pre:b_spine_3"/>
+        <body id="post:b_spine_3"/>
+        <frame id="pre:b_spine_2"/>
+        <body id="post:b_spine_2"/>
+        <frame id="pre:b_spine_1"/>
+        <body id="post:b_spine_1"/>
+        <frame id="pre:b_torso"/>
+        <body id="post:b_torso"/>
+        <frame id="pre:b_neck"/>
+        <body id="post:b_neck"/>
+        <frame id="pre:b_head"/>
+        <body id="post:b_head"/>
+        <fixed id="post:b_neck_to_pre:b_head">
+            <frame>
+                <a idref="post:b_neck"/>
+                <b idref="pre:b_head"/>
+            </frame>
+            <rotation>
+                <x>1.22133390640516e-12</x>
+                <y>3.75738459443276e-12</y>
+                <z>-7.43446063995361</z>
+            </rotation>
+            <translation>
+                <x>0.07027837985076843</x>
+                <y>-1.90734817806511e-08</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <fixed id="pre:b_head_to_post:b_head">
+            <frame>
+                <a idref="pre:b_head"/>
+                <b idref="post:b_head"/>
+            </frame>
+        </fixed>	  	  
+        <fixed id="post:b_torso_to_pre:b_neck">
+            <frame>
+                <a idref="post:b_torso"/>
+                <b idref="pre:b_neck"/>
+            </frame>
+            <rotation>
+                <x>-2.52718050479384e-12</x>
+                <y>180</y>
+                <z>7.43446063995361</z>
+            </rotation>
+            <translation>
+                <x>0.06506827532430846</x>
+                <y>-0.00849219220969726</y>
+                <z>2.41584530158434e-15</z>
+            </translation>
+        </fixed>
+        <frame id="pre:b_neck:rotateX"/>
+        <frame id="post:b_neck:rotateX"/>
+        <fixed id="pre:b_neck:rotateX_to_post:b_neck:rotateX">
+            <frame>
+                <a idref="pre:b_neck:rotateX"/>
+                <b idref="post:b_neck:rotateX"/>
+            </frame>
+        </fixed>
+        <frame id="pre:b_neck:rotateY"/>
+        <frame id="post:b_neck:rotateY"/>
+        <fixed id="pre:b_neck:rotateY_to_post:b_neck:rotateY">
+            <frame>
+                <a idref="pre:b_neck:rotateY"/>
+                <b idref="post:b_neck:rotateY"/>
+            </frame>
+        </fixed>
+        <frame id="pre:b_neck:rotateZ"/>
+        <frame id="post:b_neck:rotateZ"/>
+        <fixed id="pre:b_neck:rotateZ_to_post:b_neck:rotateZ">
+            <frame>
+                <a idref="pre:b_neck:rotateZ"/>
+                <b idref="post:b_neck:rotateZ"/>
+            </frame>
+        </fixed>
+        <fixed id="pre:b_neck_to_pre:b_neck:rotateX">
+            <frame>
+                <a idref="pre:b_neck"/>
+                <b idref="pre:b_neck:rotateX"/>
+            </frame>
+            <rotation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <fixed id="post:b_neck:rotateX_to_pre:b_neck:rotateY">
+            <frame>
+                <a idref="post:b_neck:rotateX"/>
+                <b idref="pre:b_neck:rotateY"/>
+            </frame>
+            <rotation>
+                <x>-90</x>
+                <y>0</y>
+                <z>0</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <fixed id="post:b_neck:rotateY_to_pre:b_neck:rotateZ">
+            <frame>
+                <a idref="post:b_neck:rotateY"/>
+                <b idref="pre:b_neck:rotateZ"/>
+            </frame>
+            <rotation>
+                <x>90</x>
+                <y>0</y>
+                <z>-90</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <fixed id="post:b_neck:rotateZ_to_post:b_neck">
+            <frame>
+                <a idref="post:b_neck:rotateZ"/>
+                <b idref="post:b_neck"/>
+            </frame>
+            <rotation>
+                <x>0</x>
+                <y>270</y>
+                <z>0</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <frame id="pre:b_left_upperarm"/>
+        <body id="post:b_left_upperarm"/>
+        <frame id="pre:b_left_forarm"/>
+        <body id="post:b_left_forarm"/>
+        <frame id="pre:b_left_palm"/>
+        <body id="post:b_left_palm"/>
+        <frame id="pre:b_left_fngr_index_1"/>
+        <body id="post:b_left_fngr_index_1"/>
+        <frame id="pre:b_left_fngr_index_2"/>
+        <body id="post:b_left_fngr_index_2"/>
+        <fixed id="post:b_left_fngr_index_1_to_pre:b_left_fngr_index_2">
+            <frame>
+                <a idref="post:b_left_fngr_index_1"/>
+                <b idref="pre:b_left_fngr_index_2"/>
+            </frame>
+            <rotation>
+                <x>0</x>
+                <y>-15.7856292724609</y>
+                <z>-5.67828792554792e-05</z>
+            </rotation>
+            <translation>
+                <x>0.0327523854331262</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <fixed id="pre:b_left_fngr_index_2_to_post:b_left_fngr_index_2">
+            <frame>
+                <a idref="pre:b_left_fngr_index_2"/>
+                <b idref="post:b_left_fngr_index_2"/>
+            </frame>
+        </fixed>	  
+        <fixed id="post:b_left_palm_to_pre:b_left_fngr_index_1">
+            <frame>
+                <a idref="post:b_left_palm"/>
+                <b idref="pre:b_left_fngr_index_1"/>
+            </frame>
+            <rotation>
+                <x>1.43090856075287</x>
+                <y>-19.3002815246582</y>
+                <z>10.3797721862793</z>
+            </rotation>
+            <translation>
+                <x>0.08399381394865382</x>
+                <y>0.02766270798305814</y>
+                <z>0.003291397487091128</z>
+            </translation>
+        </fixed>
+        <frame id="pre:b_left_fngr_index_1:rotateX"/>
+        <frame id="post:b_left_fngr_index_1:rotateX"/>
+        <fixed id="pre:b_left_fngr_index_1:rotateX_to_post:b_left_fngr_index_1:rotateX">
+            <frame>
+                <a idref="pre:b_left_fngr_index_1:rotateX"/>
+                <b idref="post:b_left_fngr_index_1:rotateX"/>
+            </frame>
+        </fixed>
+        <frame id="pre:b_left_fngr_index_1:rotateY"/>
+        <frame id="post:b_left_fngr_index_1:rotateY"/>
+        <fixed id="pre:b_left_fngr_index_1:rotateY_to_post:b_left_fngr_index_1:rotateY">
+            <frame>
+                <a idref="pre:b_left_fngr_index_1:rotateY"/>
+                <b idref="post:b_left_fngr_index_1:rotateY"/>
+            </frame>
+        </fixed>
+        <frame id="pre:b_left_fngr_index_1:rotateZ"/>
+        <frame id="post:b_left_fngr_index_1:rotateZ"/>
+        <fixed id="pre:b_left_fngr_index_1:rotateZ_to_post:b_left_fngr_index_1:rotateZ">
+            <frame>
+                <a idref="pre:b_left_fngr_index_1:rotateZ"/>
+                <b idref="post:b_left_fngr_index_1:rotateZ"/>
+            </frame>
+        </fixed>
+        <fixed id="pre:b_left_fngr_index_1_to_pre:b_left_fngr_index_1:rotateX">
+            <frame>
+                <a idref="pre:b_left_fngr_index_1"/>
+                <b idref="pre:b_left_fngr_index_1:rotateX"/>
+            </frame>
+            <rotation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <fixed id="post:b_left_fngr_index_1:rotateX_to_pre:b_left_fngr_index_1:rotateY">
+            <frame>
+                <a idref="post:b_left_fngr_index_1:rotateX"/>
+                <b idref="pre:b_left_fngr_index_1:rotateY"/>
+            </frame>
+            <rotation>
+                <x>-90</x>
+                <y>0</y>
+                <z>0</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <fixed id="post:b_left_fngr_index_1:rotateY_to_pre:b_left_fngr_index_1:rotateZ">
+            <frame>
+                <a idref="post:b_left_fngr_index_1:rotateY"/>
+                <b idref="pre:b_left_fngr_index_1:rotateZ"/>
+            </frame>
+            <rotation>
+                <x>90</x>
+                <y>0</y>
+                <z>-90</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <fixed id="post:b_left_fngr_index_1:rotateZ_to_post:b_left_fngr_index_1">
+            <frame>
+                <a idref="post:b_left_fngr_index_1:rotateZ"/>
+                <b idref="post:b_left_fngr_index_1"/>
+            </frame>
+            <rotation>
+                <x>0</x>
+                <y>90</y>
+                <z>0</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <frame id="pre:b_left_fngr_middle_1"/>
+        <body id="post:b_left_fngr_middle_1"/>
+        <frame id="pre:b_left_fngr_middle_2"/>
+        <body id="post:b_left_fngr_middle_2"/>
+        <fixed id="post:b_left_fngr_middle_1_to_pre:b_left_fngr_middle_2">
+            <frame>
+                <a idref="post:b_left_fngr_middle_1"/>
+                <b idref="pre:b_left_fngr_middle_2"/>
+            </frame>
+            <rotation>
+                <x>-2.60889228229644e-05</x>
+                <y>-20.4842052459717</y>
+                <z>-5.69625262869522e-05</z>
+            </rotation>
+            <translation>
+                <x>0.0361789604399376</x>
+                <y>0</y>
+                <z>-1.907347495943889e-08</z>
+            </translation>
+        </fixed>
+        
+        <fixed id="pre:b_left_fngr_middle_2_to_post:b_left_fngr_middle_2">
+            <frame>
+                <a idref="pre:b_left_fngr_middle_2"/>
+                <b idref="post:b_left_fngr_middle_2"/>
+            </frame>
+        </fixed>	 
+        <fixed id="post:b_left_palm_to_pre:b_left_fngr_middle_1">
+            <frame>
+                <a idref="post:b_left_palm"/>
+                <b idref="pre:b_left_fngr_middle_1"/>
+            </frame>
+            <rotation>
+                <x>1.27516281604767</x>
+                <y>-18.6929130554199</y>
+                <z>-1.19987833499908</z>
+            </rotation>
+            <translation>
+                <x>0.08796883085551174</x>
+                <y>0.01147178901756475</y>
+                <z>0.001226768639894339</z>
+            </translation>
+        </fixed>
+        <frame id="pre:b_left_fngr_middle_1:rotateX"/>
+        <frame id="post:b_left_fngr_middle_1:rotateX"/>
+        <fixed id="pre:b_left_fngr_middle_1:rotateX_to_post:b_left_fngr_middle_1:rotateX">
+            <frame>
+                <a idref="pre:b_left_fngr_middle_1:rotateX"/>
+                <b idref="post:b_left_fngr_middle_1:rotateX"/>
+            </frame>
+        </fixed>
+        <frame id="pre:b_left_fngr_middle_1:rotateY"/>
+        <frame id="post:b_left_fngr_middle_1:rotateY"/>
+        <fixed id="pre:b_left_fngr_middle_1:rotateY_to_post:b_left_fngr_middle_1:rotateY">
+            <frame>
+                <a idref="pre:b_left_fngr_middle_1:rotateY"/>
+                <b idref="post:b_left_fngr_middle_1:rotateY"/>
+            </frame>
+        </fixed>
+        <frame id="pre:b_left_fngr_middle_1:rotateZ"/>
+        <frame id="post:b_left_fngr_middle_1:rotateZ"/>
+        <fixed id="pre:b_left_fngr_middle_1:rotateZ_to_post:b_left_fngr_middle_1:rotateZ">
+            <frame>
+                <a idref="pre:b_left_fngr_middle_1:rotateZ"/>
+                <b idref="post:b_left_fngr_middle_1:rotateZ"/>
+            </frame>
+        </fixed>
+        <fixed id="pre:b_left_fngr_middle_1_to_pre:b_left_fngr_middle_1:rotateX">
+            <frame>
+                <a idref="pre:b_left_fngr_middle_1"/>
+                <b idref="pre:b_left_fngr_middle_1:rotateX"/>
+            </frame>
+            <rotation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <fixed id="post:b_left_fngr_middle_1:rotateX_to_pre:b_left_fngr_middle_1:rotateY">
+            <frame>
+                <a idref="post:b_left_fngr_middle_1:rotateX"/>
+                <b idref="pre:b_left_fngr_middle_1:rotateY"/>
+            </frame>
+            <rotation>
+                <x>-90</x>
+                <y>0</y>
+                <z>0</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <fixed id="post:b_left_fngr_middle_1:rotateY_to_pre:b_left_fngr_middle_1:rotateZ">
+            <frame>
+                <a idref="post:b_left_fngr_middle_1:rotateY"/>
+                <b idref="pre:b_left_fngr_middle_1:rotateZ"/>
+            </frame>
+            <rotation>
+                <x>90</x>
+                <y>0</y>
+                <z>-90</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <fixed id="post:b_left_fngr_middle_1:rotateZ_to_post:b_left_fngr_middle_1">
+            <frame>
+                <a idref="post:b_left_fngr_middle_1:rotateZ"/>
+                <b idref="post:b_left_fngr_middle_1"/>
+            </frame>
+            <rotation>
+                <x>0</x>
+                <y>90</y>
+                <z>0</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <frame id="pre:b_left_fngr_ring_1"/>
+        <body id="post:b_left_fngr_ring_1"/>
+        <frame id="pre:b_left_fngr_ring_2"/>
+        <body id="post:b_left_fngr_ring_2"/>
+        <fixed id="post:b_left_fngr_ring_1_to_pre:b_left_fngr_ring_2">
+            <frame>
+                <a idref="post:b_left_fngr_ring_1"/>
+                <b idref="pre:b_left_fngr_ring_2"/>
+            </frame>
+            <rotation>
+                <x>9.25643803384446e-07</x>
+                <y>-20.4842185974121</y>
+                <z>-5.43707246833947e-05</z>
+            </rotation>
+            <translation>
+                <x>0.03617900721306774</x>
+                <y>-4.768332928635475e-09</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <fixed id="pre:b_left_fngr_ring_2_to_post:b_left_fngr_ring_2">
+            <frame>
+                <a idref="pre:b_left_fngr_ring_2"/>
+                <b idref="post:b_left_fngr_ring_2"/>
+            </frame>
+        </fixed>	  
+        <fixed id="post:b_left_palm_to_pre:b_left_fngr_ring_1">
+            <frame>
+                <a idref="post:b_left_palm"/>
+                <b idref="pre:b_left_fngr_ring_1"/>
+            </frame>
+            <rotation>
+                <x>2.28527474403381</x>
+                <y>-21.382869720459</y>
+                <z>-8.81123733520508</z>
+            </rotation>
+            <translation>
+                <x>0.08680633238888355</x>
+                <y>-0.005086931767715918</y>
+                <z>0.0005540085499295857</z>
+            </translation>
+        </fixed>
+        <frame id="pre:b_left_fngr_ring_1:rotateX"/>
+        <frame id="post:b_left_fngr_ring_1:rotateX"/>
+        <fixed id="pre:b_left_fngr_ring_1:rotateX_to_post:b_left_fngr_ring_1:rotateX">
+            <frame>
+                <a idref="pre:b_left_fngr_ring_1:rotateX"/>
+                <b idref="post:b_left_fngr_ring_1:rotateX"/>
+            </frame>
+        </fixed>
+        <frame id="pre:b_left_fngr_ring_1:rotateY"/>
+        <frame id="post:b_left_fngr_ring_1:rotateY"/>
+        <fixed id="pre:b_left_fngr_ring_1:rotateY_to_post:b_left_fngr_ring_1:rotateY">
+            <frame>
+                <a idref="pre:b_left_fngr_ring_1:rotateY"/>
+                <b idref="post:b_left_fngr_ring_1:rotateY"/>
+            </frame>
+        </fixed>
+        <frame id="pre:b_left_fngr_ring_1:rotateZ"/>
+        <frame id="post:b_left_fngr_ring_1:rotateZ"/>
+        <fixed id="pre:b_left_fngr_ring_1:rotateZ_to_post:b_left_fngr_ring_1:rotateZ">
+            <frame>
+                <a idref="pre:b_left_fngr_ring_1:rotateZ"/>
+                <b idref="post:b_left_fngr_ring_1:rotateZ"/>
+            </frame>
+        </fixed>
+        <fixed id="pre:b_left_fngr_ring_1_to_pre:b_left_fngr_ring_1:rotateX">
+            <frame>
+                <a idref="pre:b_left_fngr_ring_1"/>
+                <b idref="pre:b_left_fngr_ring_1:rotateX"/>
+            </frame>
+            <rotation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <fixed id="post:b_left_fngr_ring_1:rotateX_to_pre:b_left_fngr_ring_1:rotateY">
+            <frame>
+                <a idref="post:b_left_fngr_ring_1:rotateX"/>
+                <b idref="pre:b_left_fngr_ring_1:rotateY"/>
+            </frame>
+            <rotation>
+                <x>-90</x>
+                <y>0</y>
+                <z>0</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <fixed id="post:b_left_fngr_ring_1:rotateY_to_pre:b_left_fngr_ring_1:rotateZ">
+            <frame>
+                <a idref="post:b_left_fngr_ring_1:rotateY"/>
+                <b idref="pre:b_left_fngr_ring_1:rotateZ"/>
+            </frame>
+            <rotation>
+                <x>90</x>
+                <y>0</y>
+                <z>-90</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <fixed id="post:b_left_fngr_ring_1:rotateZ_to_post:b_left_fngr_ring_1">
+            <frame>
+                <a idref="post:b_left_fngr_ring_1:rotateZ"/>
+                <b idref="post:b_left_fngr_ring_1"/>
+            </frame>
+            <rotation>
+                <x>0</x>
+                <y>90</y>
+                <z>0</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <frame id="pre:b_left_fngr_pinky_1"/>
+        <body id="post:b_left_fngr_pinky_1"/>
+        <frame id="pre:b_left_fngr_pinky_2"/>
+        <body id="post:b_left_fngr_pinky_2"/>
+        <fixed id="post:b_left_fngr_pinky_1_to_pre:b_left_fngr_pinky_2">
+            <frame>
+                <a idref="post:b_left_fngr_pinky_1"/>
+                <b idref="pre:b_left_fngr_pinky_2"/>
+            </frame>
+            <rotation>
+                <x>-2.05065293812368e-06</x>
+                <y>-20.4842433929443</y>
+                <z>-5.42283196409699e-05</z>
+            </rotation>
+            <translation>
+                <x>0.02957166741603061</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <fixed id="pre:b_left_fngr_pinky_2_to_post:b_left_fngr_pinky_2">
+            <frame>
+                <a idref="pre:b_left_fngr_pinky_2"/>
+                <b idref="post:b_left_fngr_pinky_2"/>
+            </frame>
+        </fixed>	
+        <fixed id="post:b_left_palm_to_pre:b_left_fngr_pinky_1">
+            <frame>
+                <a idref="post:b_left_palm"/>
+                <b idref="pre:b_left_fngr_pinky_1"/>
+            </frame>
+            <rotation>
+                <x>-1.04990863800049</x>
+                <y>-20.9814682006836</y>
+                <z>-14.7305278778076</z>
+            </rotation>
+            <translation>
+                <x>0.08292241104999537</x>
+                <y>-0.02112341821917581</y>
+                <z>0.0003997421741177532</z>
+            </translation>
+        </fixed>
+        <frame id="pre:b_left_fngr_pinky_1:rotateX"/>
+        <frame id="post:b_left_fngr_pinky_1:rotateX"/>
+        <fixed id="pre:b_left_fngr_pinky_1:rotateX_to_post:b_left_fngr_pinky_1:rotateX">
+            <frame>
+                <a idref="pre:b_left_fngr_pinky_1:rotateX"/>
+                <b idref="post:b_left_fngr_pinky_1:rotateX"/>
+            </frame>
+        </fixed>
+        <frame id="pre:b_left_fngr_pinky_1:rotateY"/>
+        <frame id="post:b_left_fngr_pinky_1:rotateY"/>
+        <fixed id="pre:b_left_fngr_pinky_1:rotateY_to_post:b_left_fngr_pinky_1:rotateY">
+            <frame>
+                <a idref="pre:b_left_fngr_pinky_1:rotateY"/>
+                <b idref="post:b_left_fngr_pinky_1:rotateY"/>
+            </frame>
+        </fixed>
+        <frame id="pre:b_left_fngr_pinky_1:rotateZ"/>
+        <frame id="post:b_left_fngr_pinky_1:rotateZ"/>
+        <fixed id="pre:b_left_fngr_pinky_1:rotateZ_to_post:b_left_fngr_pinky_1:rotateZ">
+            <frame>
+                <a idref="pre:b_left_fngr_pinky_1:rotateZ"/>
+                <b idref="post:b_left_fngr_pinky_1:rotateZ"/>
+            </frame>
+        </fixed>
+        <fixed id="pre:b_left_fngr_pinky_1_to_pre:b_left_fngr_pinky_1:rotateX">
+            <frame>
+                <a idref="pre:b_left_fngr_pinky_1"/>
+                <b idref="pre:b_left_fngr_pinky_1:rotateX"/>
+            </frame>
+            <rotation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <fixed id="post:b_left_fngr_pinky_1:rotateX_to_pre:b_left_fngr_pinky_1:rotateY">
+            <frame>
+                <a idref="post:b_left_fngr_pinky_1:rotateX"/>
+                <b idref="pre:b_left_fngr_pinky_1:rotateY"/>
+            </frame>
+            <rotation>
+                <x>-90</x>
+                <y>0</y>
+                <z>0</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <fixed id="post:b_left_fngr_pinky_1:rotateY_to_pre:b_left_fngr_pinky_1:rotateZ">
+            <frame>
+                <a idref="post:b_left_fngr_pinky_1:rotateY"/>
+                <b idref="pre:b_left_fngr_pinky_1:rotateZ"/>
+            </frame>
+            <rotation>
+                <x>90</x>
+                <y>0</y>
+                <z>-90</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <fixed id="post:b_left_fngr_pinky_1:rotateZ_to_post:b_left_fngr_pinky_1">
+            <frame>
+                <a idref="post:b_left_fngr_pinky_1:rotateZ"/>
+                <b idref="post:b_left_fngr_pinky_1"/>
+            </frame>
+            <rotation>
+                <x>0</x>
+                <y>90</y>
+                <z>0</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <frame id="pre:b_left_fngr_thumb_1"/>
+        <body id="post:b_left_fngr_thumb_1"/>
+        <frame id="pre:b_left_fngr_thumb_2"/>
+        <body id="post:b_left_fngr_thumb_2"/>
+        <fixed id="post:b_left_fngr_thumb_1_to_pre:b_left_fngr_thumb_2">
+            <frame>
+                <a idref="post:b_left_fngr_thumb_1"/>
+                <b idref="pre:b_left_fngr_thumb_2"/>
+            </frame>
+            <rotation>
+                <x>1.78479899659578e-06</x>
+                <y>-16.9189929962158</y>
+                <z>2.85566966340411e-05</z>
+            </rotation>
+            <translation>
+                <x>0.04610922193931753</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <fixed id="pre:b_left_fngr_thumb_2_to_post:b_left_fngr_thumb_2">
+            <frame>
+                <a idref="pre:b_left_fngr_thumb_2"/>
+                <b idref="post:b_left_fngr_thumb_2"/>
+            </frame>
+        </fixed>	  
+        <fixed id="post:b_left_palm_to_pre:b_left_fngr_thumb_1">
+            <frame>
+                <a idref="post:b_left_palm"/>
+                <b idref="pre:b_left_fngr_thumb_1"/>
+            </frame>
+            <rotation>
+                <x>65.8745956420898</x>
+                <y>-31.3592071533203</y>
+                <z>34.5237236022949</z>
+            </rotation>
+            <translation>
+                <x>0.03976619090214144</x>
+                <y>0.02625934477127107</y>
+                <z>0.009597302627240215</z>
+            </translation>
+        </fixed>
+        <frame id="pre:b_left_fngr_thumb_1:rotateX"/>
+        <frame id="post:b_left_fngr_thumb_1:rotateX"/>
+        <fixed id="pre:b_left_fngr_thumb_1:rotateX_to_post:b_left_fngr_thumb_1:rotateX">
+            <frame>
+                <a idref="pre:b_left_fngr_thumb_1:rotateX"/>
+                <b idref="post:b_left_fngr_thumb_1:rotateX"/>
+            </frame>
+        </fixed>
+        <frame id="pre:b_left_fngr_thumb_1:rotateY"/>
+        <frame id="post:b_left_fngr_thumb_1:rotateY"/>
+        <fixed id="pre:b_left_fngr_thumb_1:rotateY_to_post:b_left_fngr_thumb_1:rotateY">
+            <frame>
+                <a idref="pre:b_left_fngr_thumb_1:rotateY"/>
+                <b idref="post:b_left_fngr_thumb_1:rotateY"/>
+            </frame>
+        </fixed>
+        <frame id="pre:b_left_fngr_thumb_1:rotateZ"/>
+        <frame id="post:b_left_fngr_thumb_1:rotateZ"/>
+        <fixed id="pre:b_left_fngr_thumb_1:rotateZ_to_post:b_left_fngr_thumb_1:rotateZ">
+            <frame>
+                <a idref="pre:b_left_fngr_thumb_1:rotateZ"/>
+                <b idref="post:b_left_fngr_thumb_1:rotateZ"/>
+            </frame>
+        </fixed>
+        <fixed id="pre:b_left_fngr_thumb_1_to_pre:b_left_fngr_thumb_1:rotateX">
+            <frame>
+                <a idref="pre:b_left_fngr_thumb_1"/>
+                <b idref="pre:b_left_fngr_thumb_1:rotateX"/>
+            </frame>
+            <rotation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <fixed id="post:b_left_fngr_thumb_1:rotateX_to_pre:b_left_fngr_thumb_1:rotateY">
+            <frame>
+                <a idref="post:b_left_fngr_thumb_1:rotateX"/>
+                <b idref="pre:b_left_fngr_thumb_1:rotateY"/>
+            </frame>
+            <rotation>
+                <x>-90</x>
+                <y>0</y>
+                <z>0</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <fixed id="post:b_left_fngr_thumb_1:rotateY_to_pre:b_left_fngr_thumb_1:rotateZ">
+            <frame>
+                <a idref="post:b_left_fngr_thumb_1:rotateY"/>
+                <b idref="pre:b_left_fngr_thumb_1:rotateZ"/>
+            </frame>
+            <rotation>
+                <x>90</x>
+                <y>0</y>
+                <z>-90</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <fixed id="post:b_left_fngr_thumb_1:rotateZ_to_post:b_left_fngr_thumb_1">
+            <frame>
+                <a idref="post:b_left_fngr_thumb_1:rotateZ"/>
+                <b idref="post:b_left_fngr_thumb_1"/>
+            </frame>
+            <rotation>
+                <x>0</x>
+                <y>90</y>
+                <z>0</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <fixed id="post:b_left_forarm_to_pre:b_left_palm">
+            <frame>
+                <a idref="post:b_left_forarm"/>
+                <b idref="pre:b_left_palm"/>
+            </frame>
+            <rotation>
+                <x>0.352487206459045</x>
+                <y>-7.74289989471436</y>
+                <z>-7.88497352600098</z>
+            </rotation>
+            <translation>
+                <x>0.1480970742050855</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <frame id="pre:b_left_palm:rotateX"/>
+        <frame id="post:b_left_palm:rotateX"/>
+        <fixed id="pre:b_left_palm:rotateX_to_post:b_left_palm:rotateX">
+            <frame>
+                <a idref="pre:b_left_palm:rotateX"/>
+                <b idref="post:b_left_palm:rotateX"/>
+            </frame>
+        </fixed>
+        <frame id="pre:b_left_palm:rotateY"/>
+        <frame id="post:b_left_palm:rotateY"/>
+        <fixed id="pre:b_left_palm:rotateY_to_post:b_left_palm:rotateY">
+            <frame>
+                <a idref="pre:b_left_palm:rotateY"/>
+                <b idref="post:b_left_palm:rotateY"/>
+            </frame>
+        </fixed>
+        <frame id="pre:b_left_palm:rotateZ"/>
+        <frame id="post:b_left_palm:rotateZ"/>
+        <fixed id="pre:b_left_palm:rotateZ_to_post:b_left_palm:rotateZ">
+            <frame>
+                <a idref="pre:b_left_palm:rotateZ"/>
+                <b idref="post:b_left_palm:rotateZ"/>
+            </frame>
+        </fixed>
+        <fixed id="pre:b_left_palm_to_pre:b_left_palm:rotateX">
+            <frame>
+                <a idref="pre:b_left_palm"/>
+                <b idref="pre:b_left_palm:rotateX"/>
+            </frame>
+            <rotation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <fixed id="post:b_left_palm:rotateX_to_pre:b_left_palm:rotateY">
+            <frame>
+                <a idref="post:b_left_palm:rotateX"/>
+                <b idref="pre:b_left_palm:rotateY"/>
+            </frame>
+            <rotation>
+                <x>-90</x>
+                <y>0</y>
+                <z>0</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <fixed id="post:b_left_palm:rotateY_to_pre:b_left_palm:rotateZ">
+            <frame>
+                <a idref="post:b_left_palm:rotateY"/>
+                <b idref="pre:b_left_palm:rotateZ"/>
+            </frame>
+            <rotation>
+                <x>90</x>
+                <y>0</y>
+                <z>-90</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <fixed id="post:b_left_palm:rotateZ_to_post:b_left_palm">
+            <frame>
+                <a idref="post:b_left_palm:rotateZ"/>
+                <b idref="post:b_left_palm"/>
+            </frame>
+            <rotation>
+                <x>0</x>
+                <y>90</y>
+                <z>0</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <fixed id="post:b_left_upperarm_to_pre:b_left_forarm">
+            <frame>
+                <a idref="post:b_left_upperarm"/>
+                <b idref="pre:b_left_forarm"/>
+            </frame>
+            <rotation>
+                <x>-2.58266682067188e-05</x>
+                <y>-2.73207369900774e-05</y>
+                <z>28.0952396392822</z>
+            </rotation>
+            <translation>
+                <x>0.2235718572992402</x>
+                <y>1.907347950691482e-08</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <frame id="pre:b_left_forarm:rotateX"/>
+        <frame id="post:b_left_forarm:rotateX"/>
+        <fixed id="pre:b_left_forarm:rotateX_to_post:b_left_forarm:rotateX">
+            <frame>
+                <a idref="pre:b_left_forarm:rotateX"/>
+                <b idref="post:b_left_forarm:rotateX"/>
+            </frame>
+        </fixed>
+        <frame id="pre:b_left_forarm:rotateY"/>
+        <frame id="post:b_left_forarm:rotateY"/>
+        <fixed id="pre:b_left_forarm:rotateY_to_post:b_left_forarm:rotateY">
+            <frame>
+                <a idref="pre:b_left_forarm:rotateY"/>
+                <b idref="post:b_left_forarm:rotateY"/>
+            </frame>
+        </fixed>
+        <frame id="pre:b_left_forarm:rotateZ"/>
+        <frame id="post:b_left_forarm:rotateZ"/>
+        <fixed id="pre:b_left_forarm:rotateZ_to_post:b_left_forarm:rotateZ">
+            <frame>
+                <a idref="pre:b_left_forarm:rotateZ"/>
+                <b idref="post:b_left_forarm:rotateZ"/>
+            </frame>
+        </fixed>
+        <fixed id="pre:b_left_forarm_to_pre:b_left_forarm:rotateX">
+            <frame>
+                <a idref="pre:b_left_forarm"/>
+                <b idref="pre:b_left_forarm:rotateX"/>
+            </frame>
+            <rotation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <fixed id="post:b_left_forarm:rotateX_to_pre:b_left_forarm:rotateY">
+            <frame>
+                <a idref="post:b_left_forarm:rotateX"/>
+                <b idref="pre:b_left_forarm:rotateY"/>
+            </frame>
+            <rotation>
+                <x>-90</x>
+                <y>0</y>
+                <z>0</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <fixed id="post:b_left_forarm:rotateY_to_pre:b_left_forarm:rotateZ">
+            <frame>
+                <a idref="post:b_left_forarm:rotateY"/>
+                <b idref="pre:b_left_forarm:rotateZ"/>
+            </frame>
+            <rotation>
+                <x>90</x>
+                <y>0</y>
+                <z>-90</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <fixed id="post:b_left_forarm:rotateZ_to_post:b_left_forarm">
+            <frame>
+                <a idref="post:b_left_forarm:rotateZ"/>
+                <b idref="post:b_left_forarm"/>
+            </frame>
+            <rotation>
+                <x>0</x>
+                <y>90</y>
+                <z>0</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <fixed id="post:b_torso_to_pre:b_left_upperarm">
+            <frame>
+                <a idref="post:b_torso"/>
+                <b idref="pre:b_left_upperarm"/>
+            </frame>
+            <rotation>
+                <x>4.03660583496094</x>
+                <y>-167.396942138672</y>
+                <z>11.3373260498047</z>
+            </rotation>
+            <translation>
+                <x>0.02621040031785824</x>
+                <y>0.005213710640226259</y>
+                <z>0.110387163162231</z>
+            </translation>
+        </fixed>
+        <frame id="pre:b_left_upperarm:rotateX"/>
+        <frame id="post:b_left_upperarm:rotateX"/>
+        <fixed id="pre:b_left_upperarm:rotateX_to_post:b_left_upperarm:rotateX">
+            <frame>
+                <a idref="pre:b_left_upperarm:rotateX"/>
+                <b idref="post:b_left_upperarm:rotateX"/>
+            </frame>
+        </fixed>
+        <frame id="pre:b_left_upperarm:rotateY"/>
+        <frame id="post:b_left_upperarm:rotateY"/>
+        <fixed id="pre:b_left_upperarm:rotateY_to_post:b_left_upperarm:rotateY">
+            <frame>
+                <a idref="pre:b_left_upperarm:rotateY"/>
+                <b idref="post:b_left_upperarm:rotateY"/>
+            </frame>
+        </fixed>
+        <frame id="pre:b_left_upperarm:rotateZ"/>
+        <frame id="post:b_left_upperarm:rotateZ"/>
+        <fixed id="pre:b_left_upperarm:rotateZ_to_post:b_left_upperarm:rotateZ">
+            <frame>
+                <a idref="pre:b_left_upperarm:rotateZ"/>
+                <b idref="post:b_left_upperarm:rotateZ"/>
+            </frame>
+        </fixed>
+        <fixed id="pre:b_left_upperarm_to_pre:b_left_upperarm:rotateX">
+            <frame>
+                <a idref="pre:b_left_upperarm"/>
+                <b idref="pre:b_left_upperarm:rotateX"/>
+            </frame>
+            <rotation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <fixed id="post:b_left_upperarm:rotateX_to_pre:b_left_upperarm:rotateY">
+            <frame>
+                <a idref="post:b_left_upperarm:rotateX"/>
+                <b idref="pre:b_left_upperarm:rotateY"/>
+            </frame>
+            <rotation>
+                <x>-90</x>
+                <y>0</y>
+                <z>0</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <fixed id="post:b_left_upperarm:rotateY_to_pre:b_left_upperarm:rotateZ">
+            <frame>
+                <a idref="post:b_left_upperarm:rotateY"/>
+                <b idref="pre:b_left_upperarm:rotateZ"/>
+            </frame>
+            <rotation>
+                <x>90</x>
+                <y>0</y>
+                <z>-90</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <fixed id="post:b_left_upperarm:rotateZ_to_post:b_left_upperarm">
+            <frame>
+                <a idref="post:b_left_upperarm:rotateZ"/>
+                <b idref="post:b_left_upperarm"/>
+            </frame>
+            <rotation>
+                <x>0</x>
+                <y>90</y>
+                <z>0</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <frame id="pre:b_right_upperarm"/>
+        <body id="post:b_right_upperarm"/>
+        <frame id="pre:b_right_forarm"/>
+        <body id="post:b_right_forarm"/>
+        <frame id="pre:b_right_palm"/>
+        <body id="post:b_right_palm"/>
+        <frame id="pre:b_right_fngr_index_1"/>
+        <body id="post:b_right_fngr_index_1"/>
+        <frame id="pre:b_right_fngr_index_2"/>
+        <body id="post:b_right_fngr_index_2"/>
+        <fixed id="post:b_right_fngr_index_1_to_pre:b_right_fngr_index_2">
+            <frame>
+                <a idref="post:b_right_fngr_index_1"/>
+                <b idref="pre:b_right_fngr_index_2"/>
+            </frame>
+            <rotation>
+                <x>8.428712135355451e-06</x>
+                <y>15.7854948043823</y>
+                <z>-5.32341618963983e-05</z>
+            </rotation>
+            <translation>
+                <x>0.03275160936551827</x>
+                <y>0</y>
+                <z>-9.536742027193291e-09</z>
+            </translation>
+        </fixed>
+        <fixed id="pre:b_right_fngr_index_2_to_post:b_right_fngr_index_2">
+            <frame>
+                <a idref="pre:b_right_fngr_index_2"/>
+                <b idref="post:b_right_fngr_index_2"/>
+            </frame>
+        </fixed>	  
+        <fixed id="post:b_right_palm_to_pre:b_right_fngr_index_1">
+            <frame>
+                <a idref="post:b_right_palm"/>
+                <b idref="pre:b_right_fngr_index_1"/>
+            </frame>
+            <rotation>
+                <x>-1.43092381954193</x>
+                <y>19.3002014160156</y>
+                <z>10.37965965271</z>
+            </rotation>
+            <translation>
+                <x>0.08399253372638343</x>
+                <y>0.02766294060085608</y>
+                <z>-0.003291168997566165</z>
+            </translation>
+        </fixed>
+        <frame id="pre:b_right_fngr_index_1:rotateX"/>
+        <frame id="post:b_right_fngr_index_1:rotateX"/>
+        <fixed id="pre:b_right_fngr_index_1:rotateX_to_post:b_right_fngr_index_1:rotateX">
+            <frame>
+                <a idref="pre:b_right_fngr_index_1:rotateX"/>
+                <b idref="post:b_right_fngr_index_1:rotateX"/>
+            </frame>
+        </fixed>
+        <frame id="pre:b_right_fngr_index_1:rotateY"/>
+        <frame id="post:b_right_fngr_index_1:rotateY"/>
+        <fixed id="pre:b_right_fngr_index_1:rotateY_to_post:b_right_fngr_index_1:rotateY">
+            <frame>
+                <a idref="pre:b_right_fngr_index_1:rotateY"/>
+                <b idref="post:b_right_fngr_index_1:rotateY"/>
+            </frame>
+        </fixed>
+        <frame id="pre:b_right_fngr_index_1:rotateZ"/>
+        <frame id="post:b_right_fngr_index_1:rotateZ"/>
+        <fixed id="pre:b_right_fngr_index_1:rotateZ_to_post:b_right_fngr_index_1:rotateZ">
+            <frame>
+                <a idref="pre:b_right_fngr_index_1:rotateZ"/>
+                <b idref="post:b_right_fngr_index_1:rotateZ"/>
+            </frame>
+        </fixed>
+        <fixed id="pre:b_right_fngr_index_1_to_pre:b_right_fngr_index_1:rotateX">
+            <frame>
+                <a idref="pre:b_right_fngr_index_1"/>
+                <b idref="pre:b_right_fngr_index_1:rotateX"/>
+            </frame>
+            <rotation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <fixed id="post:b_right_fngr_index_1:rotateX_to_pre:b_right_fngr_index_1:rotateY">
+            <frame>
+                <a idref="post:b_right_fngr_index_1:rotateX"/>
+                <b idref="pre:b_right_fngr_index_1:rotateY"/>
+            </frame>
+            <rotation>
+                <x>-90</x>
+                <y>0</y>
+                <z>0</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <fixed id="post:b_right_fngr_index_1:rotateY_to_pre:b_right_fngr_index_1:rotateZ">
+            <frame>
+                <a idref="post:b_right_fngr_index_1:rotateY"/>
+                <b idref="pre:b_right_fngr_index_1:rotateZ"/>
+            </frame>
+            <rotation>
+                <x>90</x>
+                <y>0</y>
+                <z>-90</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <fixed id="post:b_right_fngr_index_1:rotateZ_to_post:b_right_fngr_index_1">
+            <frame>
+                <a idref="post:b_right_fngr_index_1:rotateZ"/>
+                <b idref="post:b_right_fngr_index_1"/>
+            </frame>
+            <rotation>
+                <x>0</x>
+                <y>90</y>
+                <z>0</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <frame id="pre:b_right_fngr_middle_1"/>
+        <body id="post:b_right_fngr_middle_1"/>
+        <frame id="pre:b_right_fngr_middle_2"/>
+        <body id="post:b_right_fngr_middle_2"/>
+        <fixed id="post:b_right_fngr_middle_1_to_pre:b_right_fngr_middle_2">
+            <frame>
+                <a idref="post:b_right_fngr_middle_1"/>
+                <b idref="pre:b_right_fngr_middle_2"/>
+            </frame>
+            <rotation>
+                <x>1.52659686136758e-05</x>
+                <y>20.4840488433838</y>
+                <z>-5.46842493349686e-05</z>
+            </rotation>
+            <translation>
+                <x>0.03617819640195349</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <fixed id="pre:b_right_fngr_middle_2_to_post:b_right_fngr_middle_2">
+            <frame>
+                <a idref="pre:b_right_fngr_middle_2"/>
+                <b idref="post:b_right_fngr_middle_2"/>
+            </frame>
+        </fixed>	 
+        <fixed id="post:b_right_palm_to_pre:b_right_fngr_middle_1">
+            <frame>
+                <a idref="post:b_right_palm"/>
+                <b idref="pre:b_right_fngr_middle_1"/>
+            </frame>
+            <rotation>
+                <x>-1.27517068386078</x>
+                <y>18.6928234100342</y>
+                <z>-1.19986617565155</z>
+            </rotation>
+            <translation>
+                <x>0.08796757717186025</x>
+                <y>0.01147182419660554</y>
+                <z>-0.001226578051227944</z>
+            </translation>
+        </fixed>
+        <frame id="pre:b_right_fngr_middle_1:rotateX"/>
+        <frame id="post:b_right_fngr_middle_1:rotateX"/>
+        <fixed id="pre:b_right_fngr_middle_1:rotateX_to_post:b_right_fngr_middle_1:rotateX">
+            <frame>
+                <a idref="pre:b_right_fngr_middle_1:rotateX"/>
+                <b idref="post:b_right_fngr_middle_1:rotateX"/>
+            </frame>
+        </fixed>
+        <frame id="pre:b_right_fngr_middle_1:rotateY"/>
+        <frame id="post:b_right_fngr_middle_1:rotateY"/>
+        <fixed id="pre:b_right_fngr_middle_1:rotateY_to_post:b_right_fngr_middle_1:rotateY">
+            <frame>
+                <a idref="pre:b_right_fngr_middle_1:rotateY"/>
+                <b idref="post:b_right_fngr_middle_1:rotateY"/>
+            </frame>
+        </fixed>
+        <frame id="pre:b_right_fngr_middle_1:rotateZ"/>
+        <frame id="post:b_right_fngr_middle_1:rotateZ"/>
+        <fixed id="pre:b_right_fngr_middle_1:rotateZ_to_post:b_right_fngr_middle_1:rotateZ">
+            <frame>
+                <a idref="pre:b_right_fngr_middle_1:rotateZ"/>
+                <b idref="post:b_right_fngr_middle_1:rotateZ"/>
+            </frame>
+        </fixed>
+        <fixed id="pre:b_right_fngr_middle_1_to_pre:b_right_fngr_middle_1:rotateX">
+            <frame>
+                <a idref="pre:b_right_fngr_middle_1"/>
+                <b idref="pre:b_right_fngr_middle_1:rotateX"/>
+            </frame>
+            <rotation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <fixed id="post:b_right_fngr_middle_1:rotateX_to_pre:b_right_fngr_middle_1:rotateY">
+            <frame>
+                <a idref="post:b_right_fngr_middle_1:rotateX"/>
+                <b idref="pre:b_right_fngr_middle_1:rotateY"/>
+            </frame>
+            <rotation>
+                <x>-90</x>
+                <y>0</y>
+                <z>0</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <fixed id="post:b_right_fngr_middle_1:rotateY_to_pre:b_right_fngr_middle_1:rotateZ">
+            <frame>
+                <a idref="post:b_right_fngr_middle_1:rotateY"/>
+                <b idref="pre:b_right_fngr_middle_1:rotateZ"/>
+            </frame>
+            <rotation>
+                <x>90</x>
+                <y>0</y>
+                <z>-90</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <fixed id="post:b_right_fngr_middle_1:rotateZ_to_post:b_right_fngr_middle_1">
+            <frame>
+                <a idref="post:b_right_fngr_middle_1:rotateZ"/>
+                <b idref="post:b_right_fngr_middle_1"/>
+            </frame>
+            <rotation>
+                <x>0</x>
+                <y>90</y>
+                <z>0</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <frame id="pre:b_right_fngr_ring_1"/>
+        <body id="post:b_right_fngr_ring_1"/>
+        <frame id="pre:b_right_fngr_ring_2"/>
+        <body id="post:b_right_fngr_ring_2"/>
+        <fixed id="post:b_right_fngr_ring_1_to_pre:b_right_fngr_ring_2">
+            <frame>
+                <a idref="post:b_right_fngr_ring_1"/>
+                <b idref="pre:b_right_fngr_ring_2"/>
+            </frame>
+            <rotation>
+                <x>1.77580768649932e-05</x>
+                <y>20.4840431213379</y>
+                <z>-5.56810955458786e-05</z>
+            </rotation>
+            <translation>
+                <x>0.03617815825539462</x>
+                <y>0</y>
+                <z>9.536742027193291e-09</z>
+            </translation>
+        </fixed>
+        <fixed id="pre:b_right_fngr_ring_2_to_post:b_right_fngr_ring_2">
+            <frame>
+                <a idref="pre:b_right_fngr_ring_2"/>
+                <b idref="post:b_right_fngr_ring_2"/>
+            </frame>
+        </fixed>	  
+        <fixed id="post:b_right_palm_to_pre:b_right_fngr_ring_1">
+            <frame>
+                <a idref="post:b_right_palm"/>
+                <b idref="pre:b_right_fngr_ring_1"/>
+            </frame>
+            <rotation>
+                <x>-2.28530430793762</x>
+                <y>21.3827743530273</y>
+                <z>-8.81114482879639</z>
+            </rotation>
+            <translation>
+                <x>0.08680509325610407</x>
+                <y>-0.005087083449117531</y>
+                <z>-0.0005537606605912321</z>
+            </translation>
+        </fixed>
+        <frame id="pre:b_right_fngr_ring_1:rotateX"/>
+        <frame id="post:b_right_fngr_ring_1:rotateX"/>
+        <fixed id="pre:b_right_fngr_ring_1:rotateX_to_post:b_right_fngr_ring_1:rotateX">
+            <frame>
+                <a idref="pre:b_right_fngr_ring_1:rotateX"/>
+                <b idref="post:b_right_fngr_ring_1:rotateX"/>
+            </frame>
+        </fixed>
+        <frame id="pre:b_right_fngr_ring_1:rotateY"/>
+        <frame id="post:b_right_fngr_ring_1:rotateY"/>
+        <fixed id="pre:b_right_fngr_ring_1:rotateY_to_post:b_right_fngr_ring_1:rotateY">
+            <frame>
+                <a idref="pre:b_right_fngr_ring_1:rotateY"/>
+                <b idref="post:b_right_fngr_ring_1:rotateY"/>
+            </frame>
+        </fixed>
+        <frame id="pre:b_right_fngr_ring_1:rotateZ"/>
+        <frame id="post:b_right_fngr_ring_1:rotateZ"/>
+        <fixed id="pre:b_right_fngr_ring_1:rotateZ_to_post:b_right_fngr_ring_1:rotateZ">
+            <frame>
+                <a idref="pre:b_right_fngr_ring_1:rotateZ"/>
+                <b idref="post:b_right_fngr_ring_1:rotateZ"/>
+            </frame>
+        </fixed>
+        <fixed id="pre:b_right_fngr_ring_1_to_pre:b_right_fngr_ring_1:rotateX">
+            <frame>
+                <a idref="pre:b_right_fngr_ring_1"/>
+                <b idref="pre:b_right_fngr_ring_1:rotateX"/>
+            </frame>
+            <rotation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <fixed id="post:b_right_fngr_ring_1:rotateX_to_pre:b_right_fngr_ring_1:rotateY">
+            <frame>
+                <a idref="post:b_right_fngr_ring_1:rotateX"/>
+                <b idref="pre:b_right_fngr_ring_1:rotateY"/>
+            </frame>
+            <rotation>
+                <x>-90</x>
+                <y>0</y>
+                <z>0</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <fixed id="post:b_right_fngr_ring_1:rotateY_to_pre:b_right_fngr_ring_1:rotateZ">
+            <frame>
+                <a idref="post:b_right_fngr_ring_1:rotateY"/>
+                <b idref="pre:b_right_fngr_ring_1:rotateZ"/>
+            </frame>
+            <rotation>
+                <x>90</x>
+                <y>0</y>
+                <z>-90</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <fixed id="post:b_right_fngr_ring_1:rotateZ_to_post:b_right_fngr_ring_1">
+            <frame>
+                <a idref="post:b_right_fngr_ring_1:rotateZ"/>
+                <b idref="post:b_right_fngr_ring_1"/>
+            </frame>
+            <rotation>
+                <x>0</x>
+                <y>90</y>
+                <z>0</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <frame id="pre:b_right_fngr_pinky_1"/>
+        <body id="post:b_right_fngr_pinky_1"/>
+        <frame id="pre:b_right_fngr_pinky_2"/>
+        <body id="post:b_right_fngr_pinky_2"/>
+        <fixed id="post:b_right_fngr_pinky_1_to_pre:b_right_fngr_pinky_2">
+            <frame>
+                <a idref="post:b_right_fngr_pinky_1"/>
+                <b idref="pre:b_right_fngr_pinky_2"/>
+            </frame>
+            <rotation>
+                <x>1.43546021718066e-05</x>
+                <y>20.4839954376221</y>
+                <z>-5.37728228664491e-05</z>
+            </rotation>
+            <translation>
+                <x>0.02957096943128342</x>
+                <y>0</y>
+                <z>2.861035227411625e-08</z>
+            </translation>
+        </fixed>
+        <fixed id="pre:b_right_fngr_pinky_2_to_post:b_right_fngr_pinky_2">
+            <frame>
+                <a idref="pre:b_right_fngr_pinky_2"/>
+                <b idref="post:b_right_fngr_pinky_2"/>
+            </frame>
+        </fixed>	  
+        <fixed id="post:b_right_palm_to_pre:b_right_fngr_pinky_1">
+            <frame>
+                <a idref="post:b_right_palm"/>
+                <b idref="pre:b_right_fngr_pinky_1"/>
+            </frame>
+            <rotation>
+                <x>1.04991161823273</x>
+                <y>20.9813709259033</y>
+                <z>-14.7303781509399</z>
+            </rotation>
+            <translation>
+                <x>0.08292122053185365</x>
+                <y>-0.02112374670090622</y>
+                <z>-0.0003994751928985213</z>
+            </translation>
+        </fixed>
+        <frame id="pre:b_right_fngr_pinky_1:rotateX"/>
+        <frame id="post:b_right_fngr_pinky_1:rotateX"/>
+        <fixed id="pre:b_right_fngr_pinky_1:rotateX_to_post:b_right_fngr_pinky_1:rotateX">
+            <frame>
+                <a idref="pre:b_right_fngr_pinky_1:rotateX"/>
+                <b idref="post:b_right_fngr_pinky_1:rotateX"/>
+            </frame>
+        </fixed>
+        <frame id="pre:b_right_fngr_pinky_1:rotateY"/>
+        <frame id="post:b_right_fngr_pinky_1:rotateY"/>
+        <fixed id="pre:b_right_fngr_pinky_1:rotateY_to_post:b_right_fngr_pinky_1:rotateY">
+            <frame>
+                <a idref="pre:b_right_fngr_pinky_1:rotateY"/>
+                <b idref="post:b_right_fngr_pinky_1:rotateY"/>
+            </frame>
+        </fixed>
+        <frame id="pre:b_right_fngr_pinky_1:rotateZ"/>
+        <frame id="post:b_right_fngr_pinky_1:rotateZ"/>
+        <fixed id="pre:b_right_fngr_pinky_1:rotateZ_to_post:b_right_fngr_pinky_1:rotateZ">
+            <frame>
+                <a idref="pre:b_right_fngr_pinky_1:rotateZ"/>
+                <b idref="post:b_right_fngr_pinky_1:rotateZ"/>
+            </frame>
+        </fixed>
+        <fixed id="pre:b_right_fngr_pinky_1_to_pre:b_right_fngr_pinky_1:rotateX">
+            <frame>
+                <a idref="pre:b_right_fngr_pinky_1"/>
+                <b idref="pre:b_right_fngr_pinky_1:rotateX"/>
+            </frame>
+            <rotation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <fixed id="post:b_right_fngr_pinky_1:rotateX_to_pre:b_right_fngr_pinky_1:rotateY">
+            <frame>
+                <a idref="post:b_right_fngr_pinky_1:rotateX"/>
+                <b idref="pre:b_right_fngr_pinky_1:rotateY"/>
+            </frame>
+            <rotation>
+                <x>-90</x>
+                <y>0</y>
+                <z>0</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <fixed id="post:b_right_fngr_pinky_1:rotateY_to_pre:b_right_fngr_pinky_1:rotateZ">
+            <frame>
+                <a idref="post:b_right_fngr_pinky_1:rotateY"/>
+                <b idref="pre:b_right_fngr_pinky_1:rotateZ"/>
+            </frame>
+            <rotation>
+                <x>90</x>
+                <y>0</y>
+                <z>-90</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <fixed id="post:b_right_fngr_pinky_1:rotateZ_to_post:b_right_fngr_pinky_1">
+            <frame>
+                <a idref="post:b_right_fngr_pinky_1:rotateZ"/>
+                <b idref="post:b_right_fngr_pinky_1"/>
+            </frame>
+            <rotation>
+                <x>0</x>
+                <y>90</y>
+                <z>0</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <frame id="pre:b_right_fngr_thumb_1"/>
+        <body id="post:b_right_fngr_thumb_1"/>
+        <frame id="pre:b_right_fngr_thumb_2"/>
+        <body id="post:b_right_fngr_thumb_2"/>
+        <fixed id="post:b_right_fngr_thumb_1_to_pre:b_right_fngr_thumb_2">
+            <frame>
+                <a idref="post:b_right_fngr_thumb_1"/>
+                <b idref="pre:b_right_fngr_thumb_2"/>
+            </frame>
+            <rotation>
+                <x>0</x>
+                <y>16.9188117980957</y>
+                <z>2.67720133706462e-05</z>
+            </rotation>
+            <translation>
+                <x>0.04610785329454385</x>
+                <y>0</y>
+                <z>1.907342266353995e-08</z>
+            </translation>
+        </fixed>
+        <fixed id="pre:b_right_fngr_thumb_2_to_post:b_right_fngr_thumb_2">
+            <frame>
+                <a idref="pre:b_right_fngr_thumb_2"/>
+                <b idref="post:b_right_fngr_thumb_2"/>
+            </frame>
+        </fixed>	  
+        <fixed id="post:b_right_palm_to_pre:b_right_fngr_thumb_1">
+            <frame>
+                <a idref="post:b_right_palm"/>
+                <b idref="pre:b_right_fngr_thumb_1"/>
+            </frame>
+            <rotation>
+                <x>-65.8744583129883</x>
+                <y>31.3591556549072</y>
+                <z>34.5234375</z>
+            </rotation>
+            <translation>
+                <x>0.03976557871264635</x>
+                <y>0.02625962992657568</y>
+                <z>-0.009597265624347194</z>
+            </translation>
+        </fixed>
+        <frame id="pre:b_right_fngr_thumb_1:rotateX"/>
+        <frame id="post:b_right_fngr_thumb_1:rotateX"/>
+        <fixed id="pre:b_right_fngr_thumb_1:rotateX_to_post:b_right_fngr_thumb_1:rotateX">
+            <frame>
+                <a idref="pre:b_right_fngr_thumb_1:rotateX"/>
+                <b idref="post:b_right_fngr_thumb_1:rotateX"/>
+            </frame>
+        </fixed>
+        <frame id="pre:b_right_fngr_thumb_1:rotateY"/>
+        <frame id="post:b_right_fngr_thumb_1:rotateY"/>
+        <fixed id="pre:b_right_fngr_thumb_1:rotateY_to_post:b_right_fngr_thumb_1:rotateY">
+            <frame>
+                <a idref="pre:b_right_fngr_thumb_1:rotateY"/>
+                <b idref="post:b_right_fngr_thumb_1:rotateY"/>
+            </frame>
+        </fixed>
+        <frame id="pre:b_right_fngr_thumb_1:rotateZ"/>
+        <frame id="post:b_right_fngr_thumb_1:rotateZ"/>
+        <fixed id="pre:b_right_fngr_thumb_1:rotateZ_to_post:b_right_fngr_thumb_1:rotateZ">
+            <frame>
+                <a idref="pre:b_right_fngr_thumb_1:rotateZ"/>
+                <b idref="post:b_right_fngr_thumb_1:rotateZ"/>
+            </frame>
+        </fixed>
+        <fixed id="pre:b_right_fngr_thumb_1_to_pre:b_right_fngr_thumb_1:rotateX">
+            <frame>
+                <a idref="pre:b_right_fngr_thumb_1"/>
+                <b idref="pre:b_right_fngr_thumb_1:rotateX"/>
+            </frame>
+            <rotation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <fixed id="post:b_right_fngr_thumb_1:rotateX_to_pre:b_right_fngr_thumb_1:rotateY">
+            <frame>
+                <a idref="post:b_right_fngr_thumb_1:rotateX"/>
+                <b idref="pre:b_right_fngr_thumb_1:rotateY"/>
+            </frame>
+            <rotation>
+                <x>-90</x>
+                <y>0</y>
+                <z>0</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <fixed id="post:b_right_fngr_thumb_1:rotateY_to_pre:b_right_fngr_thumb_1:rotateZ">
+            <frame>
+                <a idref="post:b_right_fngr_thumb_1:rotateY"/>
+                <b idref="pre:b_right_fngr_thumb_1:rotateZ"/>
+            </frame>
+            <rotation>
+                <x>90</x>
+                <y>0</y>
+                <z>-90</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <fixed id="post:b_right_fngr_thumb_1:rotateZ_to_post:b_right_fngr_thumb_1">
+            <frame>
+                <a idref="post:b_right_fngr_thumb_1:rotateZ"/>
+                <b idref="post:b_right_fngr_thumb_1"/>
+            </frame>
+            <rotation>
+                <x>0</x>
+                <y>90</y>
+                <z>0</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <fixed id="post:b_right_forarm_to_pre:b_right_palm">
+            <frame>
+                <a idref="post:b_right_forarm"/>
+                <b idref="pre:b_right_palm"/>
+            </frame>
+            <rotation>
+                <x>-0.352495610713959</x>
+                <y>7.74288749694824</y>
+                <z>-7.88495206832886</z>
+            </rotation>
+            <translation>
+                <x>0.1480965064227398</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <frame id="pre:b_right_palm:rotateX"/>
+        <frame id="post:b_right_palm:rotateX"/>
+        <fixed id="pre:b_right_palm:rotateX_to_post:b_right_palm:rotateX">
+            <frame>
+                <a idref="pre:b_right_palm:rotateX"/>
+                <b idref="post:b_right_palm:rotateX"/>
+            </frame>
+        </fixed>
+        <frame id="pre:b_right_palm:rotateY"/>
+        <frame id="post:b_right_palm:rotateY"/>
+        <fixed id="pre:b_right_palm:rotateY_to_post:b_right_palm:rotateY">
+            <frame>
+                <a idref="pre:b_right_palm:rotateY"/>
+                <b idref="post:b_right_palm:rotateY"/>
+            </frame>
+        </fixed>
+        <frame id="pre:b_right_palm:rotateZ"/>
+        <frame id="post:b_right_palm:rotateZ"/>
+        <fixed id="pre:b_right_palm:rotateZ_to_post:b_right_palm:rotateZ">
+            <frame>
+                <a idref="pre:b_right_palm:rotateZ"/>
+                <b idref="post:b_right_palm:rotateZ"/>
+            </frame>
+        </fixed>
+        <fixed id="pre:b_right_palm_to_pre:b_right_palm:rotateX">
+            <frame>
+                <a idref="pre:b_right_palm"/>
+                <b idref="pre:b_right_palm:rotateX"/>
+            </frame>
+            <rotation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <fixed id="post:b_right_palm:rotateX_to_pre:b_right_palm:rotateY">
+            <frame>
+                <a idref="post:b_right_palm:rotateX"/>
+                <b idref="pre:b_right_palm:rotateY"/>
+            </frame>
+            <rotation>
+                <x>-90</x>
+                <y>0</y>
+                <z>0</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <fixed id="post:b_right_palm:rotateY_to_pre:b_right_palm:rotateZ">
+            <frame>
+                <a idref="post:b_right_palm:rotateY"/>
+                <b idref="pre:b_right_palm:rotateZ"/>
+            </frame>
+            <rotation>
+                <x>90</x>
+                <y>0</y>
+                <z>-90</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <fixed id="post:b_right_palm:rotateZ_to_post:b_right_palm">
+            <frame>
+                <a idref="post:b_right_palm:rotateZ"/>
+                <b idref="post:b_right_palm"/>
+            </frame>
+            <rotation>
+                <x>0</x>
+                <y>90</y>
+                <z>0</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <fixed id="post:b_right_upperarm_to_pre:b_right_forarm">
+            <frame>
+                <a idref="post:b_right_upperarm"/>
+                <b idref="pre:b_right_forarm"/>
+            </frame>
+            <rotation>
+                <x>1.8996457583853e-05</x>
+                <y>2.04905791179044e-05</y>
+                <z>28.0952243804932</z>
+            </rotation>
+            <translation>
+                <x>0.2235716440846034</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <frame id="pre:b_right_forarm:rotateX"/>
+        <frame id="post:b_right_forarm:rotateX"/>
+        <fixed id="pre:b_right_forarm:rotateX_to_post:b_right_forarm:rotateX">
+            <frame>
+                <a idref="pre:b_right_forarm:rotateX"/>
+                <b idref="post:b_right_forarm:rotateX"/>
+            </frame>
+        </fixed>
+        <frame id="pre:b_right_forarm:rotateY"/>
+        <frame id="post:b_right_forarm:rotateY"/>
+        <fixed id="pre:b_right_forarm:rotateY_to_post:b_right_forarm:rotateY">
+            <frame>
+                <a idref="pre:b_right_forarm:rotateY"/>
+                <b idref="post:b_right_forarm:rotateY"/>
+            </frame>
+        </fixed>
+        <frame id="pre:b_right_forarm:rotateZ"/>
+        <frame id="post:b_right_forarm:rotateZ"/>
+        <fixed id="pre:b_right_forarm:rotateZ_to_post:b_right_forarm:rotateZ">
+            <frame>
+                <a idref="pre:b_right_forarm:rotateZ"/>
+                <b idref="post:b_right_forarm:rotateZ"/>
+            </frame>
+        </fixed>
+        <fixed id="pre:b_right_forarm_to_pre:b_right_forarm:rotateX">
+            <frame>
+                <a idref="pre:b_right_forarm"/>
+                <b idref="pre:b_right_forarm:rotateX"/>
+            </frame>
+            <rotation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <fixed id="post:b_right_forarm:rotateX_to_pre:b_right_forarm:rotateY">
+            <frame>
+                <a idref="post:b_right_forarm:rotateX"/>
+                <b idref="pre:b_right_forarm:rotateY"/>
+            </frame>
+            <rotation>
+                <x>-90</x>
+                <y>0</y>
+                <z>0</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <fixed id="post:b_right_forarm:rotateY_to_pre:b_right_forarm:rotateZ">
+            <frame>
+                <a idref="post:b_right_forarm:rotateY"/>
+                <b idref="pre:b_right_forarm:rotateZ"/>
+            </frame>
+            <rotation>
+                <x>90</x>
+                <y>0</y>
+                <z>-90</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <fixed id="post:b_right_forarm:rotateZ_to_post:b_right_forarm">
+            <frame>
+                <a idref="post:b_right_forarm:rotateZ"/>
+                <b idref="post:b_right_forarm"/>
+            </frame>
+            <rotation>
+                <x>0</x>
+                <y>90</y>
+                <z>0</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <fixed id="post:b_torso_to_pre:b_right_upperarm">
+            <frame>
+                <a idref="post:b_torso"/>
+                <b idref="pre:b_right_upperarm"/>
+            </frame>
+            <rotation>
+                <x>-4.03662109375</x>
+                <y>167.39697265625</y>
+                <z>11.3373260498047</z>
+            </rotation>
+            <translation>
+                <x>0.02621040031785824</x>
+                <y>0.005213710640226259</y>
+                <z>-0.110387125015259</z>
+            </translation>
+        </fixed>
+        <frame id="pre:b_right_upperarm:rotateX"/>
+        <frame id="post:b_right_upperarm:rotateX"/>
+        <fixed id="pre:b_right_upperarm:rotateX_to_post:b_right_upperarm:rotateX">
+            <frame>
+                <a idref="pre:b_right_upperarm:rotateX"/>
+                <b idref="post:b_right_upperarm:rotateX"/>
+            </frame>
+        </fixed>
+        <frame id="pre:b_right_upperarm:rotateY"/>
+        <frame id="post:b_right_upperarm:rotateY"/>
+        <fixed id="pre:b_right_upperarm:rotateY_to_post:b_right_upperarm:rotateY">
+            <frame>
+                <a idref="pre:b_right_upperarm:rotateY"/>
+                <b idref="post:b_right_upperarm:rotateY"/>
+            </frame>
+        </fixed>
+        <frame id="pre:b_right_upperarm:rotateZ"/>
+        <frame id="post:b_right_upperarm:rotateZ"/>
+        <fixed id="pre:b_right_upperarm:rotateZ_to_post:b_right_upperarm:rotateZ">
+            <frame>
+                <a idref="pre:b_right_upperarm:rotateZ"/>
+                <b idref="post:b_right_upperarm:rotateZ"/>
+            </frame>
+        </fixed>
+        <fixed id="pre:b_right_upperarm_to_pre:b_right_upperarm:rotateX">
+            <frame>
+                <a idref="pre:b_right_upperarm"/>
+                <b idref="pre:b_right_upperarm:rotateX"/>
+            </frame>
+            <rotation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <fixed id="post:b_right_upperarm:rotateX_to_pre:b_right_upperarm:rotateY">
+            <frame>
+                <a idref="post:b_right_upperarm:rotateX"/>
+                <b idref="pre:b_right_upperarm:rotateY"/>
+            </frame>
+            <rotation>
+                <x>-90</x>
+                <y>0</y>
+                <z>0</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <fixed id="post:b_right_upperarm:rotateY_to_pre:b_right_upperarm:rotateZ">
+            <frame>
+                <a idref="post:b_right_upperarm:rotateY"/>
+                <b idref="pre:b_right_upperarm:rotateZ"/>
+            </frame>
+            <rotation>
+                <x>90</x>
+                <y>0</y>
+                <z>-90</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <fixed id="post:b_right_upperarm:rotateZ_to_post:b_right_upperarm">
+            <frame>
+                <a idref="post:b_right_upperarm:rotateZ"/>
+                <b idref="post:b_right_upperarm"/>
+            </frame>
+            <rotation>
+                <x>0</x>
+                <y>90</y>
+                <z>0</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <fixed id="post:b_spine_1_to_pre:b_torso">
+            <frame>
+                <a idref="post:b_spine_1"/>
+                <b idref="pre:b_torso"/>
+            </frame>
+            <rotation>
+                <x>-2.44266586124642e-12</x>
+                <y>180</y>
+                <z>9.66427421569824</z>
+            </rotation>
+            <translation>
+                <x>0.1172994511841366</x>
+                <y>9.536745437799399e-09</y>
+                <z>1.4210854715202e-16</z>
+            </translation>
+        </fixed>
+        <frame id="pre:b_torso:rotateX"/>
+        <frame id="post:b_torso:rotateX"/>
+        <fixed id="pre:b_torso:rotateX_to_post:b_torso:rotateX">
+            <frame>
+                <a idref="pre:b_torso:rotateX"/>
+                <b idref="post:b_torso:rotateX"/>
+            </frame>
+        </fixed>
+        <frame id="pre:b_torso:rotateY"/>
+        <frame id="post:b_torso:rotateY"/>
+        <fixed id="pre:b_torso:rotateY_to_post:b_torso:rotateY">
+            <frame>
+                <a idref="pre:b_torso:rotateY"/>
+                <b idref="post:b_torso:rotateY"/>
+            </frame>
+        </fixed>
+        <frame id="pre:b_torso:rotateZ"/>
+        <frame id="post:b_torso:rotateZ"/>
+        <fixed id="pre:b_torso:rotateZ_to_post:b_torso:rotateZ">
+            <frame>
+                <a idref="pre:b_torso:rotateZ"/>
+                <b idref="post:b_torso:rotateZ"/>
+            </frame>
+        </fixed>
+        <fixed id="pre:b_torso_to_pre:b_torso:rotateX">
+            <frame>
+                <a idref="pre:b_torso"/>
+                <b idref="pre:b_torso:rotateX"/>
+            </frame>
+            <rotation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <fixed id="post:b_torso:rotateX_to_pre:b_torso:rotateY">
+            <frame>
+                <a idref="post:b_torso:rotateX"/>
+                <b idref="pre:b_torso:rotateY"/>
+            </frame>
+            <rotation>
+                <x>-90</x>
+                <y>0</y>
+                <z>0</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <fixed id="post:b_torso:rotateY_to_pre:b_torso:rotateZ">
+            <frame>
+                <a idref="post:b_torso:rotateY"/>
+                <b idref="pre:b_torso:rotateZ"/>
+            </frame>
+            <rotation>
+                <x>90</x>
+                <y>0</y>
+                <z>-90</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <fixed id="post:b_torso:rotateZ_to_post:b_torso">
+            <frame>
+                <a idref="post:b_torso:rotateZ"/>
+                <b idref="post:b_torso"/>
+            </frame>
+            <rotation>
+                <x>0</x>
+                <y>270</y>
+                <z>0</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <fixed id="post:b_spine_2_to_pre:b_spine_1">
+            <frame>
+                <a idref="post:b_spine_2"/>
+                <b idref="pre:b_spine_1"/>
+            </frame>
+            <rotation>
+                <x>1.85188171221429e-12</x>
+                <y>180</y>
+                <z>-10.5256299972534</z>
+            </rotation>
+            <translation>
+                <x>0.1221853929007937</x>
+                <y>0</y>
+                <z>-1.4210854715202e-16</z>
+            </translation>
+        </fixed>
+        <frame id="pre:b_spine_1:rotateX"/>
+        <frame id="post:b_spine_1:rotateX"/>
+        <fixed id="pre:b_spine_1:rotateX_to_post:b_spine_1:rotateX">
+            <frame>
+                <a idref="pre:b_spine_1:rotateX"/>
+                <b idref="post:b_spine_1:rotateX"/>
+            </frame>
+        </fixed>
+        <frame id="pre:b_spine_1:rotateY"/>
+        <frame id="post:b_spine_1:rotateY"/>
+        <fixed id="pre:b_spine_1:rotateY_to_post:b_spine_1:rotateY">
+            <frame>
+                <a idref="pre:b_spine_1:rotateY"/>
+                <b idref="post:b_spine_1:rotateY"/>
+            </frame>
+        </fixed>
+        <frame id="pre:b_spine_1:rotateZ"/>
+        <frame id="post:b_spine_1:rotateZ"/>
+        <fixed id="pre:b_spine_1:rotateZ_to_post:b_spine_1:rotateZ">
+            <frame>
+                <a idref="pre:b_spine_1:rotateZ"/>
+                <b idref="post:b_spine_1:rotateZ"/>
+            </frame>
+        </fixed>
+        <fixed id="pre:b_spine_1_to_pre:b_spine_1:rotateX">
+            <frame>
+                <a idref="pre:b_spine_1"/>
+                <b idref="pre:b_spine_1:rotateX"/>
+            </frame>
+            <rotation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <fixed id="post:b_spine_1:rotateX_to_pre:b_spine_1:rotateY">
+            <frame>
+                <a idref="post:b_spine_1:rotateX"/>
+                <b idref="pre:b_spine_1:rotateY"/>
+            </frame>
+            <rotation>
+                <x>-90</x>
+                <y>0</y>
+                <z>0</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <fixed id="post:b_spine_1:rotateY_to_pre:b_spine_1:rotateZ">
+            <frame>
+                <a idref="post:b_spine_1:rotateY"/>
+                <b idref="pre:b_spine_1:rotateZ"/>
+            </frame>
+            <rotation>
+                <x>90</x>
+                <y>0</y>
+                <z>-90</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <fixed id="post:b_spine_1:rotateZ_to_post:b_spine_1">
+            <frame>
+                <a idref="post:b_spine_1:rotateZ"/>
+                <b idref="post:b_spine_1"/>
+            </frame>
+            <rotation>
+                <x>0</x>
+                <y>270</y>
+                <z>0</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <fixed id="post:b_spine_3_to_pre:b_spine_2">
+            <frame>
+                <a idref="post:b_spine_3"/>
+                <b idref="pre:b_spine_2"/>
+            </frame>
+            <rotation>
+                <x>2.39070373740657e-14</x>
+                <y>180</y>
+                <z>0.481292396783829</z>
+            </rotation>
+            <translation>
+                <x>0.07245866595712976</x>
+                <y>2.384186359449855e-09</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <frame id="pre:b_spine_2:rotateX"/>
+        <frame id="post:b_spine_2:rotateX"/>
+        <fixed id="pre:b_spine_2:rotateX_to_post:b_spine_2:rotateX">
+            <frame>
+                <a idref="pre:b_spine_2:rotateX"/>
+                <b idref="post:b_spine_2:rotateX"/>
+            </frame>
+        </fixed>
+        <frame id="pre:b_spine_2:rotateY"/>
+        <frame id="post:b_spine_2:rotateY"/>
+        <fixed id="pre:b_spine_2:rotateY_to_post:b_spine_2:rotateY">
+            <frame>
+                <a idref="pre:b_spine_2:rotateY"/>
+                <b idref="post:b_spine_2:rotateY"/>
+            </frame>
+        </fixed>
+        <frame id="pre:b_spine_2:rotateZ"/>
+        <frame id="post:b_spine_2:rotateZ"/>
+        <fixed id="pre:b_spine_2:rotateZ_to_post:b_spine_2:rotateZ">
+            <frame>
+                <a idref="pre:b_spine_2:rotateZ"/>
+                <b idref="post:b_spine_2:rotateZ"/>
+            </frame>
+        </fixed>
+        <fixed id="pre:b_spine_2_to_pre:b_spine_2:rotateX">
+            <frame>
+                <a idref="pre:b_spine_2"/>
+                <b idref="pre:b_spine_2:rotateX"/>
+            </frame>
+            <rotation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <fixed id="post:b_spine_2:rotateX_to_pre:b_spine_2:rotateY">
+            <frame>
+                <a idref="post:b_spine_2:rotateX"/>
+                <b idref="pre:b_spine_2:rotateY"/>
+            </frame>
+            <rotation>
+                <x>-90</x>
+                <y>0</y>
+                <z>0</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <fixed id="post:b_spine_2:rotateY_to_pre:b_spine_2:rotateZ">
+            <frame>
+                <a idref="post:b_spine_2:rotateY"/>
+                <b idref="pre:b_spine_2:rotateZ"/>
+            </frame>
+            <rotation>
+                <x>90</x>
+                <y>0</y>
+                <z>-90</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <fixed id="post:b_spine_2:rotateZ_to_post:b_spine_2">
+            <frame>
+                <a idref="post:b_spine_2:rotateZ"/>
+                <b idref="post:b_spine_2"/>
+            </frame>
+            <rotation>
+                <x>0</x>
+                <y>270</y>
+                <z>0</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <fixed id="post:b_pelvis_to_pre:b_spine_3">
+            <frame>
+                <a idref="post:b_pelvis"/>
+                <b idref="pre:b_spine_3"/>
+            </frame>
+            <rotation>
+                <x>1.94385692709343e-14</x>
+                <y>180</y>
+                <z>0.380063891410828</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <frame id="pre:b_spine_3:rotateX"/>
+        <frame id="post:b_spine_3:rotateX"/>
+        <fixed id="pre:b_spine_3:rotateX_to_post:b_spine_3:rotateX">
+            <frame>
+                <a idref="pre:b_spine_3:rotateX"/>
+                <b idref="post:b_spine_3:rotateX"/>
+            </frame>
+        </fixed>
+        <frame id="pre:b_spine_3:rotateY"/>
+        <frame id="post:b_spine_3:rotateY"/>
+        <fixed id="pre:b_spine_3:rotateY_to_post:b_spine_3:rotateY">
+            <frame>
+                <a idref="pre:b_spine_3:rotateY"/>
+                <b idref="post:b_spine_3:rotateY"/>
+            </frame>
+        </fixed>
+        <frame id="pre:b_spine_3:rotateZ"/>
+        <frame id="post:b_spine_3:rotateZ"/>
+        <fixed id="pre:b_spine_3:rotateZ_to_post:b_spine_3:rotateZ">
+            <frame>
+                <a idref="pre:b_spine_3:rotateZ"/>
+                <b idref="post:b_spine_3:rotateZ"/>
+            </frame>
+        </fixed>
+        <fixed id="pre:b_spine_3_to_pre:b_spine_3:rotateX">
+            <frame>
+                <a idref="pre:b_spine_3"/>
+                <b idref="pre:b_spine_3:rotateX"/>
+            </frame>
+            <rotation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <fixed id="post:b_spine_3:rotateX_to_pre:b_spine_3:rotateY">
+            <frame>
+                <a idref="post:b_spine_3:rotateX"/>
+                <b idref="pre:b_spine_3:rotateY"/>
+            </frame>
+            <rotation>
+                <x>-90</x>
+                <y>0</y>
+                <z>0</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <fixed id="post:b_spine_3:rotateY_to_pre:b_spine_3:rotateZ">
+            <frame>
+                <a idref="post:b_spine_3:rotateY"/>
+                <b idref="pre:b_spine_3:rotateZ"/>
+            </frame>
+            <rotation>
+                <x>90</x>
+                <y>0</y>
+                <z>-90</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <fixed id="post:b_spine_3:rotateZ_to_post:b_spine_3">
+            <frame>
+                <a idref="post:b_spine_3:rotateZ"/>
+                <b idref="post:b_spine_3"/>
+            </frame>
+            <rotation>
+                <x>0</x>
+                <y>270</y>
+                <z>0</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <frame id="pre:b_right_upperleg"/>
+        <body id="post:b_right_upperleg"/>
+        <frame id="pre:b_right_calf"/>
+        <body id="post:b_right_calf"/>
+        <frame id="pre:b_right_foot"/>
+        <body id="post:b_right_foot"/>
+        <frame id="pre:b_right_toe"/>
+        <body id="post:b_right_toe"/>
+        <fixed id="post:b_right_foot_to_pre:b_right_toe">
+            <frame>
+                <a idref="post:b_right_foot"/>
+                <b idref="pre:b_right_toe"/>
+            </frame>
+            <rotation>
+                <x>-1.35460396677445e-07</x>
+                <y>-10.0006799697876</y>
+                <z>61.4198951721191</z>
+            </rotation>
+            <translation>
+                <x>0.09778440475463662</x>
+                <y>0.06209699317323818</y>
+                <z>0.004188972018834486</z>
+            </translation>
+        </fixed>
+        <fixed id="pre:b_right_toe_to_post:b_right_toe">
+            <frame>
+                <a idref="pre:b_right_toe"/>
+                <b idref="post:b_right_toe"/>
+            </frame>
+        </fixed>	  
+        <fixed id="post:b_right_calf_to_pre:b_right_foot">
+            <frame>
+                <a idref="post:b_right_calf"/>
+                <b idref="pre:b_right_foot"/>
+            </frame>
+            <rotation>
+                <x>0.0190336927771568</x>
+                <y>0.158757403492928</y>
+                <z>37.4794540405273</z>
+            </rotation>
+            <translation>
+                <x>0.2664671071846132</x>
+                <y>0</y>
+                <z>9.536742027194153e-09</z>
+            </translation>
+        </fixed>
+        <frame id="pre:b_right_foot:rotateX"/>
+        <frame id="post:b_right_foot:rotateX"/>
+        <revolute id="pre:b_right_foot:rotateX_to_post:b_right_foot:rotateX">
+            <frame>
+                <a idref="pre:b_right_foot:rotateX"/>
+                <b idref="post:b_right_foot:rotateX"/>
+            </frame>
+        </revolute>
+        <frame id="pre:b_right_foot:rotateY"/>
+        <frame id="post:b_right_foot:rotateY"/>
+        <fixed id="pre:b_right_foot:rotateY_to_post:b_right_foot:rotateY">
+            <frame>
+                <a idref="pre:b_right_foot:rotateY"/>
+                <b idref="post:b_right_foot:rotateY"/>
+            </frame>
+        </fixed>
+        <frame id="pre:b_right_foot:rotateZ"/>
+        <frame id="post:b_right_foot:rotateZ"/>
+        <revolute id="pre:b_right_foot:rotateZ_to_post:b_right_foot:rotateZ">
+            <frame>
+                <a idref="pre:b_right_foot:rotateZ"/>
+                <b idref="post:b_right_foot:rotateZ"/>
+            </frame>
+        </revolute>
+        <fixed id="pre:b_right_foot_to_pre:b_right_foot:rotateX">
+            <frame>
+                <a idref="pre:b_right_foot"/>
+                <b idref="pre:b_right_foot:rotateX"/>
+            </frame>
+            <rotation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <fixed id="post:b_right_foot:rotateX_to_pre:b_right_foot:rotateY">
+            <frame>
+                <a idref="post:b_right_foot:rotateX"/>
+                <b idref="pre:b_right_foot:rotateY"/>
+            </frame>
+            <rotation>
+                <x>-90</x>
+                <y>0</y>
+                <z>0</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <fixed id="post:b_right_foot:rotateY_to_pre:b_right_foot:rotateZ">
+            <frame>
+                <a idref="post:b_right_foot:rotateY"/>
+                <b idref="pre:b_right_foot:rotateZ"/>
+            </frame>
+            <rotation>
+                <x>90</x>
+                <y>0</y>
+                <z>-90</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <fixed id="post:b_right_foot:rotateZ_to_post:b_right_foot">
+            <frame>
+                <a idref="post:b_right_foot:rotateZ"/>
+                <b idref="post:b_right_foot"/>
+            </frame>
+            <rotation>
+                <x>0</x>
+                <y>90</y>
+                <z>0</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <fixed id="post:b_right_upperleg_to_pre:b_right_calf">
+            <frame>
+                <a idref="post:b_right_upperleg"/>
+                <b idref="pre:b_right_calf"/>
+            </frame>
+            <rotation>
+                <x>0.000201314513105899</x>
+                <y>-0.031436949968338</y>
+                <z>-8.97412204742432</z>
+            </rotation>
+            <translation>
+                <x>0.3112793360615531</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <frame id="pre:b_right_calf:rotateX"/>
+        <frame id="post:b_right_calf:rotateX"/>
+        <revolute id="pre:b_right_calf:rotateX_to_post:b_right_calf:rotateX">
+            <frame>
+                <a idref="pre:b_right_calf:rotateX"/>
+                <b idref="post:b_right_calf:rotateX"/>
+            </frame>
+        </revolute>
+        <frame id="pre:b_right_calf:rotateY"/>
+        <frame id="post:b_right_calf:rotateY"/>
+        <fixed id="pre:b_right_calf:rotateY_to_post:b_right_calf:rotateY">
+            <frame>
+                <a idref="pre:b_right_calf:rotateY"/>
+                <b idref="post:b_right_calf:rotateY"/>
+            </frame>
+        </fixed>
+        <frame id="pre:b_right_calf:rotateZ"/>
+        <frame id="post:b_right_calf:rotateZ"/>
+        <fixed id="pre:b_right_calf:rotateZ_to_post:b_right_calf:rotateZ">
+            <frame>
+                <a idref="pre:b_right_calf:rotateZ"/>
+                <b idref="post:b_right_calf:rotateZ"/>
+            </frame>
+        </fixed>
+        <fixed id="pre:b_right_calf_to_pre:b_right_calf:rotateX">
+            <frame>
+                <a idref="pre:b_right_calf"/>
+                <b idref="pre:b_right_calf:rotateX"/>
+            </frame>
+            <rotation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <fixed id="post:b_right_calf:rotateX_to_pre:b_right_calf:rotateY">
+            <frame>
+                <a idref="post:b_right_calf:rotateX"/>
+                <b idref="pre:b_right_calf:rotateY"/>
+            </frame>
+            <rotation>
+                <x>-90</x>
+                <y>0</y>
+                <z>0</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <fixed id="post:b_right_calf:rotateY_to_pre:b_right_calf:rotateZ">
+            <frame>
+                <a idref="post:b_right_calf:rotateY"/>
+                <b idref="pre:b_right_calf:rotateZ"/>
+            </frame>
+            <rotation>
+                <x>90</x>
+                <y>0</y>
+                <z>-90</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <fixed id="post:b_right_calf:rotateZ_to_post:b_right_calf">
+            <frame>
+                <a idref="post:b_right_calf:rotateZ"/>
+                <b idref="post:b_right_calf"/>
+            </frame>
+            <rotation>
+                <x>0</x>
+                <y>90</y>
+                <z>0</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <fixed id="post:b_pelvis_to_pre:b_right_upperleg">
+            <frame>
+                <a idref="post:b_pelvis"/>
+                <b idref="pre:b_right_upperleg"/>
+            </frame>
+            <rotation>
+                <x>-3.0517578125e-05</x>
+                <y>179.999572753906</y>
+                <z>0.088165283203125</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>-0.0799999952316284</z>
+            </translation>
+        </fixed>
+        <frame id="pre:b_right_upperleg:rotateZ"/>
+        <frame id="post:b_right_upperleg:rotateZ"/>
+        <revolute id="pre:b_right_upperleg:rotateZ_to_post:b_right_upperleg:rotateZ">
+            <frame>
+                <a idref="pre:b_right_upperleg:rotateZ"/>
+                <b idref="post:b_right_upperleg:rotateZ"/>
+            </frame>
+        </revolute>
+        <frame id="pre:b_right_upperleg:rotateY"/>
+        <frame id="post:b_right_upperleg:rotateY"/>
+        <revolute id="pre:b_right_upperleg:rotateY_to_post:b_right_upperleg:rotateY">
+            <frame>
+                <a idref="pre:b_right_upperleg:rotateY"/>
+                <b idref="post:b_right_upperleg:rotateY"/>
+            </frame>
+        </revolute>
+        <frame id="pre:b_right_upperleg:rotateX"/>
+        <frame id="post:b_right_upperleg:rotateX"/>
+        <revolute id="pre:b_right_upperleg:rotateX_to_post:b_right_upperleg:rotateX">
+            <frame>
+                <a idref="pre:b_right_upperleg:rotateX"/>
+                <b idref="post:b_right_upperleg:rotateX"/>
+            </frame>
+        </revolute>
+        <fixed id="pre:b_right_upperleg_to_pre:b_right_upperleg:rotateZ">
+            <frame>
+                <a idref="pre:b_right_upperleg"/>
+                <b idref="pre:b_right_upperleg:rotateZ"/>
+            </frame>
+            <rotation>
+                <x>0</x>
+                <y>-90</y>
+                <z>0</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <fixed id="post:b_right_upperleg:rotateZ_to_pre:b_right_upperleg:rotateY">
+            <frame>
+                <a idref="post:b_right_upperleg:rotateZ"/>
+                <b idref="pre:b_right_upperleg:rotateY"/>
+            </frame>
+            <rotation>
+                <x>-90</x>
+                <y>0</y>
+                <z>0</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <fixed id="post:b_right_upperleg:rotateY_to_pre:b_right_upperleg:rotateX">
+            <frame>
+                <a idref="post:b_right_upperleg:rotateY"/>
+                <b idref="pre:b_right_upperleg:rotateX"/>
+            </frame>
+            <rotation>
+                <x>90</x>
+                <y>0</y>
+                <z>-90</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <fixed id="post:b_right_upperleg:rotateX_to_post:b_right_upperleg">
+            <frame>
+                <a idref="post:b_right_upperleg:rotateX"/>
+                <b idref="post:b_right_upperleg"/>
+            </frame>
+            <rotation>
+                <x>0</x>
+                <y>180</y>
+                <z>0</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <fixed id="world_to_pre:b_pelvis">
+            <frame>
+                <a idref="world"/>
+                <b idref="pre:b_pelvis"/>
+            </frame>
+            <rotation>
+				<x>0</x>
+				<y>0</y>
+				<z>0</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0.643951034545898</z>
+            </translation>
+        </fixed>
+        <frame id="prism2rev:b_pelvis"/>
+        <fixed id="pre:b_pelvis_to_pre:b_pelvis:prismX">
+            <frame>
+                <a idref="pre:b_pelvis"/>
+                <b idref="pre:b_pelvis:prismX"/>
+            </frame>
+            <rotation>
+                <x>0</x>
+                <y>90</y>
+                <z>0</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <frame id="pre:b_pelvis:prismX"/>
+        <frame id="post:b_pelvis:prismX"/>
+        <prismatic id="pre:b_pelvis:prismX_to_post:b_pelvis:prismX">
+            <frame>
+                <a idref="pre:b_pelvis:prismX"/>
+                <b idref="post:b_pelvis:prismX"/>
+            </frame>
+        </prismatic>
+        <fixed id="post:b_pelvis:prismX_to_pre:b_pelvis:prismY">
+            <frame>
+                <a idref="post:b_pelvis:prismX"/>
+                <b idref="pre:b_pelvis:prismY"/>
+            </frame>
+            <rotation>
+                <x>-90</x>
+                <y>0</y>
+                <z>0</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <frame id="pre:b_pelvis:prismY"/>
+        <frame id="post:b_pelvis:prismY"/>
+        <prismatic id="pre:b_pelvis:prismY_to_post:b_pelvis:prismY">
+            <frame>
+                <a idref="pre:b_pelvis:prismY"/>
+                <b idref="post:b_pelvis:prismY"/>
+            </frame>
+        </prismatic>
+        <fixed id="post:b_pelvis:prismY_to_pre:b_pelvis:prismZ">
+            <frame>
+                <a idref="post:b_pelvis:prismY"/>
+                <b idref="pre:b_pelvis:prismZ"/>
+            </frame>
+            <rotation>
+                <x>90</x>
+                <y>0</y>
+                <z>-90</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <frame id="pre:b_pelvis:prismZ"/>
+        <frame id="post:b_pelvis:prismZ"/>
+        <prismatic id="pre:b_pelvis:prismZ_to_post:b_pelvis:prismZ">
+            <frame>
+                <a idref="pre:b_pelvis:prismZ"/>
+                <b idref="post:b_pelvis:prismZ"/>
+            </frame>
+        </prismatic>
+        <fixed id="post:b_pelvis:prismZ_to_prism2rev:b_pelvis">
+            <frame>
+                <a idref="post:b_pelvis:prismZ"/>
+                <b idref="prism2rev:b_pelvis"/>
+            </frame>
+            <rotation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <frame id="pre:b_pelvis:rotateX"/>
+        <frame id="post:b_pelvis:rotateX"/>
+        <revolute id="pre:b_pelvis:rotateX_to_post:b_pelvis:rotateX">
+            <frame>
+                <a idref="pre:b_pelvis:rotateX"/>
+                <b idref="post:b_pelvis:rotateX"/>
+            </frame>
+        </revolute>
+        <frame id="pre:b_pelvis:rotateY"/>
+        <frame id="post:b_pelvis:rotateY"/>
+        <revolute id="pre:b_pelvis:rotateY_to_post:b_pelvis:rotateY">
+            <frame>
+                <a idref="pre:b_pelvis:rotateY"/>
+                <b idref="post:b_pelvis:rotateY"/>
+            </frame>
+        </revolute>
+        <frame id="pre:b_pelvis:rotateZ"/>
+        <frame id="post:b_pelvis:rotateZ"/>
+        <revolute id="pre:b_pelvis:rotateZ_to_post:b_pelvis:rotateZ">
+            <frame>
+                <a idref="pre:b_pelvis:rotateZ"/>
+                <b idref="post:b_pelvis:rotateZ"/>
+            </frame>
+        </revolute>
+        <fixed id="prism2rev:b_pelvis_to_pre:b_pelvis:rotateX">
+            <frame>
+                <a idref="prism2rev:b_pelvis"/>
+                <b idref="pre:b_pelvis:rotateX"/>
+            </frame>
+            <rotation>
+                <x>0</x>
+                <y>90</y>
+                <z>0</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <fixed id="post:b_pelvis:rotateX_to_pre:b_pelvis:rotateY">
+            <frame>
+                <a idref="post:b_pelvis:rotateX"/>
+                <b idref="pre:b_pelvis:rotateY"/>
+            </frame>
+            <rotation>
+                <x>-90</x>
+                <y>0</y>
+                <z>0</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <fixed id="post:b_pelvis:rotateY_to_pre:b_pelvis:rotateZ">
+            <frame>
+                <a idref="post:b_pelvis:rotateY"/>
+                <b idref="pre:b_pelvis:rotateZ"/>
+            </frame>
+            <rotation>
+                <x>90</x>
+                <y>0</y>
+                <z>-90</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+        <fixed id="post:b_pelvis:rotateZ_to_post:b_pelvis">
+            <frame>
+                <a idref="post:b_pelvis:rotateZ"/>
+                <b idref="post:b_pelvis"/>
+            </frame>
+            <rotation>
+                <x>0</x>
+                <y>-90</y>
+                <z>-90</z>
+            </rotation>
+            <translation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </translation>
+        </fixed>
+    </model>
+</rlmdl>

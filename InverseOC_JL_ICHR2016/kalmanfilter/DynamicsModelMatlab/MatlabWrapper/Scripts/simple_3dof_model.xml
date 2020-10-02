@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rlmdl xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="rlmdl.xsd">
+	<model>
+		<manufacturer>Vlad</manufacturer>
+		<name>3DOF_1</name>
+		<world id="world">
+			<rotation>
+				<x>0</x>
+				<y>0</y>
+				<z>0</z>
+			</rotation>
+			<translation>
+				<x>0</x>
+				<y>0</y>
+				<z>0</z>
+			</translation>
+			<g>
+				<x>0</x>
+				<y>0</y>
+				<z>9.80665</z>
+			</g>
+		</world>
+		<body id="frame0"/>
+		<body id="frame1"/>
+		<body id="frame2"/>
+		<body id="frame3"/>
+		<body id="frame4"/>
+        <body id="frame5"/>
+        <body id="frame_ee"/>
+        
+		
+		<fixed id="world_to_base">
+			<frame>
+				<a idref="world"/>
+				<b idref="frame0"/>
+			</frame>
+			<rotation>
+				<x>-90</x>
+				<y>0</y>
+				<z>0</z>
+			</rotation>
+            <translation>
+				<x>0</x>
+				<y>0</y>
+				<z>0</z>
+			</translation>
+		</fixed>
+		
+		<revolute id="joint0">
+			<frame>
+				<a idref="frame0"/>
+				<b idref="frame1"/>
+			</frame>
+		</revolute>
+		
+		<fixed id="fixed0">
+			<frame>
+				<a idref="frame1"/>
+				<b idref="frame2"/>
+			</frame>
+			<translation>
+				<x>0</x>
+				<y>-0.25</y>
+				<z>0</z>
+			</translation>
+		</fixed>
+		
+		<revolute id="joint1">
+			<frame>
+				<a idref="frame2"/>
+				<b idref="frame3"/>
+			</frame>
+		</revolute>
+		
+		<fixed id="fixed1">
+			<frame>
+				<a idref="frame3"/>
+				<b idref="frame4"/>
+			</frame>
+			<translation>
+				<x>0</x>
+				<y>-0.25</y>
+				<z>0</z>
+			</translation>
+		</fixed>
+        
+        <revolute id="joint2">
+			<frame>
+				<a idref="frame4"/>
+				<b idref="frame5"/>
+			</frame>
+		</revolute>
+        
+        
+		<fixed id="fixed2">
+			<frame>
+				<a idref="frame5"/>
+				<b idref="frame_ee"/>
+			</frame>
+			<translation>
+				<x>0</x>
+				<y>-0.1</y>
+				<z>-0.20</z>
+			</translation>
+		</fixed>
+		
+	</model>
+</rlmdl>

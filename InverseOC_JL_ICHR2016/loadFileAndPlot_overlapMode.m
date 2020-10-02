@@ -3,7 +3,7 @@ function [t_obs, avgWeightArray_ioc, avgRatioArray_ioc, cost_function_names_sort
 individualplotflag = 0;
 plotIOCWeightsOnly = 0;
 plotUnnormedJflag = 1;
-loadOnly=1;
+loadOnly=0;
 
     colorVec = [0,0.5,0; 0,0.8,0; 0.7,0.95,0; 1,0.8,0.1; 1,0.55,0; ...
             0.9,0,0.55; 0.4,0.1,0.7; 0.8,0.7,1; 0,0.5,0.9; 0,0.85,1; ...
@@ -123,114 +123,114 @@ x0=100;    y0=100;    width=900;    height=800;
     end
     
     outputStruct = struct;
-%end
-    
-    % pull out the final window and normalize based on time
-    timeStruct = createTaskRepetitionTimeStruct();
-    ind = find(ismember([timeStruct.name], currInstName));
-    dt = 0.01;
-    
-    % reconstruct the position data
-    matDataPath = ['../../expressiveiocData/dataMat/2019_04_11_rightarm3/matEkfIk/' currInstName '_OnlyRightArm_' currInstName(8:9) '_mocap_mocap_X00_floating_ekfId1_ekfIk.mat'];
-    modelPath = '../../../kalmanfilter/ik_framework/instance_expressiveioc/model/ioc_v4_rightarm_fixedbase.xml';
-    modelInstance = rlModelInstance_expressiveioc_rightArm(0);
-    modelInstance.loadModelFromModelSpecsNoSensor(modelPath, matDataPath);
-    
-    mdl = modelInstance.model;
-%     mdl = rlCModel();
-    f = mdl.getFrameByName('frame_rhand_end');
-    pickId = round(timeStruct(ind).pickTarget/2);
-    placementId = round(timeStruct(ind).placementTarget/2);
-    indsToRun = pickId:placementId;
-%     indsToRun = 1:length(feature_full.t);
-    indX = 0;
-    
-    mdl.position = feature_full.q(:, indsToRun(1));
-    mdl.forwardPosition();
-    cart0 = f.t(1:3, 4);
-    
-    
-%     if 0 
-%         vis = rlVisualizer('vis',640,480);
-%         mdl.forwardPosition();
-%         vis.addModel(mdl);
-%         vis.update();
-%     end
-    
-    for ind_t = indsToRun
-        indX = indX + 1;
-        mdl.position = feature_full.q(:, ind_t);
-        mdl.forwardPosition();
-        cart = f.t(1:3, 4) - cart0;
-        t_pos(indX) = feature_full.t(ind_t);
-        x(indX,:) = cart;
-        x_norm(indX) = norm(cart);
-        
-%         if 0
-%             vis.update();
-%         end
-    end
-    
-    dx_norm = calcDeriv(x_norm, dt);
-%     A = find(abs(dx_norm) < 0.05);
-%     B = diff(A);
-%     ii = [0, diff(B(:)')==0,0];
-%     i1 = strfind(ii,[0 1]);
-%     i2 = strfind(ii,[1 0]);
-%     out = [B(i1)',i1(:),i2(:),i2(:)-i1(:)];
-%     [~, longRange] = max(out(:,4));
-%     midVal = floor((i2(longRange) - i1(longRange))/2);
-%     midVal2 = midVal + sum(B(1:midVal)) - 2; % fix the diff offsets
-    
-    % midVal2 = timeStruct(ind).final.middle - timeStruct(ind).final.start;
-    midVal2 = placementId - pickId;
-    % midVal3 = timeStruct(ind).final.start + midVal2;
-    
-% %     if 0 
-%     figure; subplot(211); plot(indsToRun, x_norm); hold on; 
-%     plot(indsToRun(midVal2), x_norm(midVal2), '--gs',...
-%         'LineWidth',2,...
-%         'MarkerSize',10,...
-%         'MarkerEdgeColor','b',...
-%         'MarkerFaceColor',[0.5,0.5,0.5]);
-%     title(currInstName);
-%     subplot(212); plot(indsToRun, dx_norm); hold on;
-%     plot(indsToRun(midVal2), dx_norm(midVal2), '--gs',...
-%         'LineWidth',2,...
-%         'MarkerSize',10,...
-%         'MarkerEdgeColor','b',...
-%         'MarkerFaceColor',[0.5,0.5,0.5]);
-%     title(num2str(midVal3));
-% %     end
-    
-    % now scale by position
-    startingDist = 0;
-    endingDist = x_norm(midVal2);
-    x_norm_going = x_norm / endingDist;  startOffset = indsToRun(1);
-
-    inc = 0:0.05:1;
-    y = x_norm_going(1:midVal2)';
-    x = linspace( 1, 0, length(y))';
-    p = polyfit(x,y,1);
-    pVal = polyval(p,x);
-   
-    indLa = [];
-    weightLa = [];
-    ratioLa = [];
-    for i = 1:length(inc)
-        errVal = abs(pVal - inc(i));
-        [minErr, minInd] = min(errVal);
-        
-        indLa(i) = minInd;
-%         [val, indLa(i)] = findClosestValue(inc(i), x_norm_going);
-        ratioLa(:, i) = avgRatioArray_belowThres(startOffset + indLa(i), :);
-        weightLa(:, i) = avgWeightArray_belowThres(startOffset + indLa(i), :);
-    end
-    
-    outputStruct.currInstName = currInstName;
-    outputStruct.indices_forward = indLa;
-    outputStruct.ratio_forward = ratioLa;
-    outputStruct.weights_forward = weightLa;
+% % % %end
+% % %     
+% % %     % pull out the final window and normalize based on time
+% % %     timeStruct = createTaskRepetitionTimeStruct();
+% % %     ind = find(ismember([timeStruct.name], currInstName));
+% % %     dt = 0.01;
+% % %     
+% % %     % reconstruct the position data
+% % %     matDataPath = ['../../expressiveiocData/dataMat/2019_04_11_rightarm3/matEkfIk/' currInstName '_OnlyRightArm_' currInstName(8:9) '_mocap_mocap_X00_floating_ekfId1_ekfIk.mat'];
+% % %     modelPath = '../../../kalmanfilter/ik_framework/instance_expressiveioc/model/ioc_v4_rightarm_fixedbase.xml';
+% % %     modelInstance = rlModelInstance_expressiveioc_rightArm(0);
+% % %     modelInstance.loadModelFromModelSpecsNoSensor(modelPath, matDataPath);
+% % %     
+% % %     mdl = modelInstance.model;
+% % % %     mdl = rlCModel();
+% % %     f = mdl.getFrameByName('frame_rhand_end');
+% % %     pickId = round(timeStruct(ind).pickTarget/2);
+% % %     placementId = round(timeStruct(ind).placementTarget/2);
+% % %     indsToRun = pickId:placementId;
+% % % %     indsToRun = 1:length(feature_full.t);
+% % %     indX = 0;
+% % %     
+% % %     mdl.position = feature_full.q(:, indsToRun(1));
+% % %     mdl.forwardPosition();
+% % %     cart0 = f.t(1:3, 4);
+% % %     
+% % %     
+% % % %     if 0 
+% % % %         vis = rlVisualizer('vis',640,480);
+% % % %         mdl.forwardPosition();
+% % % %         vis.addModel(mdl);
+% % % %         vis.update();
+% % % %     end
+% % %     
+% % %     for ind_t = indsToRun
+% % %         indX = indX + 1;
+% % %         mdl.position = feature_full.q(:, ind_t);
+% % %         mdl.forwardPosition();
+% % %         cart = f.t(1:3, 4) - cart0;
+% % %         t_pos(indX) = feature_full.t(ind_t);
+% % %         x(indX,:) = cart;
+% % %         x_norm(indX) = norm(cart);
+% % %         
+% % % %         if 0
+% % % %             vis.update();
+% % % %         end
+% % %     end
+% % %     
+% % %     dx_norm = calcDeriv(x_norm, dt);
+% % % %     A = find(abs(dx_norm) < 0.05);
+% % % %     B = diff(A);
+% % % %     ii = [0, diff(B(:)')==0,0];
+% % % %     i1 = strfind(ii,[0 1]);
+% % % %     i2 = strfind(ii,[1 0]);
+% % % %     out = [B(i1)',i1(:),i2(:),i2(:)-i1(:)];
+% % % %     [~, longRange] = max(out(:,4));
+% % % %     midVal = floor((i2(longRange) - i1(longRange))/2);
+% % % %     midVal2 = midVal + sum(B(1:midVal)) - 2; % fix the diff offsets
+% % %     
+% % %     % midVal2 = timeStruct(ind).final.middle - timeStruct(ind).final.start;
+% % %     midVal2 = placementId - pickId;
+% % %     % midVal3 = timeStruct(ind).final.start + midVal2;
+% % %     
+% % % % %     if 0 
+% % % %     figure; subplot(211); plot(indsToRun, x_norm); hold on; 
+% % % %     plot(indsToRun(midVal2), x_norm(midVal2), '--gs',...
+% % % %         'LineWidth',2,...
+% % % %         'MarkerSize',10,...
+% % % %         'MarkerEdgeColor','b',...
+% % % %         'MarkerFaceColor',[0.5,0.5,0.5]);
+% % % %     title(currInstName);
+% % % %     subplot(212); plot(indsToRun, dx_norm); hold on;
+% % % %     plot(indsToRun(midVal2), dx_norm(midVal2), '--gs',...
+% % % %         'LineWidth',2,...
+% % % %         'MarkerSize',10,...
+% % % %         'MarkerEdgeColor','b',...
+% % % %         'MarkerFaceColor',[0.5,0.5,0.5]);
+% % % %     title(num2str(midVal3));
+% % % % %     end
+% % %     
+% % %     % now scale by position
+% % %     startingDist = 0;
+% % %     endingDist = x_norm(midVal2);
+% % %     x_norm_going = x_norm / endingDist;  startOffset = indsToRun(1);
+% % % 
+% % %     inc = 0:0.05:1;
+% % %     y = x_norm_going(1:midVal2)';
+% % %     x = linspace( 1, 0, length(y))';
+% % %     p = polyfit(x,y,1);
+% % %     pVal = polyval(p,x);
+% % %    
+% % %     indLa = [];
+% % %     weightLa = [];
+% % %     ratioLa = [];
+% % %     for i = 1:length(inc)
+% % %         errVal = abs(pVal - inc(i));
+% % %         [minErr, minInd] = min(errVal);
+% % %         
+% % %         indLa(i) = minInd;
+% % % %         [val, indLa(i)] = findClosestValue(inc(i), x_norm_going);
+% % %         ratioLa(:, i) = avgRatioArray_belowThres(startOffset + indLa(i), :);
+% % %         weightLa(:, i) = avgWeightArray_belowThres(startOffset + indLa(i), :);
+% % %     end
+% % %     
+% % %     outputStruct.currInstName = currInstName;
+% % %     outputStruct.indices_forward = indLa;
+% % %     outputStruct.ratio_forward = ratioLa;
+% % %     outputStruct.weights_forward = weightLa;
 
   %     Backward: placement to pick location (It is not needed any more)  
 % %     inc = 1:-0.05:0;

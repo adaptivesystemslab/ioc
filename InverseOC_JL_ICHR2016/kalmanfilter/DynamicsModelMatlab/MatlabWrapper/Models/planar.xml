@@ -1,0 +1,704 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rlmdl xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="rlmdl.xsd">
+	<model>
+		<manufacturer>Featherstone</manufacturer>
+		<name>planar2</name>
+		<world id="frame0">
+			<rotation>
+				<x>0</x>
+				<y>0</y>
+				<z>0</z>
+			</rotation>
+			<translation>
+				<x>0</x>
+				<y>0</y>
+				<z>0</z>
+			</translation>
+			<g>
+				<x>0</x>
+				<y>0</y>
+				<z>9.80665</z>
+			</g>
+		</world>
+		<frame id="frame1"/>
+		<body id="frame2">
+			<cm>
+				<x>0.2</x>
+				<y>0</y>
+				<z>0</z>
+			</cm>
+			<i>
+				<xx>0.01</xx>
+				<yy>0.083333333</yy>
+				<zz>0.083333333</zz>
+				<yz>0</yz>
+				<xz>0</xz>
+				<xy>0</xy>
+			</i>
+			<m>1</m>
+		</body>
+		<frame id="frame3"/>
+		<body id="frame4">
+			<cm>
+				<x>0.2</x>
+				<y>0</y>
+				<z>0</z>
+			</cm>
+			<i>
+				<xx>0.01</xx>
+				<yy>0.083333333</yy>
+				<zz>0.083333333</zz>
+				<yz>0</yz>
+				<xz>0</xz>
+				<xy>0</xy>
+			</i>
+			<m>1</m>
+		</body>
+		<frame id="frame5"/>
+        <body id="frame6">
+			<cm>
+				<x>0.2</x>
+				<y>0</y>
+				<z>0</z>
+			</cm>
+			<i>
+				<xx>0.01</xx>
+				<yy>0.083333333</yy>
+				<zz>0.083333333</zz>
+				<yz>0</yz>
+				<xz>0</xz>
+				<xy>0</xy>
+			</i>
+			<m>1</m>
+		</body>
+        <frame id="frame7"/>
+        <body id="frame8">
+			<cm>
+				<x>0.2</x>
+				<y>0</y>
+				<z>0</z>
+			</cm>
+			<i>
+				<xx>0.01</xx>
+				<yy>0.083333333</yy>
+				<zz>0.083333333</zz>
+				<yz>0</yz>
+				<xz>0</xz>
+				<xy>0</xy>
+			</i>
+			<m>1</m>
+		</body>
+        <frame id="frame9"/>
+        <body id="frame10">
+			<cm>
+				<x>0.2</x>
+				<y>0</y>
+				<z>0</z>
+			</cm>
+			<i>
+				<xx>0.01</xx>
+				<yy>0.083333333</yy>
+				<zz>0.083333333</zz>
+				<yz>0</yz>
+				<xz>0</xz>
+				<xy>0</xy>
+			</i>
+			<m>1</m>
+		</body>
+        <frame id="frame11"/>
+        <body id="frame12">
+			<cm>
+				<x>0.2</x>
+				<y>0</y>
+				<z>0</z>
+			</cm>
+			<i>
+				<xx>0.01</xx>
+				<yy>0.083333333</yy>
+				<zz>0.083333333</zz>
+				<yz>0</yz>
+				<xz>0</xz>
+				<xy>0</xy>
+			</i>
+			<m>1</m>
+		</body>
+        <frame id="frame13"/>
+        <body id="frame14">
+			<cm>
+				<x>0.2</x>
+				<y>0</y>
+				<z>0</z>
+			</cm>
+			<i>
+				<xx>0.01</xx>
+				<yy>0.083333333</yy>
+				<zz>0.083333333</zz>
+				<yz>0</yz>
+				<xz>0</xz>
+				<xy>0</xy>
+			</i>
+			<m>1</m>
+		</body>
+        <frame id="frame15"/>
+        <body id="frame16">
+			<cm>
+				<x>0.2</x>
+				<y>0</y>
+				<z>0</z>
+			</cm>
+			<i>
+				<xx>0.01</xx>
+				<yy>0.083333333</yy>
+				<zz>0.083333333</zz>
+				<yz>0</yz>
+				<xz>0</xz>
+				<xy>0</xy>
+			</i>
+			<m>1</m>
+		</body>
+        <frame id="frame17"/>
+        <body id="frame18">
+			<cm>
+				<x>0.2</x>
+				<y>0</y>
+				<z>0</z>
+			</cm>
+			<i>
+				<xx>0.01</xx>
+				<yy>0.083333333</yy>
+				<zz>0.083333333</zz>
+				<yz>0</yz>
+				<xz>0</xz>
+				<xy>0</xy>
+			</i>
+			<m>1</m>
+		</body>
+        <frame id="frame19"/>
+        <body id="frame20">
+			<cm>
+				<x>0.2</x>
+				<y>0</y>
+				<z>0</z>
+			</cm>
+			<i>
+				<xx>0.01</xx>
+				<yy>0.083333333</yy>
+				<zz>0.083333333</zz>
+				<yz>0</yz>
+				<xz>0</xz>
+				<xy>0</xy>
+			</i>
+			<m>1</m>
+		</body>
+        <frame id="frame21"/>
+        <body id="frame22">
+			<cm>
+				<x>0.2</x>
+				<y>0</y>
+				<z>0</z>
+			</cm>
+			<i>
+				<xx>0.01</xx>
+				<yy>0.083333333</yy>
+				<zz>0.083333333</zz>
+				<yz>0</yz>
+				<xz>0</xz>
+				<xy>0</xy>
+			</i>
+			<m>1</m>
+		</body>
+        <frame id="frame23"/>
+        <!--<body id="frame24">
+			<cm>
+				<x>0.2</x>
+				<y>0</y>
+				<z>0</z>
+			</cm>
+			<i>
+				<xx>0.01</xx>
+				<yy>0.083333333</yy>
+				<zz>0.083333333</zz>
+				<yz>0</yz>
+				<xz>0</xz>
+				<xy>0</xy>
+			</i>
+			<m>1</m>
+		</body>
+        <frame id="frame25"/>
+        <body id="frame26">
+			<cm>
+				<x>0.2</x>
+				<y>0</y>
+				<z>0</z>
+			</cm>
+			<i>
+				<xx>0.01</xx>
+				<yy>0.083333333</yy>
+				<zz>0.083333333</zz>
+				<yz>0</yz>
+				<xz>0</xz>
+				<xy>0</xy>
+			</i>
+			<m>1</m>
+		</body>
+        <frame id="frame27"/>
+                <body id="frame28">
+			<cm>
+				<x>0.2</x>
+				<y>0</y>
+				<z>0</z>
+			</cm>
+			<i>
+				<xx>0.01</xx>
+				<yy>0.083333333</yy>
+				<zz>0.083333333</zz>
+				<yz>0</yz>
+				<xz>0</xz>
+				<xy>0</xy>
+			</i>
+			<m>1</m>
+		</body>
+        <frame id="frame29"/>
+        <body id="frame30">
+			<cm>
+				<x>0.2</x>
+				<y>0</y>
+				<z>0</z>
+			</cm>
+			<i>
+				<xx>0.01</xx>
+				<yy>0.083333333</yy>
+				<zz>0.083333333</zz>
+				<yz>0</yz>
+				<xz>0</xz>
+				<xy>0</xy>
+			</i>
+			<m>1</m>
+		</body>
+        <frame id="frame31"/>
+        <body id="frame32">
+			<cm>
+				<x>0.2</x>
+				<y>0</y>
+				<z>0</z>
+			</cm>
+			<i>
+				<xx>0.01</xx>
+				<yy>0.083333333</yy>
+				<zz>0.083333333</zz>
+				<yz>0</yz>
+				<xz>0</xz>
+				<xy>0</xy>
+			</i>
+			<m>1</m>
+		</body>
+        <frame id="frame33"/>
+        <body id="frame34">
+			<cm>
+				<x>0.2</x>
+				<y>0</y>
+				<z>0</z>
+			</cm>
+			<i>
+				<xx>0.01</xx>
+				<yy>0.083333333</yy>
+				<zz>0.083333333</zz>
+				<yz>0</yz>
+				<xz>0</xz>
+				<xy>0</xy>
+			</i>
+			<m>1</m>
+		</body>
+        <frame id="frame35"/> -->
+		<fixed id="link0">
+			<frame>
+				<a idref="frame0"/>
+				<b idref="frame1"/>
+			</frame>
+			<rotation>
+				<x>-90</x>
+				<y>0</y>
+				<z>0</z>
+			</rotation>
+			<translation>
+				<x>0</x>
+				<y>0</y>
+				<z>2</z>
+			</translation>
+		</fixed>
+		<revolute id="joint0">
+			<frame>
+				<a idref="frame1"/>
+				<b idref="frame2"/>
+			</frame>
+		</revolute>
+		<fixed id="link1">
+			<frame>
+				<a idref="frame2"/>
+				<b idref="frame3"/>
+			</frame>
+			<rotation>
+				<x>0</x>
+				<y>0</y>
+				<z>0</z>
+			</rotation>
+			<translation>
+				<x>0.4</x>
+				<y>0</y>
+				<z>0</z>
+			</translation>
+		</fixed>
+		<revolute id="joint1">
+			<frame>
+				<a idref="frame3"/>
+				<b idref="frame4"/>
+			</frame>
+		</revolute>
+		<fixed id="link2">
+			<frame>
+				<a idref="frame4"/>
+				<b idref="frame5"/>
+			</frame>
+			<rotation>
+				<x>0</x>
+				<y>0</y>
+				<z>0</z>
+			</rotation>
+			<translation>
+				<x>0.4</x>
+				<y>0</y>
+				<z>0</z>
+			</translation>
+		</fixed>
+        <revolute id="joint2">
+			<frame>
+				<a idref="frame5"/>
+				<b idref="frame6"/>
+			</frame>
+		</revolute>
+        <fixed id="link3">
+			<frame>
+				<a idref="frame6"/>
+				<b idref="frame7"/>
+			</frame>
+			<rotation>
+				<x>0</x>
+				<y>0</y>
+				<z>0</z>
+			</rotation>
+			<translation>
+				<x>0.4</x>
+				<y>0</y>
+				<z>0</z>
+			</translation>
+		</fixed>
+        <revolute id="joint3">
+			<frame>
+				<a idref="frame7"/>
+				<b idref="frame8"/>
+			</frame>
+		</revolute>
+        <fixed id="link4">
+			<frame>
+				<a idref="frame8"/>
+				<b idref="frame9"/>
+			</frame>
+			<rotation>
+				<x>0</x>
+				<y>0</y>
+				<z>0</z>
+			</rotation>
+			<translation>
+				<x>0.4</x>
+				<y>0</y>
+				<z>0</z>
+			</translation>
+		</fixed>
+        <revolute id="joint4">
+			<frame>
+				<a idref="frame9"/>
+				<b idref="frame10"/>
+			</frame>
+		</revolute>
+        <fixed id="link5">
+			<frame>
+				<a idref="frame10"/>
+				<b idref="frame11"/>
+			</frame>
+			<rotation>
+				<x>0</x>
+				<y>0</y>
+				<z>0</z>
+			</rotation>
+			<translation>
+				<x>0.4</x>
+				<y>0</y>
+				<z>0</z>
+			</translation>
+		</fixed>
+        <revolute id="joint5">
+			<frame>
+				<a idref="frame11"/>
+				<b idref="frame12"/>
+			</frame>
+		</revolute>
+        <fixed id="link6">
+			<frame>
+				<a idref="frame12"/>
+				<b idref="frame13"/>
+			</frame>
+			<rotation>
+				<x>0</x>
+				<y>0</y>
+				<z>0</z>
+			</rotation>
+			<translation>
+				<x>0.4</x>
+				<y>0</y>
+				<z>0</z>
+			</translation>
+		</fixed>
+        <revolute id="joint6">
+			<frame>
+				<a idref="frame13"/>
+				<b idref="frame14"/>
+			</frame>
+		</revolute>
+        <fixed id="link7">
+			<frame>
+				<a idref="frame14"/>
+				<b idref="frame15"/>
+			</frame>
+			<rotation>
+				<x>0</x>
+				<y>0</y>
+				<z>0</z>
+			</rotation>
+			<translation>
+				<x>0.4</x>
+				<y>0</y>
+				<z>0</z>
+			</translation>
+		</fixed>
+        <revolute id="joint7">
+			<frame>
+				<a idref="frame15"/>
+				<b idref="frame16"/>
+			</frame>
+		</revolute>
+        <fixed id="link8">
+			<frame>
+				<a idref="frame16"/>
+				<b idref="frame17"/>
+			</frame>
+			<rotation>
+				<x>0</x>
+				<y>0</y>
+				<z>0</z>
+			</rotation>
+			<translation>
+				<x>0.4</x>
+				<y>0</y>
+				<z>0</z>
+			</translation>
+		</fixed>
+        <revolute id="joint8">
+			<frame>
+				<a idref="frame17"/>
+				<b idref="frame18"/>
+			</frame>
+		</revolute>
+        <fixed id="link9">
+			<frame>
+				<a idref="frame18"/>
+				<b idref="frame19"/>
+			</frame>
+			<rotation>
+				<x>0</x>
+				<y>0</y>
+				<z>0</z>
+			</rotation>
+			<translation>
+				<x>0.4</x>
+				<y>0</y>
+				<z>0</z>
+			</translation>
+		</fixed>
+        <revolute id="joint9">
+			<frame>
+				<a idref="frame19"/>
+				<b idref="frame20"/>
+			</frame>
+		</revolute>
+        <fixed id="link10">
+			<frame>
+				<a idref="frame20"/>
+				<b idref="frame21"/>
+			</frame>
+			<rotation>
+				<x>0</x>
+				<y>0</y>
+				<z>0</z>
+			</rotation>
+			<translation>
+				<x>0.4</x>
+				<y>0</y>
+				<z>0</z>
+			</translation>
+		</fixed>
+        <revolute id="joint10">
+			<frame>
+				<a idref="frame21"/>
+				<b idref="frame22"/>
+			</frame>
+		</revolute>
+        <fixed id="link11">
+			<frame>
+				<a idref="frame22"/>
+				<b idref="frame23"/>
+			</frame>
+			<rotation>
+				<x>0</x>
+				<y>0</y>
+				<z>0</z>
+			</rotation>
+			<translation>
+				<x>0.4</x>
+				<y>0</y>
+				<z>0</z>
+			</translation>
+		</fixed>
+        <!--<revolute id="joint11">
+			<frame>
+				<a idref="frame23"/>
+				<b idref="frame24"/>
+			</frame>
+		</revolute>
+        <fixed id="link12">
+			<frame>
+				<a idref="frame24"/>
+				<b idref="frame25"/>
+			</frame>
+			<rotation>
+				<x>0</x>
+				<y>0</y>
+				<z>0</z>
+			</rotation>
+			<translation>
+				<x>0.4</x>
+				<y>0</y>
+				<z>0</z>
+			</translation>
+		</fixed>
+        <revolute id="joint12">
+			<frame>
+				<a idref="frame25"/>
+				<b idref="frame26"/>
+			</frame>
+		</revolute>
+        <fixed id="link13">
+			<frame>
+				<a idref="frame26"/>
+				<b idref="frame27"/>
+			</frame>
+			<rotation>
+				<x>0</x>
+				<y>0</y>
+				<z>0</z>
+			</rotation>
+			<translation>
+				<x>0.4</x>
+				<y>0</y>
+				<z>0</z>
+			</translation>
+		</fixed>
+        <revolute id="joint13">
+			<frame>
+				<a idref="frame27"/>
+				<b idref="frame28"/>
+			</frame>
+		</revolute>
+        <fixed id="link14">
+			<frame>
+				<a idref="frame28"/>
+				<b idref="frame29"/>
+			</frame>
+			<rotation>
+				<x>0</x>
+				<y>0</y>
+				<z>0</z>
+			</rotation>
+			<translation>
+				<x>0.4</x>
+				<y>0</y>
+				<z>0</z>
+			</translation>
+		</fixed>
+        <revolute id="joint14">
+			<frame>
+				<a idref="frame29"/>
+				<b idref="frame30"/>
+			</frame>
+		</revolute>
+        <fixed id="link15">
+			<frame>
+				<a idref="frame30"/>
+				<b idref="frame31"/>
+			</frame>
+			<rotation>
+				<x>0</x>
+				<y>0</y>
+				<z>0</z>
+			</rotation>
+			<translation>
+				<x>0.4</x>
+				<y>0</y>
+				<z>0</z>
+			</translation>
+		</fixed>
+        <revolute id="joint15">
+			<frame>
+				<a idref="frame31"/>
+				<b idref="frame32"/>
+			</frame>
+		</revolute>
+        <fixed id="link16">
+			<frame>
+				<a idref="frame32"/>
+				<b idref="frame33"/>
+			</frame>
+			<rotation>
+				<x>0</x>
+				<y>0</y>
+				<z>0</z>
+			</rotation>
+			<translation>
+				<x>0.4</x>
+				<y>0</y>
+				<z>0</z>
+			</translation>
+		</fixed>
+        <revolute id="joint16">
+			<frame>
+				<a idref="frame33"/>
+				<b idref="frame34"/>
+			</frame>
+		</revolute>
+        <fixed id="link17">
+			<frame>
+				<a idref="frame34"/>
+				<b idref="frame35"/>
+			</frame>
+			<rotation>
+				<x>0</x>
+				<y>0</y>
+				<z>0</z>
+			</rotation>
+			<translation>
+				<x>0.4</x>
+				<y>0</y>
+				<z>0</z>
+			</translation>
+		</fixed>-->
+	</model>
+</rlmdl>

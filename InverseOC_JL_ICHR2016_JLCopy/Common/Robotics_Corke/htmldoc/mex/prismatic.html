@@ -1,0 +1,70 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of prismatic</title>
+  <meta name="keywords" content="prismatic">
+  <meta name="description" content="">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../index.html">Home</a> &gt;  <a href="#">mex</a> &gt; prismatic.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../index.html"><img alt="<" border="0" src="../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for ./mex&nbsp;<img alt=">" border="0" src="../right.png"></a></td></tr></table>-->
+
+<h1>prismatic
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong></strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="stanford.html" class="code" title="">stanford</a>	</li><li><a href="stanfordm.html" class="code" title="">stanfordm</a>	</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a href="stanford.html" class="code" title="">stanford</a>
+0002 <a href="stanfordm.html" class="code" title="">stanfordm</a>
+0003 
+0004 <span class="comment">% number of trials</span>
+0005 n = 1;
+0006 
+0007 <span class="comment">% create random points in state space</span>
+0008 q = rand(n, 6);
+0009 qd = rand(n, 6);
+0010 qdd = rand(n, 6);
+0011 
+0012 jacobn1 = jacobn(stan,q);
+0013 jacobn2 = jacobn(stanm,q);
+0014 fprintf(<span class="string">'Jacob N - Worst case error is %f\n'</span>, max(max(abs(jacobn1-jacobn2))));
+0015 
+0016 jacob01 = jacob0(stan,q(1,:));
+0017 jacob02 = jacob0(stanm,q(1,:));
+0018 fprintf(<span class="string">'Jacob 0 - Worst case error is %f\n'</span>, max(max(abs(jacob01-jacob02))));
+0019 
+0020 tau1=rne(stan,q,qd,qdd);
+0021 tau2=rne(stanm,q,qd,qdd);
+0022 
+0023 <span class="comment">% print comparative results</span>
+0024 fprintf(<span class="string">'Torques and forces - Worst case error is %f\n'</span>, max(max(abs(tau1-tau2))));</pre></div>
+<hr><address>Generated on Sun 15-Feb-2009 18:09:29 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

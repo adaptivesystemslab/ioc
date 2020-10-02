@@ -16,6 +16,10 @@ function [trialInfo] = loadTrialInfo(trialInfoOrig, configFile, potentialBasePat
     
     % then search for the specific template settings that we're
     % interested. found, overwrite any globalsettings with the template
+    if ~exist('templateFile', 'var')
+        templateFile = configFile;
+    end
+    
     for j = 1:length(templateFile.runTemplates)
         if strcmpi(templateFile.runTemplates(j).templateName, trialInfoOrig.runTemplate)
             runParam = templateFile.runTemplates(j);
@@ -26,7 +30,7 @@ function [trialInfo] = loadTrialInfo(trialInfoOrig, configFile, potentialBasePat
             break;
         end
     end
-
+    
     % then overwrite any globalsettings with the specific settings in the
     % last block of the json file
     runParamFields = fieldnames(trialInfoOrig);    

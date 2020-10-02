@@ -1,0 +1,94 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of visjac</title>
+  <meta name="keywords" content="visjac">
+  <meta name="description" content="VISJAC	Image feature Jacobian">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../index.html">Home</a> &gt;  <a href="#">simulink</a> &gt; visjac.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../index.html"><img alt="<" border="0" src="../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for ./simulink&nbsp;<img alt=">" border="0" src="../right.png"></a></td></tr></table>-->
+
+<h1>visjac
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>VISJAC	Image feature Jacobian</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function J = visjac(uv, camdata, z) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment">VISJAC    Image feature Jacobian
+
+    J = VISJAC(UV, CAMDATA, Z)
+
+ Return the image-feature Jacobian for point features whose coordinates
+ (u,v) comprise rows of UV.  Z is a vector of the depth of each corresponding
+ point with respect to the camera.  S is the pixel scale factor in m/pixel.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function J = visjac_row(camdata, uv, z)</a></li></ul>
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%VISJAC    Image feature Jacobian</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">%    J = VISJAC(UV, CAMDATA, Z)</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% Return the image-feature Jacobian for point features whose coordinates</span>
+0006 <span class="comment">% (u,v) comprise rows of UV.  Z is a vector of the depth of each corresponding</span>
+0007 <span class="comment">% point with respect to the camera.  S is the pixel scale factor in m/pixel.</span>
+0008 <span class="comment">%</span>
+0009 <a name="_sub0" href="#_subfunctions" class="code">function J = visjac(uv, camdata, z)</a>
+0010 
+0011     J = [];
+0012     <span class="keyword">for</span> i=1:numrows(uv),
+0013         <span class="comment">% convert pixel units to distances at the image plane</span>
+0014 
+0015         <span class="comment">% now do the Jacobian proper</span>
+0016         Jp = <a href="#_sub1" class="code" title="subfunction J = visjac_row(camdata, uv, z)">visjac_row</a>(camdata, uv(i,:), z);
+0017 
+0018         <span class="comment">% build up the image Jacobian</span>
+0019         J = [J; Jp];
+0020     <span class="keyword">end</span>
+0021 
+0022 <a name="_sub1" href="#_subfunctions" class="code">function J = visjac_row(camdata, uv, z)</a>
+0023 
+0024     f = camdata(1);
+0025     ax = camdata(2);    <span class="comment">% pixels/m</span>
+0026     ay = camdata(3);    <span class="comment">% pixels/m</span>
+0027     u0 = camdata(4);    <span class="comment">% principal point in pixels</span>
+0028     v0 = camdata(5);    <span class="comment">% principal point in pixels</span>
+0029 
+0030     <span class="comment">% convert pixel units to distances at the image plane</span>
+0031     uv_p = [1/ax 0 -u0/ax; 0 1/ay -v0/ay] * [uv(:) ; 1];
+0032     u = uv_p(1);
+0033     v = uv_p(2);
+0034 
+0035     <span class="comment">% now do the Jacobian proper</span>
+0036     J = [f/z 0   -u/z  -u*v/f        (f^2+u^2)/f -v
+0037          0   f/z -v/z  -(f^2+v^2)/f  u*v/f        u];
+0038 
+0039     <span class="comment">% convert to pixel unit velocities</span>
+0040     J = diag([ax ay]) * J;</pre></div>
+<hr><address>Generated on Sun 15-Feb-2009 18:09:29 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

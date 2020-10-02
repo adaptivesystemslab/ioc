@@ -1,0 +1,330 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of drivebot</title>
+  <meta name="keywords" content="drivebot">
+  <meta name="description" content="DRIVEBOT Drive a graphical robot">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="./m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="./index.html">Home</a> &gt;  <a href="index.html">.</a> &gt; drivebot.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="./index.html"><img alt="<" border="0" src="./left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for .&nbsp;<img alt=">" border="0" src="./right.png"></a></td></tr></table>-->
+
+<h1>drivebot
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="./up.png"></a></h2>
+<div class="box"><strong>DRIVEBOT Drive a graphical robot</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="./up.png"></a></h2>
+<div class="box"><strong>function drivebot(a,b) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="./up.png"></a></h2>
+<div class="fragment"><pre class="comment">DRIVEBOT Drive a graphical robot
+
+   DRIVEBOT(ROBOT)
+   DRIVEBOT(ROBOT, Q)
+
+ Drive a graphical robot by means of a slider panel.
+
+ If no graphical robot exists one is created in a new window.  Otherwise
+ all graphical robots are 'driven'.
+
+ If Q is specified it is used as the initial joint angle, otherwise
+ it is taken from one of the existing graphical robots.
+
+ SEE ALSO: ROBOT/PLOT, ROBOT</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="./up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(./matlabicon.gif)">
+<li><a href="fkine.html" class="code" title="function t = fkine(robot, q)">fkine</a>	FKINE  Forward robot kinematics for serial link manipulator</li></ul>
+This function is called by:
+<ul style="list-style-image:url(./matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="./up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%DRIVEBOT Drive a graphical robot</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">%   DRIVEBOT(ROBOT)</span>
+0004 <span class="comment">%   DRIVEBOT(ROBOT, Q)</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">% Drive a graphical robot by means of a slider panel.</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">% If no graphical robot exists one is created in a new window.  Otherwise</span>
+0009 <span class="comment">% all graphical robots are 'driven'.</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">% If Q is specified it is used as the initial joint angle, otherwise</span>
+0012 <span class="comment">% it is taken from one of the existing graphical robots.</span>
+0013 <span class="comment">%</span>
+0014 <span class="comment">% SEE ALSO: ROBOT/PLOT, ROBOT</span>
+0015 
+0016 <span class="comment">% Copyright (C) 2001-2008, by Peter I. Corke</span>
+0017 <span class="comment">%</span>
+0018 <span class="comment">% This file is part of The Robotics Toolbox for Matlab (RTB).</span>
+0019 <span class="comment">%</span>
+0020 <span class="comment">% RTB is free software: you can redistribute it and/or modify</span>
+0021 <span class="comment">% it under the terms of the GNU Lesser General Public License as published by</span>
+0022 <span class="comment">% the Free Software Foundation, either version 3 of the License, or</span>
+0023 <span class="comment">% (at your option) any later version.</span>
+0024 <span class="comment">%</span>
+0025 <span class="comment">% RTB is distributed in the hope that it will be useful,</span>
+0026 <span class="comment">% but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+0027 <span class="comment">% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+0028 <span class="comment">% GNU Lesser General Public License for more details.</span>
+0029 <span class="comment">%</span>
+0030 <span class="comment">% You should have received a copy of the GNU Leser General Public License</span>
+0031 <span class="comment">% along with RTB.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
+0032 
+0033 <a name="_sub0" href="#_subfunctions" class="code">function drivebot(a,b)</a>
+0034     bgcol = [135 206 250]/255;
+0035 
+0036     <span class="keyword">if</span> isstr(a)
+0037         <span class="comment">% drivebot(name, j), graphical callback function</span>
+0038         name = a; <span class="comment">% name of the robot</span>
+0039         j = b;  <span class="comment">% joint index</span>
+0040         <span class="comment">%disp(name)</span>
+0041         rh = findobj(<span class="string">'Tag'</span>, name);
+0042         <span class="comment">%disp(rh)</span>
+0043         handles = get(gco, <span class="string">'Userdata'</span>);
+0044         scale = handles{3};
+0045         <span class="keyword">for</span> r=rh',
+0046             rr = get(r, <span class="string">'UserData'</span>);
+0047             q = rr.q;
+0048             <span class="keyword">if</span> isempty(q),
+0049                 q = zeros(1,rr.n);
+0050             <span class="keyword">end</span>
+0051             <span class="keyword">if</span> gco == handles{1},
+0052                 <span class="comment">% get value from slider</span>
+0053                 q(j) = get(gco, <span class="string">'Value'</span>) / scale(j);
+0054                 set(handles{2}, <span class="string">'String'</span>, num2str(scale(j)*q(j)));
+0055             <span class="keyword">else</span>
+0056                 <span class="comment">% get value from text box</span>
+0057                 q(j) = str2num(get(gco, <span class="string">'String'</span>)) / scale(j);
+0058                 set(handles{1}, <span class="string">'Value'</span>, q(j));
+0059             <span class="keyword">end</span>
+0060             rr.q = q;
+0061             set(r, <span class="string">'UserData'</span>, rr);
+0062             plot(rr, q)
+0063         <span class="keyword">end</span>
+0064 
+0065         <span class="comment">% compute and display the T6 pose</span>
+0066         t6 = <a href="fkine.html" class="code" title="function t = fkine(robot, q)">fkine</a>(rr, q);
+0067         h3 = get(findobj(<span class="string">'Tag'</span>, <span class="string">'T6'</span>), <span class="string">'UserData'</span>);
+0068         <span class="keyword">for</span> i=1:3,
+0069             set(h3(i,1), <span class="string">'String'</span>, sprintf(<span class="string">'%.3f'</span>, t6(i,4)));
+0070             set(h3(i,2), <span class="string">'String'</span>, sprintf(<span class="string">'%.3f'</span>, t6(i,3)));
+0071         <span class="keyword">end</span>
+0072     <span class="keyword">else</span>
+0073         <span class="comment">% drivebot(r, q)</span>
+0074         <span class="comment">% drivebot(r, 'deg')</span>
+0075         r = a;
+0076         scale = ones(r.n,1);
+0077 
+0078         n = r.n;
+0079         width = 300;
+0080         height = 40;
+0081         minVal = -pi;
+0082         maxVal = pi;    
+0083 
+0084         qlim = r.qlim;
+0085         <span class="keyword">if</span> isempty(qlim),
+0086             qlim = [minVal*ones(r.n,1) maxVal*ones(r.n,1)];
+0087         <span class="keyword">end</span>
+0088 
+0089         <span class="keyword">if</span> nargin &lt; 2,
+0090             q = zeros(1,n);
+0091         <span class="keyword">else</span>
+0092             <span class="keyword">if</span> isstr(b),
+0093                 <span class="keyword">if</span> strncmp(b, <span class="string">'deg'</span>, 3),
+0094                     disp(<span class="string">'** in degree mode'</span>)
+0095                     L = r.link;
+0096                     <span class="keyword">for</span> i=1:r.n,
+0097                         <span class="keyword">if</span> L{i}.sigma == 0,
+0098                             scale(i) = 180/pi;
+0099                         <span class="keyword">end</span>
+0100                     <span class="keyword">end</span>
+0101                 <span class="keyword">end</span>
+0102             <span class="keyword">else</span>
+0103                 q = b;
+0104             <span class="keyword">end</span>
+0105         <span class="keyword">end</span>
+0106         t6 = <a href="fkine.html" class="code" title="function t = fkine(robot, q)">fkine</a>(r, q);
+0107         fig = figure(<span class="string">'Units'</span>, <span class="string">'pixels'</span>, <span class="keyword">...</span>
+0108             <span class="string">'Position'</span>, [0 -height width height*(n+2)], <span class="keyword">...</span>
+0109             <span class="string">'Color'</span>, bgcol);
+0110         set(fig,<span class="string">'MenuBar'</span>,<span class="string">'none'</span>)
+0111         delete( get(fig, <span class="string">'Children'</span>) )
+0112 
+0113         <span class="comment">% first we check to see if there are any graphical robots of</span>
+0114         <span class="comment">% this name, if so we use them, otherwise create a robot plot.</span>
+0115 
+0116         rh = findobj(<span class="string">'Tag'</span>, r.name);
+0117 
+0118         <span class="comment">% attempt to get current joint config of graphical robot</span>
+0119         <span class="keyword">if</span> ~isempty(rh),
+0120             rr = get(rh(1), <span class="string">'UserData'</span>);
+0121             <span class="keyword">if</span> ~isempty(rr.q),
+0122                 q = rr.q;
+0123             <span class="keyword">end</span>
+0124         <span class="keyword">end</span>
+0125 
+0126 
+0127         <span class="comment">% now make the sliders</span>
+0128         <span class="keyword">for</span> i=1:n,
+0129             uicontrol(fig, <span class="string">'Style'</span>, <span class="string">'text'</span>, <span class="keyword">...</span>
+0130                 <span class="string">'Units'</span>, <span class="string">'pixels'</span>, <span class="keyword">...</span>
+0131                 <span class="string">'BackgroundColor'</span>, bgcol, <span class="keyword">...</span>
+0132                 <span class="string">'Position'</span>, [0 height*(n-i) width*0.1 height*0.4], <span class="keyword">...</span>
+0133                 <span class="string">'String'</span>, sprintf(<span class="string">'q%d'</span>, i));
+0134 
+0135             h(i) = uicontrol(fig, <span class="string">'Style'</span>, <span class="string">'slider'</span>, <span class="keyword">...</span>
+0136                 <span class="string">'Units'</span>, <span class="string">'pixels'</span>, <span class="keyword">...</span>
+0137                 <span class="string">'Position'</span>, [width*0.1 height*(n-i) width*0.7 height*0.4], <span class="keyword">...</span>
+0138                 <span class="string">'Min'</span>, scale(i)*qlim(i,1), <span class="keyword">...</span>
+0139                 <span class="string">'Max'</span>, scale(i)*qlim(i,2), <span class="keyword">...</span>
+0140                 <span class="string">'Value'</span>, scale(i)*q(i), <span class="keyword">...</span>
+0141                 <span class="string">'Tag'</span>, sprintf(<span class="string">'Slider%d'</span>, i), <span class="keyword">...</span>
+0142                 <span class="string">'Callback'</span>, [<span class="string">'drivebot('''</span> r.name <span class="string">''','</span> num2str(i) <span class="string">')'</span>]);
+0143 
+0144             h2(i) = uicontrol(fig, <span class="string">'Style'</span>, <span class="string">'edit'</span>, <span class="keyword">...</span>
+0145                 <span class="string">'Units'</span>, <span class="string">'pixels'</span>, <span class="keyword">...</span>
+0146                 <span class="string">'Position'</span>, [width*0.8 height*(n-i-0.1) width*0.2 height*0.7], <span class="keyword">...</span>
+0147                 <span class="string">'String'</span>, num2str(scale(i)*q(i)), <span class="keyword">...</span>
+0148                 <span class="string">'Tag'</span>, sprintf(<span class="string">'Edit%d'</span>, i), <span class="keyword">...</span>
+0149                 <span class="string">'Callback'</span>, [<span class="string">'drivebot('''</span> r.name <span class="string">''','</span> num2str(i) <span class="string">')'</span>]);
+0150 
+0151             <span class="comment">% hang handles off the slider and edit objects</span>
+0152             handles = {h(i) h2(i) scale};
+0153             set(h(i), <span class="string">'Userdata'</span>, handles);
+0154             set(h2(i), <span class="string">'Userdata'</span>, handles);
+0155         <span class="keyword">end</span>
+0156 
+0157         uicontrol(fig, <span class="string">'Style'</span>, <span class="string">'text'</span>, <span class="keyword">...</span>
+0158             <span class="string">'Units'</span>, <span class="string">'pixels'</span>, <span class="keyword">...</span>
+0159             <span class="string">'FontSize'</span>, 20, <span class="keyword">...</span>
+0160             <span class="string">'HorizontalAlignment'</span>, <span class="string">'left'</span>, <span class="keyword">...</span>
+0161             <span class="string">'Position'</span>, [0 height*(n+1) 0.8*width height], <span class="keyword">...</span>
+0162             <span class="string">'BackgroundColor'</span>, <span class="string">'white'</span>, <span class="keyword">...</span>
+0163             <span class="string">'String'</span>, r.name);
+0164 
+0165         <span class="comment">% X</span>
+0166         uicontrol(fig, <span class="string">'Style'</span>, <span class="string">'text'</span>, <span class="keyword">...</span>
+0167             <span class="string">'Units'</span>, <span class="string">'pixels'</span>, <span class="keyword">...</span>
+0168             <span class="string">'BackgroundColor'</span>, bgcol, <span class="keyword">...</span>
+0169             <span class="string">'Position'</span>, [0 height*(n+0.5) 0.06*width height/2], <span class="keyword">...</span>
+0170             <span class="string">'BackgroundColor'</span>, <span class="string">'yellow'</span>, <span class="keyword">...</span>
+0171             <span class="string">'FontSize'</span>, 10, <span class="keyword">...</span>
+0172             <span class="string">'HorizontalAlignment'</span>, <span class="string">'left'</span>, <span class="keyword">...</span>
+0173             <span class="string">'String'</span>, <span class="string">'x:'</span>);
+0174 
+0175         h3(1,1) = uicontrol(fig, <span class="string">'Style'</span>, <span class="string">'edit'</span>, <span class="keyword">...</span>
+0176             <span class="string">'Units'</span>, <span class="string">'pixels'</span>, <span class="keyword">...</span>
+0177             <span class="string">'Position'</span>, [0.06*width height*(n+0.5) width*0.2 height*0.6], <span class="keyword">...</span>
+0178             <span class="string">'String'</span>, sprintf(<span class="string">'%.3f'</span>, t6(1,4)), <span class="keyword">...</span>
+0179             <span class="string">'Tag'</span>, <span class="string">'T6'</span>);
+0180 
+0181         <span class="comment">% Y</span>
+0182         uicontrol(fig, <span class="string">'Style'</span>, <span class="string">'text'</span>, <span class="keyword">...</span>
+0183             <span class="string">'Units'</span>, <span class="string">'pixels'</span>, <span class="keyword">...</span>
+0184             <span class="string">'BackgroundColor'</span>, bgcol, <span class="keyword">...</span>
+0185             <span class="string">'Position'</span>, [0.26*width height*(n+0.5) 0.06*width height/2], <span class="keyword">...</span>
+0186             <span class="string">'BackgroundColor'</span>, <span class="string">'yellow'</span>, <span class="keyword">...</span>
+0187             <span class="string">'FontSize'</span>, 10, <span class="keyword">...</span>
+0188             <span class="string">'HorizontalAlignment'</span>, <span class="string">'left'</span>, <span class="keyword">...</span>
+0189             <span class="string">'String'</span>, <span class="string">'y:'</span>);
+0190 
+0191         h3(2,1) = uicontrol(fig, <span class="string">'Style'</span>, <span class="string">'edit'</span>, <span class="keyword">...</span>
+0192             <span class="string">'Units'</span>, <span class="string">'pixels'</span>, <span class="keyword">...</span>
+0193             <span class="string">'Position'</span>, [0.32*width height*(n+0.5) width*0.2 height*0.6], <span class="keyword">...</span>
+0194             <span class="string">'String'</span>, sprintf(<span class="string">'%.3f'</span>, t6(2,4)));
+0195 
+0196         <span class="comment">% Z</span>
+0197         uicontrol(fig, <span class="string">'Style'</span>, <span class="string">'text'</span>, <span class="keyword">...</span>
+0198             <span class="string">'Units'</span>, <span class="string">'pixels'</span>, <span class="keyword">...</span>
+0199             <span class="string">'BackgroundColor'</span>, bgcol, <span class="keyword">...</span>
+0200             <span class="string">'Position'</span>, [0.52*width height*(n+0.5) 0.06*width height/2], <span class="keyword">...</span>
+0201             <span class="string">'BackgroundColor'</span>, <span class="string">'yellow'</span>, <span class="keyword">...</span>
+0202             <span class="string">'FontSize'</span>, 10, <span class="keyword">...</span>
+0203             <span class="string">'HorizontalAlignment'</span>, <span class="string">'left'</span>, <span class="keyword">...</span>
+0204             <span class="string">'String'</span>, <span class="string">'z:'</span>);
+0205 
+0206         h3(3,1) = uicontrol(fig, <span class="string">'Style'</span>, <span class="string">'edit'</span>, <span class="keyword">...</span>
+0207             <span class="string">'Units'</span>, <span class="string">'pixels'</span>, <span class="keyword">...</span>
+0208             <span class="string">'Position'</span>, [0.58*width height*(n+0.5) width*0.2 height*0.6], <span class="keyword">...</span>
+0209             <span class="string">'String'</span>, sprintf(<span class="string">'%.3f'</span>, t6(3,4)));
+0210 
+0211         <span class="comment">% AX</span>
+0212         uicontrol(fig, <span class="string">'Style'</span>, <span class="string">'text'</span>, <span class="keyword">...</span>
+0213             <span class="string">'Units'</span>, <span class="string">'pixels'</span>, <span class="keyword">...</span>
+0214             <span class="string">'BackgroundColor'</span>, bgcol, <span class="keyword">...</span>
+0215             <span class="string">'Position'</span>, [0 height*(n) 0.06*width height/2], <span class="keyword">...</span>
+0216             <span class="string">'BackgroundColor'</span>, <span class="string">'yellow'</span>, <span class="keyword">...</span>
+0217             <span class="string">'FontSize'</span>, 10, <span class="keyword">...</span>
+0218             <span class="string">'HorizontalAlignment'</span>, <span class="string">'left'</span>, <span class="keyword">...</span>
+0219             <span class="string">'String'</span>, <span class="string">'ax:'</span>);
+0220 
+0221         h3(1,2) = uicontrol(fig, <span class="string">'Style'</span>, <span class="string">'edit'</span>, <span class="keyword">...</span>
+0222             <span class="string">'Units'</span>, <span class="string">'pixels'</span>, <span class="keyword">...</span>
+0223             <span class="string">'Position'</span>, [0.06*width height*(n) width*0.2 height*0.6], <span class="keyword">...</span>
+0224             <span class="string">'String'</span>, sprintf(<span class="string">'%.3f'</span>, t6(1,3)));
+0225 
+0226         <span class="comment">% AY</span>
+0227         uicontrol(fig, <span class="string">'Style'</span>, <span class="string">'text'</span>, <span class="keyword">...</span>
+0228             <span class="string">'Units'</span>, <span class="string">'pixels'</span>, <span class="keyword">...</span>
+0229             <span class="string">'BackgroundColor'</span>, bgcol, <span class="keyword">...</span>
+0230             <span class="string">'Position'</span>, [0.26*width height*(n) 0.06*width height/2], <span class="keyword">...</span>
+0231             <span class="string">'BackgroundColor'</span>, <span class="string">'yellow'</span>, <span class="keyword">...</span>
+0232             <span class="string">'FontSize'</span>, 10, <span class="keyword">...</span>
+0233             <span class="string">'HorizontalAlignment'</span>, <span class="string">'left'</span>, <span class="keyword">...</span>
+0234             <span class="string">'String'</span>, <span class="string">'ay:'</span>);
+0235 
+0236         h3(2,2) = uicontrol(fig, <span class="string">'Style'</span>, <span class="string">'edit'</span>, <span class="keyword">...</span>
+0237             <span class="string">'Units'</span>, <span class="string">'pixels'</span>, <span class="keyword">...</span>
+0238             <span class="string">'Position'</span>, [0.32*width height*(n) width*0.2 height*0.6], <span class="keyword">...</span>
+0239             <span class="string">'String'</span>, sprintf(<span class="string">'%.3f'</span>, t6(2,3)));
+0240 
+0241         <span class="comment">% AZ</span>
+0242         uicontrol(fig, <span class="string">'Style'</span>, <span class="string">'text'</span>, <span class="keyword">...</span>
+0243             <span class="string">'Units'</span>, <span class="string">'pixels'</span>, <span class="keyword">...</span>
+0244             <span class="string">'BackgroundColor'</span>, bgcol, <span class="keyword">...</span>
+0245             <span class="string">'Position'</span>, [0.52*width height*(n) 0.06*width height/2], <span class="keyword">...</span>
+0246             <span class="string">'BackgroundColor'</span>, <span class="string">'yellow'</span>, <span class="keyword">...</span>
+0247             <span class="string">'FontSize'</span>, 10, <span class="keyword">...</span>
+0248             <span class="string">'HorizontalAlignment'</span>, <span class="string">'left'</span>, <span class="keyword">...</span>
+0249             <span class="string">'String'</span>, <span class="string">'az:'</span>);
+0250 
+0251         h3(3,2) = uicontrol(fig, <span class="string">'Style'</span>, <span class="string">'edit'</span>, <span class="keyword">...</span>
+0252             <span class="string">'Units'</span>, <span class="string">'pixels'</span>, <span class="keyword">...</span>
+0253             <span class="string">'Position'</span>, [0.58*width height*(n) width*0.2 height*0.6], <span class="keyword">...</span>
+0254             <span class="string">'String'</span>, sprintf(<span class="string">'%.3f'</span>, t6(3,3)));
+0255 
+0256 
+0257         set(h3(1,1), <span class="string">'Userdata'</span>, h3);
+0258         uicontrol(fig, <span class="string">'Style'</span>, <span class="string">'pushbutton'</span>, <span class="keyword">...</span>
+0259             <span class="string">'Units'</span>, <span class="string">'pixels'</span>, <span class="keyword">...</span>
+0260             <span class="string">'FontSize'</span>, 16, <span class="keyword">...</span>
+0261             <span class="string">'Position'</span>, [0.8*width height*n 0.2*width 2*height], <span class="keyword">...</span>
+0262             <span class="string">'CallBack'</span>, <span class="string">'delete(gcf)'</span>, <span class="keyword">...</span>
+0263             <span class="string">'BackgroundColor'</span>, <span class="string">'red'</span>, <span class="keyword">...</span>
+0264             <span class="string">'String'</span>, <span class="string">'Quit'</span>);
+0265 
+0266 
+0267         <span class="keyword">if</span> isempty(rh),
+0268             figure
+0269             plot(r, q);
+0270         <span class="keyword">end</span>
+0271     <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sun 15-Feb-2009 18:09:29 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

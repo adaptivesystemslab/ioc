@@ -1,0 +1,148 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of jtraj</title>
+  <meta name="keywords" content="jtraj">
+  <meta name="description" content="JTRAJ Compute a joint space trajectory between two points">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="./m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="./index.html">Home</a> &gt;  <a href="index.html">.</a> &gt; jtraj.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="./index.html"><img alt="<" border="0" src="./left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for .&nbsp;<img alt=">" border="0" src="./right.png"></a></td></tr></table>-->
+
+<h1>jtraj
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="./up.png"></a></h2>
+<div class="box"><strong>JTRAJ Compute a joint space trajectory between two points</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="./up.png"></a></h2>
+<div class="box"><strong>function [qt,qdt,qddt] = jtraj(q0, q1, tv, qd0, qd1) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="./up.png"></a></h2>
+<div class="fragment"><pre class="comment">JTRAJ Compute a joint space trajectory between two points
+
+    [Q QD QDD] = JTRAJ(Q0, Q1, N)
+    [Q QD QDD] = JTRAJ(Q0, Q1, N, QD0, QD1)
+    [Q QD QDD] = JTRAJ(Q0, Q1, T)
+    [Q QD QDD] = JTRAJ(Q0, Q1, T, QD0, QD1)
+
+ Returns a joint space trajectory Q from state Q0 to Q1.  The number
+ of points is N or the length of the given time vector T.  A 7th
+ order polynomial is used with default zero boundary conditions for
+ velocity and acceleration.  Non-zero boundary velocities can be
+ optionally specified as QD0 and QD1.
+
+ The function can optionally return a velocity and acceleration
+ trajectories as QD and QDD.
+
+ Each trajectory is an mxn matrix, with one row per time step, and
+ one column per joint parameter.
+
+ See also: <a href="ctraj.html" class="code" title="function tt = ctraj(t0, t1, n)">CTRAJ</a>.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="./up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(./matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(./matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="./up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%JTRAJ Compute a joint space trajectory between two points</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">%    [Q QD QDD] = JTRAJ(Q0, Q1, N)</span>
+0004 <span class="comment">%    [Q QD QDD] = JTRAJ(Q0, Q1, N, QD0, QD1)</span>
+0005 <span class="comment">%    [Q QD QDD] = JTRAJ(Q0, Q1, T)</span>
+0006 <span class="comment">%    [Q QD QDD] = JTRAJ(Q0, Q1, T, QD0, QD1)</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">% Returns a joint space trajectory Q from state Q0 to Q1.  The number</span>
+0009 <span class="comment">% of points is N or the length of the given time vector T.  A 7th</span>
+0010 <span class="comment">% order polynomial is used with default zero boundary conditions for</span>
+0011 <span class="comment">% velocity and acceleration.  Non-zero boundary velocities can be</span>
+0012 <span class="comment">% optionally specified as QD0 and QD1.</span>
+0013 <span class="comment">%</span>
+0014 <span class="comment">% The function can optionally return a velocity and acceleration</span>
+0015 <span class="comment">% trajectories as QD and QDD.</span>
+0016 <span class="comment">%</span>
+0017 <span class="comment">% Each trajectory is an mxn matrix, with one row per time step, and</span>
+0018 <span class="comment">% one column per joint parameter.</span>
+0019 <span class="comment">%</span>
+0020 <span class="comment">% See also: CTRAJ.</span>
+0021 
+0022 <span class="comment">% Copyright (C) 1993-2008, by Peter I. Corke</span>
+0023 <span class="comment">%</span>
+0024 <span class="comment">% This file is part of The Robotics Toolbox for Matlab (RTB).</span>
+0025 <span class="comment">%</span>
+0026 <span class="comment">% RTB is free software: you can redistribute it and/or modify</span>
+0027 <span class="comment">% it under the terms of the GNU Lesser General Public License as published by</span>
+0028 <span class="comment">% the Free Software Foundation, either version 3 of the License, or</span>
+0029 <span class="comment">% (at your option) any later version.</span>
+0030 <span class="comment">%</span>
+0031 <span class="comment">% RTB is distributed in the hope that it will be useful,</span>
+0032 <span class="comment">% but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+0033 <span class="comment">% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+0034 <span class="comment">% GNU Lesser General Public License for more details.</span>
+0035 <span class="comment">%</span>
+0036 <span class="comment">% You should have received a copy of the GNU Leser General Public License</span>
+0037 <span class="comment">% along with RTB.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
+0038 
+0039 <a name="_sub0" href="#_subfunctions" class="code">function [qt,qdt,qddt] = jtraj(q0, q1, tv, qd0, qd1)</a>
+0040     <span class="keyword">if</span> length(tv) &gt; 1,
+0041         tscal = max(tv);
+0042         t = tv(:)/tscal;
+0043     <span class="keyword">else</span>
+0044         tscal = 1;
+0045         t = [0:(tv-1)]'/(tv-1);    <span class="comment">% normalized time from 0 -&gt; 1</span>
+0046     <span class="keyword">end</span>
+0047 
+0048     q0 = q0(:);
+0049     q1 = q1(:);
+0050 
+0051     <span class="keyword">if</span> nargin == 3,
+0052         qd0 = zeros(size(q0));
+0053         qd1 = qd0;
+0054     <span class="keyword">elseif</span> nargin == 5,
+0055         qd0 = qd0(:);
+0056         qd1 = qd1(:);
+0057     <span class="keyword">else</span>
+0058         error(<span class="string">'incorrect number of arguments'</span>)
+0059     <span class="keyword">end</span>
+0060 
+0061     <span class="comment">% compute the polynomial coefficients</span>
+0062     A = 6*(q1 - q0) - 3*(qd1+qd0)*tscal;
+0063     B = -15*(q1 - q0) + (8*qd0 + 7*qd1)*tscal;
+0064     C = 10*(q1 - q0) - (6*qd0 + 4*qd1)*tscal;
+0065     E = qd0*tscal; <span class="comment">% as the t vector has been normalized</span>
+0066     F = q0;
+0067 
+0068     tt = [t.^5 t.^4 t.^3 t.^2 t ones(size(t))];
+0069     c = [A B C zeros(size(A)) E F]';
+0070     
+0071     qt = tt*c;
+0072 
+0073     <span class="comment">% compute optional velocity</span>
+0074     <span class="keyword">if</span> nargout &gt;= 2,
+0075         c = [ zeros(size(A)) 5*A 4*B 3*C  zeros(size(A)) E ]';
+0076         qdt = tt*c/tscal;
+0077     <span class="keyword">end</span>
+0078 
+0079     <span class="comment">% compute optional acceleration</span>
+0080     <span class="keyword">if</span> nargout == 3,
+0081         c = [ zeros(size(A))  zeros(size(A)) 20*A 12*B 6*C  zeros(size(A))]';
+0082         qddt = tt*c/tscal^2;
+0083     <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sun 15-Feb-2009 18:09:29 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

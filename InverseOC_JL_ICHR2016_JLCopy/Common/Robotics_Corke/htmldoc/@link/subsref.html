@@ -1,0 +1,299 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of subsref</title>
+  <meta name="keywords" content="subsref">
+  <meta name="description" content="SUBSREF Reference methods on a LINK object">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../index.html">Home</a> &gt;  <a href="#">@link</a> &gt; subsref.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../index.html"><img alt="<" border="0" src="../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for ./@link&nbsp;<img alt=">" border="0" src="../right.png"></a></td></tr></table>-->
+
+<h1>subsref
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>SUBSREF Reference methods on a LINK object</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function v = subsref(l, s) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment">SUBSREF Reference methods on a LINK object
+
+    LINK(q)        return link transform (A) matrix
+
+    LINK.alpha    return DH parameters
+    LINK.A
+    LINK.theta
+    LINK.D
+    LINK.sigma    return prismatic flag
+    LINK.RP        return 'R' or 'P'
+    LINK.mdh    0 if standard D&amp;H, else 1
+
+    LINK.offset    return joint variable offset
+    LINK.qlim    return joint variable limits [min max]
+    LINK.islimit(q)    return if limit is exceeded: -1, 0, +1
+
+    LINK.I        return 3x3 symmetric inertia matrix
+    LINK.m        return link mass
+    LINK.r        return 3x1 link COG vector
+
+    LINK.G        return gear ratio
+    LINK.Jm        return motor inertia
+    LINK.B        return viscous friction
+    LINK.Tc        return viscous friction
+
+    LINK.dh        return legacy DH row
+    LINK.dyn    return legacy DYN row</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="char.html" class="code" title="function s = char(l)">char</a>	CHAR Create string representation of LINK object</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function t = linktran(a, b, c, d)</a></li><li><a href="#_sub2" class="code">function t = mlinktran(a, b, c, d)</a></li></ul>
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%SUBSREF Reference methods on a LINK object</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">%    LINK(q)        return link transform (A) matrix</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">%    LINK.alpha    return DH parameters</span>
+0006 <span class="comment">%    LINK.A</span>
+0007 <span class="comment">%    LINK.theta</span>
+0008 <span class="comment">%    LINK.D</span>
+0009 <span class="comment">%    LINK.sigma    return prismatic flag</span>
+0010 <span class="comment">%    LINK.RP        return 'R' or 'P'</span>
+0011 <span class="comment">%    LINK.mdh    0 if standard D&amp;H, else 1</span>
+0012 <span class="comment">%</span>
+0013 <span class="comment">%    LINK.offset    return joint variable offset</span>
+0014 <span class="comment">%    LINK.qlim    return joint variable limits [min max]</span>
+0015 <span class="comment">%    LINK.islimit(q)    return if limit is exceeded: -1, 0, +1</span>
+0016 <span class="comment">%</span>
+0017 <span class="comment">%    LINK.I        return 3x3 symmetric inertia matrix</span>
+0018 <span class="comment">%    LINK.m        return link mass</span>
+0019 <span class="comment">%    LINK.r        return 3x1 link COG vector</span>
+0020 <span class="comment">%</span>
+0021 <span class="comment">%    LINK.G        return gear ratio</span>
+0022 <span class="comment">%    LINK.Jm        return motor inertia</span>
+0023 <span class="comment">%    LINK.B        return viscous friction</span>
+0024 <span class="comment">%    LINK.Tc        return viscous friction</span>
+0025 <span class="comment">%</span>
+0026 <span class="comment">%    LINK.dh        return legacy DH row</span>
+0027 <span class="comment">%    LINK.dyn    return legacy DYN row</span>
+0028 
+0029 <span class="comment">% Copyright (C) 1999-2008, by Peter I. Corke</span>
+0030 <span class="comment">%</span>
+0031 <span class="comment">% This file is part of The Robotics Toolbox for Matlab (RTB).</span>
+0032 <span class="comment">%</span>
+0033 <span class="comment">% RTB is free software: you can redistribute it and/or modify</span>
+0034 <span class="comment">% it under the terms of the GNU Lesser General Public License as published by</span>
+0035 <span class="comment">% the Free Software Foundation, either version 3 of the License, or</span>
+0036 <span class="comment">% (at your option) any later version.</span>
+0037 <span class="comment">%</span>
+0038 <span class="comment">% RTB is distributed in the hope that it will be useful,</span>
+0039 <span class="comment">% but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+0040 <span class="comment">% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+0041 <span class="comment">% GNU Lesser General Public License for more details.</span>
+0042 <span class="comment">%</span>
+0043 <span class="comment">% You should have received a copy of the GNU Leser General Public License</span>
+0044 <span class="comment">% along with RTB.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
+0045 
+0046 <a name="_sub0" href="#_subfunctions" class="code">function v = subsref(l, s)</a>
+0047     <span class="keyword">if</span> s(1).type  == <span class="string">'()'</span>
+0048         <span class="keyword">if</span> l.mdh == 0,
+0049             v = <a href="#_sub1" class="code" title="subfunction t = linktran(a, b, c, d)">linktran</a>([l.alpha l.A l.theta l.D l.sigma], <span class="keyword">...</span>
+0050                 s(1).subs{1}+l.offset);
+0051         <span class="keyword">else</span>
+0052             v = <a href="#_sub2" class="code" title="subfunction t = mlinktran(a, b, c, d)">mlinktran</a>([l.alpha l.A l.theta l.D l.sigma], <span class="keyword">...</span>
+0053                 s(1).subs{1}+l.offset);
+0054         <span class="keyword">end</span>
+0055     <span class="keyword">elseif</span> s(1).type  ~= <span class="string">'.'</span>
+0056         error(<span class="string">'only .field supported'</span>)
+0057     <span class="keyword">else</span>
+0058 
+0059         <span class="comment">% NOTE WELL:  the following code can't use getfield() since</span>
+0060         <span class="comment">% getfield()  uses this, and Matlab will crash!!</span>
+0061 
+0062         el = <a href="char.html" class="code" title="function s = char(l)">char</a>(s(1).subs);
+0063         <span class="keyword">switch</span> el,
+0064         <span class="comment">%%%%%%% kinematic parameters</span>
+0065         <span class="keyword">case</span> <span class="string">'alpha'</span>,
+0066             v = l.alpha;
+0067         <span class="keyword">case</span> <span class="string">'A'</span>,
+0068             v = l.A;
+0069         <span class="keyword">case</span> <span class="string">'theta'</span>,
+0070             v = l.theta;
+0071         <span class="keyword">case</span> <span class="string">'D'</span>,
+0072             v = l.D;
+0073         <span class="keyword">case</span> <span class="string">'offset'</span>,
+0074             v = l.offset;
+0075         <span class="keyword">case</span> <span class="string">'sigma'</span>,
+0076             v = l.sigma;
+0077         <span class="keyword">case</span> <span class="string">'RP'</span>,
+0078             <span class="keyword">if</span> l.sigma == 0,
+0079                 v = <span class="string">'R'</span>;
+0080             <span class="keyword">else</span>
+0081                 v = <span class="string">'P'</span>;
+0082             <span class="keyword">end</span>
+0083         <span class="keyword">case</span> <span class="string">'mdh'</span>,
+0084             v = l.mdh;
+0085 
+0086         <span class="comment">%%%%%%% joint limit support</span>
+0087         <span class="keyword">case</span> <span class="string">'qlim'</span>,
+0088             v = l.qlim;
+0089         <span class="keyword">case</span> <span class="string">'islimit'</span>,
+0090             <span class="keyword">if</span> isempty(l.qlim)
+0091                 error(<span class="string">'no limits assigned to link'</span>)
+0092             <span class="keyword">end</span>
+0093             <span class="keyword">if</span> s(2).type  ~= <span class="string">'()'</span>
+0094                 error(<span class="string">'expecting argument for islimit method'</span>);
+0095             <span class="keyword">end</span>
+0096             q = s(2).subs{1};
+0097             v = (q &gt; l.qlim(2)) - (q &lt; l.qlim(1));
+0098 
+0099         <span class="comment">%%%%%%% dynamic parameters</span>
+0100         <span class="keyword">case</span> <span class="string">'G'</span>,
+0101             v = l.G;
+0102         <span class="keyword">case</span> <span class="string">'I'</span>,
+0103             v = l.I;
+0104         <span class="keyword">case</span> <span class="string">'r'</span>,
+0105             v = l.r;
+0106         <span class="keyword">case</span> <span class="string">'Jm'</span>,
+0107             v = l.Jm;
+0108         <span class="keyword">case</span> <span class="string">'B'</span>,
+0109             v = l.B;
+0110         <span class="keyword">case</span> <span class="string">'Tc'</span>,
+0111             v = l.Tc;
+0112 
+0113         <span class="keyword">case</span> <span class="string">'m'</span>,
+0114             v = l.m;
+0115         <span class="comment">%%%%%%% legacy parameters</span>
+0116         <span class="keyword">case</span> <span class="string">'dh'</span>,
+0117             v = [l.alpha l.A l.theta l.D l.sigma];
+0118         <span class="keyword">case</span> <span class="string">'dyn'</span>,
+0119             v = [l.alpha l.A l.theta l.D l.sigma l.m l.r(:)' diag(l.I)' l.I(2,1) l.I(2,3) l.I(1,3) l.Jm l.G l.B l.Tc(:)'];
+0120         <span class="keyword">otherwise</span>, disp(<span class="string">'Unknown method'</span>)
+0121         <span class="keyword">end</span>
+0122     <span class="keyword">end</span>
+0123 
+0124 
+0125 <span class="comment">%LINKTRAN    Compute the link transform from kinematic parameters</span>
+0126 <span class="comment">%</span>
+0127 <span class="comment">%    LINKTRAN(alpha, an, theta, dn)</span>
+0128 <span class="comment">%    LINKTRAN(DH, q) is a homogeneous</span>
+0129 <span class="comment">%    transformation between link coordinate frames.</span>
+0130 <span class="comment">%</span>
+0131 <span class="comment">%    alpha is the link twist angle</span>
+0132 <span class="comment">%    an is the link length</span>
+0133 <span class="comment">%    theta is the link rotation angle</span>
+0134 <span class="comment">%    dn is the link offset</span>
+0135 <span class="comment">%    sigma is 0 for a revolute joint, non-zero for prismatic</span>
+0136 <span class="comment">%</span>
+0137 <span class="comment">%    In the second case, q is substitued for theta or dn according to sigma.</span>
+0138 <span class="comment">%</span>
+0139 <span class="comment">%    Based on the standard Denavit and Hartenberg notation.</span>
+0140 
+0141 <span class="comment">%    Copyright (C) Peter Corke 1993</span>
+0142 <a name="_sub1" href="#_subfunctions" class="code">function t = linktran(a, b, c, d)</a>
+0143 
+0144     <span class="keyword">if</span> nargin == 4,
+0145         alpha = a;
+0146         an = b;
+0147         theta = c;
+0148         dn = d;
+0149     <span class="keyword">else</span>
+0150         <span class="keyword">if</span> numcols(a) &lt; 4,
+0151             error(<span class="string">'too few columns in DH matrix'</span>);
+0152         <span class="keyword">end</span>
+0153         alpha = a(1);
+0154         an = a(2);
+0155         <span class="keyword">if</span> numcols(a) &gt; 4,
+0156             <span class="keyword">if</span> a(5) == 0,    <span class="comment">% revolute</span>
+0157                 theta = b;
+0158                 dn = a(4);
+0159             <span class="keyword">else</span>        <span class="comment">% prismatic</span>
+0160                 theta = a(3);
+0161                 dn = b;
+0162             <span class="keyword">end</span>
+0163         <span class="keyword">else</span>
+0164             theta = b;    <span class="comment">% assume revolute if sigma not given</span>
+0165             dn = a(4);
+0166         <span class="keyword">end</span>
+0167     <span class="keyword">end</span>
+0168     sa = sin(alpha); ca = cos(alpha);
+0169     st = sin(theta); ct = cos(theta);
+0170 
+0171     t =    [    ct    -st*ca    st*sa    an*ct
+0172             st    ct*ca    -ct*sa    an*st
+0173             0    sa    ca    dn
+0174             0    0    0    1];
+0175 
+0176 <span class="comment">%MLINKTRAN    Compute the link transform from kinematic parameters</span>
+0177 <span class="comment">%</span>
+0178 <span class="comment">%    MLINKTRAN(alpha, an, theta, dn)</span>
+0179 <span class="comment">%    MLINKTRAN(DH, q) is a homogeneous</span>
+0180 <span class="comment">%    transformation between link coordinate frames.</span>
+0181 <span class="comment">%</span>
+0182 <span class="comment">%    alpha is the link twist angle</span>
+0183 <span class="comment">%    an is the link length</span>
+0184 <span class="comment">%    theta is the link rotation angle</span>
+0185 <span class="comment">%    dn is the link offset</span>
+0186 <span class="comment">%    sigma is 0 for a revolute joint, non-zero for prismatic</span>
+0187 <span class="comment">%</span>
+0188 <span class="comment">%    In the second case, q is substitued for theta or dn according to sigma.</span>
+0189 <span class="comment">%</span>
+0190 <span class="comment">%    Based on the modified Denavit and Hartenberg notation.</span>
+0191 
+0192 <span class="comment">%    Copyright (C) Peter Corke 1993</span>
+0193 <a name="_sub2" href="#_subfunctions" class="code">function t = mlinktran(a, b, c, d)</a>
+0194 
+0195     <span class="keyword">if</span> nargin == 4,
+0196         alpha = a;
+0197         an = b;
+0198         theta = c;
+0199         dn = d;
+0200     <span class="keyword">else</span>
+0201         <span class="keyword">if</span> numcols(a) &lt; 4,
+0202             error(<span class="string">'too few columns in DH matrix'</span>);
+0203         <span class="keyword">end</span>
+0204         alpha = a(1);
+0205         an = a(2);
+0206         <span class="keyword">if</span> numcols(a) &gt; 4,
+0207             <span class="keyword">if</span> a(5) == 0,    <span class="comment">% revolute</span>
+0208                 theta = b;
+0209                 dn = a(4);
+0210             <span class="keyword">else</span>        <span class="comment">% prismatic</span>
+0211                 theta = a(3);
+0212                 dn = b;
+0213             <span class="keyword">end</span>
+0214         <span class="keyword">else</span>
+0215             theta = b;    <span class="comment">% assume revolute if no sigma given</span>
+0216             dn = a(4);
+0217         <span class="keyword">end</span>
+0218     <span class="keyword">end</span>
+0219     sa = sin(alpha); ca = cos(alpha);
+0220     st = sin(theta); ct = cos(theta);
+0221 
+0222     t =    [    ct    -st    0    an
+0223             st*ca    ct*ca    -sa    -sa*dn
+0224             st*sa    ct*sa    ca    ca*dn
+0225             0    0    0    1];</pre></div>
+<hr><address>Generated on Sun 15-Feb-2009 18:09:29 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

@@ -1,0 +1,386 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rlmdl xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="rlmdl.xsd">
+	<model>
+		<manufacturer>Vlad</manufacturer>
+		<name>Leg</name>
+		<world id="world">
+			<rotation>
+				<x>0</x>
+				<y>0</y>
+				<z>0</z>
+			</rotation>
+			<translation>
+				<x>0</x>
+				<y>0</y>
+				<z>0</z>
+			</translation>
+			<g>
+				<x>0</x>
+				<y>0</y>
+				<z>9.80665</z>
+			</g>
+		</world>
+		<!-- Beginning of lower body -->
+		<frame id="mid_asis"/>
+		<!-- Right Leg -->
+		<frame id="rhip0"/>
+		<frame id="rhip1"/>
+		<frame id="rhip2"/>
+		<frame id="rhip3"/>
+		<frame id="rhip4"/>
+		<frame id="rhip5"/>
+		<frame id="rknee0"/>
+		<frame id="rknee1"/>
+		<frame id="rknee2"/>
+		<frame id="rknee3"/>
+        <frame id="rknee4"/>
+        <frame id="rknee5"/>
+		<frame id="rankle0"/>
+		<frame id="rankle1"/>
+		<frame id="rankle2"/>
+		<frame id="rankle3"/>
+		
+		<!-- Left Leg -->
+		<frame id="lhip0"/>
+		<frame id="lhip1"/>
+		<frame id="lhip2"/>
+		<frame id="lhip3"/>
+		<frame id="lhip4"/>
+		<frame id="lhip5"/>
+		<frame id="lknee0"/>
+		<frame id="lknee1"/>
+		<frame id="lknee2"/>
+		<frame id="lknee3"/>
+        <frame id="lknee4"/>
+        <frame id="lknee5"/>
+		<frame id="lankle0"/>
+		<frame id="lankle1"/>
+		<frame id="lankle2"/>
+		<frame id="lankle3"/>
+		
+		<fixed id="world_to_base">
+			<frame>
+				<a idref="world"/>
+				<b idref="mid_asis"/>
+			</frame>
+			<rotation>
+				<x>0</x>
+				<y>0</y>
+				<z>0</z>
+			</rotation>
+			<translation>
+				<x>0</x>
+				<y>0</y>
+				<z>0.7</z>
+			</translation>
+		</fixed>
+
+		<!-- Right Leg -->
+		<fixed id="rAsis2Hip">
+			<frame>
+				<a idref="mid_asis"/>
+				<b idref="rhip0"/>
+			</frame>
+			<translation>
+				<x>0</x>
+				<y>-0.2</y>
+				<z>0</z>
+			</translation>
+			<rotation>
+				<x>90</x>
+				<y>0</y>
+				<z>0</z>
+			</rotation>
+		</fixed>
+		<revolute id="rhip_j0">
+			<frame>
+				<a idref="rhip0"/>
+				<b idref="rhip1"/>
+			</frame>
+		</revolute>
+		<fixed id="rhip_fixed0">
+			<frame>
+				<a idref="rhip1"/>
+				<b idref="rhip2"/>
+			</frame>
+			<rotation>
+				<x>180</x>
+				<y>90</y>
+				<z>0</z>
+			</rotation>
+		</fixed>
+		<revolute id="rhip_j1">
+			<frame>
+				<a idref="rhip2"/>
+				<b idref="rhip3"/>
+			</frame>
+		</revolute>
+		<fixed id="rhip_fixed1">
+			<frame>
+				<a idref="rhip3"/>
+				<b idref="rhip4"/>
+			</frame>
+			<rotation>
+				<x>90</x>
+				<y>90</y>
+				<z>0</z>
+			</rotation>
+		</fixed>
+		<revolute id="rhip_j2">
+			<frame>
+				<a idref="rhip4"/>
+				<b idref="rhip5"/>
+			</frame>
+		</revolute>
+		<fixed id="rHip2Knee">
+			<frame>
+				<a idref="rhip5"/>
+				<b idref="rknee0"/>
+			</frame>
+			<rotation>
+				<x>90</x>
+				<y>0</y>
+				<z>0</z>
+			</rotation>
+			<translation>
+				<x>0</x>
+				<y>0</y>
+				<z>-0.515</z>
+			</translation>
+		</fixed>
+		<revolute id="rknee_j0">
+			<frame>
+				<a idref="rknee0"/>
+				<b idref="rknee1"/>
+			</frame>
+		</revolute>
+		<fixed id="rknee_fixed0">
+			<frame>
+				<a idref="rknee1"/>
+				<b idref="rknee2"/>
+			</frame>
+			<rotation>
+				<x>180</x>
+				<y>90</y>
+				<z>0</z>
+			</rotation>
+		</fixed>
+		<revolute id="rknee_j1">
+			<frame>
+				<a idref="rknee2"/>
+				<b idref="rknee3"/>
+			</frame>
+		</revolute>
+		<fixed id="rknee_fixed1">
+			<frame>
+				<a idref="rknee3"/>
+				<b idref="rknee4"/>
+			</frame>
+			<rotation>
+				<x>90</x>
+				<y>90</y>
+				<z>0</z>
+			</rotation>
+		</fixed>
+		<fixed id="rknee_j2">
+			<frame>
+				<a idref="rknee4"/>
+				<b idref="rknee5"/>
+			</frame>
+		</fixed>
+		<fixed id="rKnee2Ankle">
+			<frame>
+				<a idref="rknee5"/>
+				<b idref="rankle0"/>
+			</frame>
+			<rotation>
+				<x>90</x>
+				<y>0</y>
+				<z>0</z>
+			</rotation>
+			<translation>
+				<x>-0.1</x>
+				<y>0</y>
+				<z>-0.368</z>
+			</translation>
+		</fixed>
+		<revolute id="rankle_j0">
+			<frame>
+				<a idref="rankle0"/>
+				<b idref="rankle1"/>
+			</frame>
+		</revolute>
+		<fixed id="rankle_fixed0">
+			<frame>
+				<a idref="rankle1"/>
+				<b idref="rankle2"/>
+			</frame>
+			<rotation>
+				<x>180</x>
+				<y>90</y>
+				<z>0</z>
+			</rotation>
+		</fixed>
+		<revolute id="rankle_j1">
+			<frame>
+				<a idref="rankle2"/>
+				<b idref="rankle3"/>
+			</frame>
+		</revolute>
+		
+		<!-- Left Leg -->
+		
+		<fixed id="lAsis2Hip">
+			<frame>
+				<a idref="mid_asis"/>
+				<b idref="lhip0"/>
+			</frame>
+			<translation>
+				<x>0</x>
+				<y>0.2</y>
+				<z>0</z>
+			</translation>
+			<rotation>
+				<x>90</x>
+				<y>0</y>
+				<z>0</z>
+			</rotation>
+		</fixed>
+		<revolute id="lhip_j0">
+			<frame>
+				<a idref="lhip0"/>
+				<b idref="lhip1"/>
+			</frame>
+		</revolute>
+		<fixed id="lhip_fixed0">
+			<frame>
+				<a idref="lhip1"/>
+				<b idref="lhip2"/>
+			</frame>
+			<rotation>
+				<x>0</x>
+				<y>90</y>
+				<z>0</z>
+			</rotation>
+		</fixed>
+		<revolute id="lhip_j1">
+			<frame>
+				<a idref="lhip2"/>
+				<b idref="lhip3"/>
+			</frame>
+		</revolute>
+		<fixed id="lhip_fixed1">
+			<frame>
+				<a idref="lhip3"/>
+				<b idref="lhip4"/>
+			</frame>
+			<rotation>
+				<x>0</x>
+				<y>-90</y>
+				<z>90</z>
+			</rotation>
+		</fixed>
+		<revolute id="lhip_j2">
+			<frame>
+				<a idref="lhip4"/>
+				<b idref="lhip5"/>
+			</frame>
+		</revolute>
+		<fixed id="lHip2Knee">
+			<frame>
+				<a idref="lhip5"/>
+				<b idref="lknee0"/>
+			</frame>
+			<rotation>
+				<x>-90</x>
+				<y>0</y>
+				<z>0</z>
+			</rotation>
+			<translation>
+				<x>0</x>
+				<y>0</y>
+				<z>0.515</z>
+			</translation>
+		</fixed>
+		<revolute id="lknee_j0">
+			<frame>
+				<a idref="lknee0"/>
+				<b idref="lknee1"/>
+			</frame>
+		</revolute>
+		<fixed id="lknee_fixed0">
+			<frame>
+				<a idref="lknee1"/>
+				<b idref="lknee2"/>
+			</frame>
+			<rotation>
+				<x>0</x>
+				<y>90</y>
+				<z>0</z>
+			</rotation>
+		</fixed>
+		<revolute id="lknee_j1">
+			<frame>
+				<a idref="lknee2"/>
+				<b idref="lknee3"/>
+			</frame>
+		</revolute>
+		<fixed id="lknee_fixed1">
+			<frame>
+				<a idref="lknee3"/>
+				<b idref="lknee4"/>
+			</frame>
+			<rotation>
+				<x>0</x>
+				<y>-90</y>
+				<z>90</z>
+			</rotation>
+		</fixed>
+		<fixed id="lknee_j2">
+			<frame>
+				<a idref="lknee4"/>
+				<b idref="lknee5"/>
+			</frame>
+		</fixed>
+		<fixed id="lKnee2Ankle">
+			<frame>
+				<a idref="lknee5"/>
+				<b idref="lankle0"/>
+			</frame>
+			<rotation>
+				<x>-90</x>
+				<y>0</y>
+				<z>0</z>
+			</rotation>
+			<translation>
+				<x>-0.1</x>
+				<y>0</y>
+				<z>0.368</z>
+			</translation>
+		</fixed>
+		<revolute id="lankle_j0">
+			<frame>
+				<a idref="lankle0"/>
+				<b idref="lankle1"/>
+			</frame>
+		</revolute>
+		<fixed id="lankle_fixed0">
+			<frame>
+				<a idref="lankle1"/>
+				<b idref="lankle2"/>
+			</frame>
+			<rotation>
+				<x>0</x>
+				<y>90</y>
+				<z>0</z>
+			</rotation>
+		</fixed>
+		<revolute id="lankle_j1">
+			<frame>
+				<a idref="lankle2"/>
+				<b idref="lankle3"/>
+			</frame>
+		</revolute>
+		
+	</model>
+</rlmdl>

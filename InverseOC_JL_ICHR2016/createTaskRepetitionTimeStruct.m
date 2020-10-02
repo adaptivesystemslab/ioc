@@ -12,16 +12,16 @@ function segmentsOfInterest = createTaskRepetitionTimeStruct()
     segmentsOfInterest(1).end = 19880; % 1 sec after placement ended
     
     segmentsOfInterest(2).name = "Subject01_SingleArm80Time";     
-    segmentsOfInterest(2).start = 9230; % 1 sec before picking takes place
-    segmentsOfInterest(2).pickTarget = 9430;     
-    segmentsOfInterest(2).startDisplacement = 9480;
-    segmentsOfInterest(2).endDisplacement = 9640;
-    segmentsOfInterest(2).placementTarget = 9700;    
-    segmentsOfInterest(2).end = 10070; % 1 sec after placement ended
+    segmentsOfInterest(2).start = 16700; % 1 sec before picking takes place
+    segmentsOfInterest(2).pickTarget = 16900;     
+    segmentsOfInterest(2).startDisplacement = 16980;
+    segmentsOfInterest(2).endDisplacement = 17140;
+    segmentsOfInterest(2).placementTarget = 17180;    
+    segmentsOfInterest(2).end = 17550; % 1 sec after placement ended
     
     segmentsOfInterest(3).name = "Subject01_SingleArm60Time";     
     segmentsOfInterest(3).start = 8440; % 1 sec before picking takes place
-    segmentsOfInterest(3).pickTarget = 8460;     
+    segmentsOfInterest(3).pickTarget = 8640;     
     segmentsOfInterest(3).startDisplacement = 8690;
     segmentsOfInterest(3).endDisplacement = 8820;
     segmentsOfInterest(3).placementTarget = 8890;    
