@@ -4,19 +4,19 @@ function J = calc_cost_function(function_name, feature_use, param)
 
 len = size(feature_use.q, 2);
 
-ddq = feature_use.ddq;
-dddq = feature_use.dddq;
-x = feature_use.x;
-dx = feature_use.dx;
-ddx = feature_use.ddx;
-dddx = feature_use.dddx;
-tau = feature_use.tau;
-dtau = feature_use.dtau;
-ddtau = feature_use.ddtau;
-geo = feature_use.geo;
-en = feature_use.en;
-% ep = feature_use.ep;
-ek = feature_use.ek;
+% ddq = feature_use.ddq;
+% dddq = feature_use.dddq;
+% x = feature_use.x;
+% dx = feature_use.dx;
+% ddx = feature_use.ddx;
+% dddx = feature_use.dddx;
+% tau = feature_use.tau;
+% dtau = feature_use.dtau;
+% ddtau = feature_use.ddtau;
+% geo = feature_use.geo;
+% en = feature_use.en;
+% % ep = feature_use.ep;
+% ek = feature_use.ek;
 % cop = feature_use.cop;
 % dcop = feature_use.dcop;
 
@@ -66,83 +66,83 @@ ek = feature_use.ek;
 
 
 switch function_name
-    case 'ddq'        
-        J = cost_fct_calc_sq(ddq, len);
-        J = J * param.coeff_cf.ddq;       
-        
-    case 'dddq'        
-        J = cost_fct_calc_sq(dddq, len);
-        J = J * param.coeff_cf.dddq;    
-        
-    case 'ddx'
-        J = cost_fct_calc_sq(ddx, len);
-        J = J * param.coeff_cf.ddx;    
-        
-    case 'dddx'
-        J = cost_fct_calc_sq(dddx, len);
-        J = J * param.coeff_cf.dddx;    
-        
-    case 'tau'
-        J = cost_fct_calc_sq(tau, len);
-        J = J * param.coeff_cf.tau;    
-        
-    case 'dtau'
-        J = cost_fct_calc_sq(dtau, len);
-        J = J * param.coeff_cf.dtau;    
-        
-    case 'ddtau' % effort        
-        J = cost_fct_calc_sq(ddtau, len);
-        J = J * param.coeff_cf.ddtau;    
-        
-    case 'kinetic_en_sqrt' % geodesic
-        J = cost_fct_calc_abs(geo, len);
-        J = J * param.coeff_cf.geo;    
-        
-    case 'dq_tau' % energy
-        J = cost_fct_calc_abs(en, len);
-        J = J * param.coeff_cf.en;
-        
-    case 'potential_en'
-        J = cost_fct_calc_abs(ep, len);
-        J = J * param.coeff_cf.ep;    
-        
-    case 'kinetic_en'
-        J = cost_fct_calc_abs(ek, len);
-        J = J * param.coeff_cf.ek;    
-        
-    case 'cop'
-        J = cost_fct_calc_sq(cop, len);
-        J = J * param.coeff_cf.cop;    
-        
-    case 'dcop'
-        J = cost_fct_calc_sq(dcop, len);
-        J = J * param.coeff_cf.dcop;    
-        
-    case 'kinetic_en_sqrt_sq' % geodesic
-        J = cost_fct_calc_sq(geo, len);
-        J = J * param.coeff_cf.geo;    
-        
-    case 'dq_tau_sq' % energy
-        J = cost_fct_calc_sq(en, len);
-        J = J * param.coeff_cf.en;    
-        
-    case 'potential_en_sq'
-        J = cost_fct_calc_sq(ep, len);
-        J = J * param.coeff_cf.ep;    
-        
-    case 'kinetic_en_sq'
-        J = cost_fct_calc_sq(ek, len); 
-        J = J * param.coeff_cf.ek;
-        
-    case 'ddqddx'
-        Jddq = calc_cost_function('ddq', ure_use, param);
-        Jddx = calc_cost_function('ddx', feature_use, param);
-        J = Jddq + Jddx;
-        
-    case 'ddqddx2'
-        Jddq = calc_cost_function('ddq', feature_use, param);
-        Jddx = calc_cost_function('ddx', feature_use, param);
-        J = 0.5*Jddq + 0.5*Jddx;        
+%     case 'ddq'        
+%         J = cost_fct_calc_sq(ddq, len);
+%         J = J * param.coeff_cf.ddq;       
+%         
+%     case 'dddq'        
+%         J = cost_fct_calc_sq(dddq, len);
+%         J = J * param.coeff_cf.dddq;    
+%         
+%     case 'ddx'
+%         J = cost_fct_calc_sq(ddx, len);
+%         J = J * param.coeff_cf.ddx;    
+%         
+%     case 'dddx'
+%         J = cost_fct_calc_sq(dddx, len);
+%         J = J * param.coeff_cf.dddx;    
+%         
+%     case 'tau'
+%         J = cost_fct_calc_sq(tau, len);
+%         J = J * param.coeff_cf.tau;    
+%         
+%     case 'dtau'
+%         J = cost_fct_calc_sq(dtau, len);
+%         J = J * param.coeff_cf.dtau;    
+%         
+%     case 'ddtau' % effort        
+%         J = cost_fct_calc_sq(ddtau, len);
+%         J = J * param.coeff_cf.ddtau;    
+%         
+%     case 'kinetic_en_sqrt' % geodesic
+%         J = cost_fct_calc_abs(geo, len);
+%         J = J * param.coeff_cf.geo;    
+%         
+%     case 'dq_tau' % energy
+%         J = cost_fct_calc_abs(en, len);
+%         J = J * param.coeff_cf.en;
+%         
+%     case 'potential_en'
+%         J = cost_fct_calc_abs(ep, len);
+%         J = J * param.coeff_cf.ep;    
+%         
+%     case 'kinetic_en'
+%         J = cost_fct_calc_abs(ek, len);
+%         J = J * param.coeff_cf.ek;    
+%         
+%     case 'cop'
+%         J = cost_fct_calc_sq(cop, len);
+%         J = J * param.coeff_cf.cop;    
+%         
+%     case 'dcop'
+%         J = cost_fct_calc_sq(dcop, len);
+%         J = J * param.coeff_cf.dcop;    
+%         
+%     case 'kinetic_en_sqrt_sq' % geodesic
+%         J = cost_fct_calc_sq(geo, len);
+%         J = J * param.coeff_cf.geo;    
+%         
+%     case 'dq_tau_sq' % energy
+%         J = cost_fct_calc_sq(en, len);
+%         J = J * param.coeff_cf.en;    
+%         
+%     case 'potential_en_sq'
+%         J = cost_fct_calc_sq(ep, len);
+%         J = J * param.coeff_cf.ep;    
+%         
+%     case 'kinetic_en_sq'
+%         J = cost_fct_calc_sq(ek, len); 
+%         J = J * param.coeff_cf.ek;
+%         
+%     case 'ddqddx'
+%         Jddq = calc_cost_function('ddq', feature_use, param);
+%         Jddx = calc_cost_function('ddx', feature_use, param);
+%         J = Jddq + Jddx;
+%         
+%     case 'ddqddx2'
+%         Jddq = calc_cost_function('ddq', feature_use, param);
+%         Jddx = calc_cost_function('ddx', feature_use, param);
+%         J = 0.5*Jddq + 0.5*Jddx;        
    
         
 %     case 'dddCOM'
@@ -291,108 +291,139 @@ switch function_name
 %     case 'ddang_mom'        
 %         J = cost_fct_calc_abs(ddang_mom, len);
 %         J = J * param.coeff_cf.ddang_mom;
-            
-    case 'quantity_motion_dx'
-        dx = feature_use.dx_all;
-        J = 0;
-        for i = 1:size(dx, 1)
-            J = J + param.weights.quantity_motion_dx(i) * ...
-                sum(abs(dx(i, :)));
-        end
-        J = J / sum(param.weights.quantity_motion_dx);
-        J = (J .^ 2) * param.coeff_cf.quantity_motion_dx;
+%             
+%     case 'quantity_motion_dx'
+%         dx = feature_use.dx_all;
+%         J = 0;
+%         for i = 1:size(dx, 1)
+%             J = J + param.weights.quantity_motion_dx(i) * ...
+%                 sum(abs(dx(i, :)));
+%         end
+%         J = J / sum(param.weights.quantity_motion_dx);
+%         J = (J .^ 2) * param.coeff_cf.quantity_motion_dx;
+%         
+%     case 'volume_bounding_box'
+%         x = feature_use.x_max;
+%         vol = x(1, :) .* x(2, :) .* x(3, :);
+%         J = cost_fct_calc_sq(vol, len); 
+%         J = J * param.coeff_cf.volume_bounding_box;
+%         
+%     case 'weight_effort'
+%         dx = feature_use.dx_all;         
+%         eff = dx.^2;         
+%         for i = 1:size(dx, 1)             
+%             eff(i, :) = eff(i, :)*param.weights.weight_effort(i);         
+%         end
+%         effSum = sum(eff, 1); % sum across joints
+%         J = max(effSum);         
+%         J = J * param.coeff_cf.weight_effort;
+%         
+%     case 'time_effort'
+%         ddx = feature_use.ddx_all;         
+%         eff = sum(abs(ddx), 2) / size(ddx, 2);         
+%         effMag = param.weights.time_effort(:) .* eff(:);         
+%         J = (sum(effMag)^2) * param.coeff_cf.time_effort;
+%         
+%     case 'space_effort'
+%         x = feature_use.x_all;
+%         eff = [0 0 0]';
+%         for i = 2:size(x, 2)
+%             eff = eff + abs(x(:, i) - x(:, i-1));
+%         end
+%         effMag = param.weights.space_effort(:) .* eff(:);
+%         J = (sum(effMag)^2) * param.coeff_cf.space_effort;
+%         
+%     case 'flow_effort'
+%         dddx = feature_use.dddx_all;
+%         eff = sum(abs(dddx), 2) / size(dddx, 2);
+%         effMag = param.weights.flow_effort(:) .* eff(:);
+%         J = (sum(effMag)^2) * param.coeff_cf.flow_effort;
+%         
+%         
+%             % COM cartesian trajectories
+%     case 'com'
+%         J = cost_fct_calc_sq(feature_use.com, len);
+%         J = J * param.coeff_cf.com;
+%         
+%     case 'dcom'
+%         J = cost_fct_calc_sq(feature_use.dcom, len);
+%         J = J * param.coeff_cf.dcom;
+%         
+%     case 'ddcom'
+%         J = cost_fct_calc_sq(feature_use.ddcom, len);
+%         J = J * param.coeff_cf.ddcom;
+% 
+%     case 'x_anchor_1'
+%         J = cost_fct_calc_sq(feature_use.x_anchor_1, len);
+%         J = J * param.coeff_cf.x_anchor_1;
+%         
+%     case 'x_anchor_2'
+%         J = cost_fct_calc_sq(feature_use.x_anchor_2, len);
+%         J = J * param.coeff_cf.x_anchor_2;
+%    
+%     case 'rot_anchor_1'
+%         J = cost_fct_calc_sq(feature_use.rot_anchor_1, len);
+%         J = J * param.coeff_cf.rot_anchor_1;
+%         
+%     case 'rot_anchor_2'
+%         J = cost_fct_calc_sq(feature_use.rot_anchor_2, len);
+%         J = J * param.coeff_cf.rot_anchor_2;
+%         
+%     case 'x_displace'
+%         J = cost_fct_calc_sq(feature_use.x_displace, len);
+%         J = J * param.coeff_cf.x_displace;
+%         
+%     case 'dx_displace'
+%         J = cost_fct_calc_sq(feature_use.dx_displace, len);
+%         J = J * param.coeff_cf.dx_displace;
+%         
+%     case 'ddx_displace'
+%         J = cost_fct_calc_sq(feature_use.ddx_displace, len);
+%         J = J * param.coeff_cf.ddx_displace;
+% 
+%     case 'cartCurv'
+%         J = cost_fct_calc_sq(feature_use.cartCurv, len);
+%         J = J * param.coeff_cf.cartCurv;
+%         
+%     case 'shapeDir'
+%         J = cost_fct_calc_sq(feature_use.shapeDir, len);
+%         J = J * param.coeff_cf.shapeDir;
+%         
+%     case 'x_cartCurv'
+%         J = cost_fct_calc_sq(feature_use.x_cartCurv, len);
+%         J = J * param.coeff_cf.x_cartCurv;
         
-    case 'volume_bounding_box'
-        x = feature_use.x_max;
-        vol = x(1, :) .* x(2, :) .* x(3, :);
-        J = cost_fct_calc_sq(vol, len); 
-        J = J * param.coeff_cf.volume_bounding_box;
+    case 'half_joint_task'
+        J = cost_fct_calc_sq(feature_use.half_joint_task, len);
+        J = J * param.coeff_cf.half_joint_task;
         
-    case 'weight_effort'
-        dx = feature_use.dx_all;         
-        eff = dx.^2;         
-        for i = 1:size(dx, 1)             
-            eff(i, :) = eff(i, :)*param.weights.weight_effort(i);         
-        end
-        effSum = sum(eff, 1); % sum across joints
-        J = max(effSum);         
-        J = J * param.coeff_cf.weight_effort;
+    case 'joint_length'
+        J = cost_fct_calc_sq(feature_use.joint_length, len);
+        J = J * param.coeff_cf.joint_length;
         
-    case 'time_effort'
-        ddx = feature_use.ddx_all;         
-        eff = sum(abs(ddx), 2) / size(ddx, 2);         
-        effMag = param.weights.time_effort(:) .* eff(:);         
-        J = (sum(effMag)^2) * param.coeff_cf.time_effort;
+    case 'joint_limit'
+        J = cost_fct_calc_sq(feature_use.joint_limit, len);
+        J = J * param.coeff_cf.joint_limit;
         
-    case 'space_effort'
-        x = feature_use.x_all;
-        eff = [0 0 0]';
-        for i = 2:size(x, 2)
-            eff = eff + abs(x(:, i) - x(:, i-1));
-        end
-        effMag = param.weights.space_effort(:) .* eff(:);
-        J = (sum(effMag)^2) * param.coeff_cf.space_effort;
+    case 'manip_rot'
+        J = cost_fct_calc_sq(feature_use.manip_rot, len);
+        J = J * param.coeff_cf.manip_rot;
         
-    case 'flow_effort'
-        dddx = feature_use.dddx_all;
-        eff = sum(abs(dddx), 2) / size(dddx, 2);
-        effMag = param.weights.flow_effort(:) .* eff(:);
-        J = (sum(effMag)^2) * param.coeff_cf.flow_effort;
+    case 'manip_trans'
+        J = cost_fct_calc_sq(feature_use.manip_trans, len);
+        J = J * param.coeff_cf.manip_trans;
         
+    case 'manipulability'
+        J = cost_fct_calc_sq(feature_use.manipulability, len);
+        J = J * param.coeff_cf.manipulability;
         
-            % COM cartesian trajectories
-    case 'com'
-        J = cost_fct_calc_sq(feature_use.com, len);
-        J = J * param.coeff_cf.com;
+    case 'orientation_length'
+        J = cost_fct_calc_sq(feature_use.orientation_length, len);
+        J = J * param.coeff_cf.orientation_length;
         
-    case 'dcom'
-        J = cost_fct_calc_sq(feature_use.dcom, len);
-        J = J * param.coeff_cf.dcom;
-        
-    case 'ddcom'
-        J = cost_fct_calc_sq(feature_use.ddcom, len);
-        J = J * param.coeff_cf.ddcom;
-
-    case 'x_anchor_1'
-        J = cost_fct_calc_sq(feature_use.x_anchor_1, len);
-        J = J * param.coeff_cf.x_anchor_1;
-        
-    case 'x_anchor_2'
-        J = cost_fct_calc_sq(feature_use.x_anchor_2, len);
-        J = J * param.coeff_cf.x_anchor_2;
-   
-    case 'rot_anchor_1'
-        J = cost_fct_calc_sq(feature_use.rot_anchor_1, len);
-        J = J * param.coeff_cf.rot_anchor_1;
-        
-    case 'rot_anchor_2'
-        J = cost_fct_calc_sq(feature_use.rot_anchor_2, len);
-        J = J * param.coeff_cf.rot_anchor_2;
-        
-    case 'x_displace'
-        J = cost_fct_calc_sq(feature_use.x_displace, len);
-        J = J * param.coeff_cf.x_displace;
-        
-    case 'dx_displace'
-        J = cost_fct_calc_sq(feature_use.dx_displace, len);
-        J = J * param.coeff_cf.dx_displace;
-        
-    case 'ddx_displace'
-        J = cost_fct_calc_sq(feature_use.ddx_displace, len);
-        J = J * param.coeff_cf.ddx_displace;
-
-    case 'cartCurv'
-        J = cost_fct_calc_sq(feature_use.cartCurv, len);
-        J = J * param.coeff_cf.cartCurv;
-        
-    case 'shapeDir'
-        J = cost_fct_calc_sq(feature_use.shapeDir, len);
-        J = J * param.coeff_cf.shapeDir;
-        
-    case 'x_cartCurv'
-        J = cost_fct_calc_sq(feature_use.x_cartCurv, len);
-        J = J * param.coeff_cf.x_cartCurv;
-
+    case 'task_length'
+        J = cost_fct_calc_sq(feature_use.task_length, len);
+        J = J * param.coeff_cf.task_length;
 end
 end
 

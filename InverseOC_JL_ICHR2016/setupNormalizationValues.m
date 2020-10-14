@@ -27,11 +27,9 @@ function param = setupNormalizationValues(param, traj_load, segmentInfo, config_
 %         'ddq_tor', 'dddq_tor', 'tau_tor', 'dq_tau_tor', 'kinetic_en_sqrt_tor', ...
 %         'ang_mom', 'dang_mom', 'ddang_mom'};
    
-   param_nonorm.cost_function_names = {'ddq', 'dddq', 'ddx', 'dddx', 'tau', 'dtau', 'ddtau', 'kinetic_en', 'kinetic_en_sqrt', 'dq_tau',...
-    'quantity_motion_dx', 'volume_bounding_box', 'weight_effort', ...
-     'time_effort', 'space_effort', 'flow_effort', 'x_anchor_1', 'x_anchor_2', 'com', ...
-     'rot_anchor_1', 'rot_anchor_2','x_displace', 'dx_displace', 'cartCurv', 'dcom', 'shapeDir', 'x_cartCurv'};
-
+   param_nonorm.cost_function_names = {'half_joint_task', 'joint_length', 'joint_limit', ...
+       'manip_rot', 'manip_trans', 'manipulability', 'orientation_length', 'task_length'};
+   
     [~, ~, J_cost_array] = calc_direct_cost(ones(size(param_nonorm.cost_function_names)), feature_win, param_nonorm);
     
 %     if 1
@@ -58,82 +56,19 @@ function param = feature_cf(config, J_cost_array, param, cost_function_names)
     switch config
         case 'rang'
             % sylla style
-            
             param.coeff_cf.ddq   = 1 ./ J_cost_array(strcmpi('ddq', cost_function_names));
             param.coeff_cf.dddq  = 1 ./ J_cost_array(strcmpi('dddq', cost_function_names));
             param.coeff_cf.ddx   = 1 ./ J_cost_array(strcmpi('ddx', cost_function_names));
             param.coeff_cf.dddx  = 1 ./ J_cost_array(strcmpi('dddx', cost_function_names));
             
-            param.coeff_cf.tau   = 1 ./ J_cost_array(strcmpi('tau', cost_function_names));
-            param.coeff_cf.dtau  = 1 ./ J_cost_array(strcmpi('dtau', cost_function_names));
-            param.coeff_cf.ddtau = 1 ./ J_cost_array(strcmpi('ddtau', cost_function_names));
-            param.coeff_cf.ep    = 1 ./ J_cost_array(strcmpi('potential_en', cost_function_names));
-            param.coeff_cf.ek    = 1 ./ J_cost_array(strcmpi('kinetic_en', cost_function_names));
-            param.coeff_cf.geo   = 1 ./ J_cost_array(strcmpi('kinetic_en_sqrt', cost_function_names));
-            param.coeff_cf.en    = 1 ./ J_cost_array(strcmpi('dq_tau', cost_function_names));
-            param.coeff_cf.x_anchor_1 = 1 ./ J_cost_array(strcmpi('x_anchor_1', cost_function_names));
-            param.coeff_cf.x_anchor_2 = 1 ./ J_cost_array(strcmpi('x_anchor_2', cost_function_names));
-            param.coeff_cf.rot_anchor_1 = 1 ./ J_cost_array(strcmpi('rot_anchor_1', cost_function_names));
-            param.coeff_cf.rot_anchor_2 = 1 ./ J_cost_array(strcmpi('rot_anchor_2', cost_function_names));
-            
-            param.coeff_cf.com   = 1 ./ J_cost_array(strcmpi('com', cost_function_names));
-            param.coeff_cf.dcom   = 1 ./ J_cost_array(strcmpi('dcom', cost_function_names));
-            param.coeff_cf.ddcom   = 1 ./ J_cost_array(strcmpi('ddcom', cost_function_names));
-            
-            param.coeff_cf.x_displace   = 1 ./ J_cost_array(strcmpi('x_displace', cost_function_names));
-            param.coeff_cf.dx_displace   = 1 ./ J_cost_array(strcmpi('dx_displace', cost_function_names));
-            param.coeff_cf.cartCurv   = 1 ./ J_cost_array(strcmpi('cartCurv', cost_function_names));
-            param.coeff_cf.dcom   = 1 ./ J_cost_array(strcmpi('dcom', cost_function_names));
-            param.coeff_cf.shapeDir   = 1 ./ J_cost_array(strcmpi('shapeDir', cost_function_names));
-            param.coeff_cf.x_cartCurv   = 1 ./ J_cost_array(strcmpi('x_cartCurv', cost_function_names));
-            
-%             param.coeff_cf.dddCOM   = 1 ./ J_cost_array(strcmpi('dddCOM', cost_function_names));
-%             param.coeff_cf.dCOM_mag   = 1 ./ J_cost_array(strcmpi('dCOM_mag', cost_function_names));
-%             param.coeff_cf.ddCOM_mag   = 1 ./ J_cost_array(strcmpi('ddCOM_mag', cost_function_names));
-%             param.coeff_cf.dddCOM_mag   = 1 ./ J_cost_array(strcmpi('dddCOM_mag', cost_function_names));
-%             param.coeff_cf.COM_height   = 1 ./ J_cost_array(strcmpi('COM_height', cost_function_names));
-%             param.coeff_cf.dCOM_height   = 1 ./ J_cost_array(strcmpi('dCOM_height', cost_function_names));
-%             param.coeff_cf.ddCOM_height   = 1 ./ J_cost_array(strcmpi('ddCOM_height', cost_function_names));
-%             param.coeff_cf.dddCOM_height   = 1 ./ J_cost_array(strcmpi('dddCOM_height', cost_function_names));
-%             
-%             param.coeff_cf.dToeZ   = 1 ./ J_cost_array(strcmpi('dToeZ', cost_function_names));
-%             param.coeff_cf.ddToeZ   = 1 ./ J_cost_array(strcmpi('ddToeZ', cost_function_names));
-%             
-%             param.coeff_cf.ToeTargX   = 1 ./ J_cost_array(strcmpi('ToeTargX', cost_function_names));
-%             param.coeff_cf.dToeTargX   = 1 ./ J_cost_array(strcmpi('dToeTargX', cost_function_names));
-%             param.coeff_cf.COMToeX   = 1 ./ J_cost_array(strcmpi('COMToeX', cost_function_names));
-%             param.coeff_cf.dCOMToeX   = 1 ./ J_cost_array(strcmpi('dCOMToeX', cost_function_names));
-%             param.coeff_cf.COMTargX   = 1 ./ J_cost_array(strcmpi('COMTargX', cost_function_names));
-%             param.coeff_cf.dCOMTargX   = 1 ./ J_cost_array(strcmpi('dCOMTargX', cost_function_names));
-%             
-%             param.coeff_cf.ddq_leg   = 1 ./ J_cost_array(strcmpi('ddq_leg', cost_function_names));
-%             param.coeff_cf.dddq_leg  = 1 ./ J_cost_array(strcmpi('dddq_leg', cost_function_names));
-%             param.coeff_cf.tau_leg   = 1 ./ J_cost_array(strcmpi('tau_leg', cost_function_names));
-%             param.coeff_cf.en_leg    = 1 ./ J_cost_array(strcmpi('dq_tau_leg', cost_function_names));
-%             param.coeff_cf.geo_leg   = 1 ./ J_cost_array(strcmpi('kinetic_en_sqrt_leg', cost_function_names));
-%             
-%             param.coeff_cf.ddq_arm   = 1 ./ J_cost_array(strcmpi('ddq_arm', cost_function_names));
-%             param.coeff_cf.dddq_arm  = 1 ./ J_cost_array(strcmpi('dddq_arm', cost_function_names));
-%             param.coeff_cf.tau_arm   = 1 ./ J_cost_array(strcmpi('tau_arm', cost_function_names));
-%             param.coeff_cf.en_arm    = 1 ./ J_cost_array(strcmpi('dq_tau_arm', cost_function_names));
-%             param.coeff_cf.geo_arm   = 1 ./ J_cost_array(strcmpi('kinetic_en_sqrt_arm', cost_function_names));
-%             
-%             param.coeff_cf.ddq_tor   = 1 ./ J_cost_array(strcmpi('ddq_tor', cost_function_names));
-%             param.coeff_cf.dddq_tor  = 1 ./ J_cost_array(strcmpi('dddq_tor', cost_function_names));
-%             param.coeff_cf.tau_tor   = 1 ./ J_cost_array(strcmpi('tau_tor', cost_function_names));
-%             param.coeff_cf.en_tor    = 1 ./ J_cost_array(strcmpi('dq_tau_tor', cost_function_names));
-%             param.coeff_cf.geo_tor   = 1 ./ J_cost_array(strcmpi('kinetic_en_sqrt_tor', cost_function_names));
-%             
-%             param.coeff_cf.ang_mom   = 1 ./ J_cost_array(strcmpi('ang_mom', cost_function_names));
-%             param.coeff_cf.dang_mom   = 1 ./ J_cost_array(strcmpi('dang_mom', cost_function_names));
-%             param.coeff_cf.ddang_mom   = 1 ./ J_cost_array(strcmpi('ddang_mom', cost_function_names));
-            
-            param.coeff_cf.quantity_motion_dx   = 1 ./ J_cost_array(strcmpi('quantity_motion_dx', cost_function_names));
-            param.coeff_cf.volume_bounding_box   = 1 ./ J_cost_array(strcmpi('volume_bounding_box', cost_function_names));
-            param.coeff_cf.weight_effort   = 1 ./ J_cost_array(strcmpi('weight_effort', cost_function_names));
-            param.coeff_cf.time_effort   = 1 ./ J_cost_array(strcmpi('time_effort', cost_function_names));
-            param.coeff_cf.space_effort   = 1 ./ J_cost_array(strcmpi('space_effort', cost_function_names));
-            param.coeff_cf.flow_effort   = 1 ./ J_cost_array(strcmpi('flow_effort', cost_function_names));
+            param.coeff_cf.half_joint_task   = 1 ./ J_cost_array(strcmpi('half_joint_task', cost_function_names));
+            param.coeff_cf.joint_length   = 1 ./ J_cost_array(strcmpi('joint_length', cost_function_names));
+            param.coeff_cf.joint_limit   = 1 ./ J_cost_array(strcmpi('joint_limit', cost_function_names));
+            param.coeff_cf.manip_rot   = 1 ./ J_cost_array(strcmpi('manip_rot', cost_function_names));
+            param.coeff_cf.manip_trans   = 1 ./ J_cost_array(strcmpi('manip_trans', cost_function_names));
+            param.coeff_cf.manipulability   = 1 ./ J_cost_array(strcmpi('manipulability', cost_function_names));
+            param.coeff_cf.orientation_length   = 1 ./ J_cost_array(strcmpi('orientation_length', cost_function_names));
+            param.coeff_cf.task_length   = 1 ./ J_cost_array(strcmpi('task_length', cost_function_names));
             
         case 'none'
             % sylla style
@@ -142,77 +77,15 @@ function param = feature_cf(config, J_cost_array, param, cost_function_names)
             param.coeff_cf.ddx   = 1;
             param.coeff_cf.dddx  = 1;
             
-            param.coeff_cf.tau   = 1;
-            param.coeff_cf.dtau  = 1;
-            param.coeff_cf.ddtau = 1;
-            param.coeff_cf.ep    = 1;
-            param.coeff_cf.ek    = 1;
-            param.coeff_cf.geo   = 1;
-            param.coeff_cf.en    = 1;
-            param.coeff_cf.x_anchor_1 = 1;
-            param.coeff_cf.x_anchor_2 = 1;
-            param.coeff_cf.rot_anchor_1 = 1;
-            param.coeff_cf.rot_anchor_2 = 1;
+            param.coeff_cf.half_joint_task   = 1;
+            param.coeff_cf.joint_length   = 1;
+            param.coeff_cf.joint_limit   = 1;
+            param.coeff_cf.manip_rot   = 1;
+            param.coeff_cf.manip_trans   = 1;
+            param.coeff_cf.manipulability   = 1;
+            param.coeff_cf.orientation_length   = 1;
+            param.coeff_cf.task_length   = 1;
             
-            param.coeff_cf.com = 1;
-            param.coeff_cf.dcom   = 1;
-            param.coeff_cf.ddcom   = 1;
-
-            param.coeff_cf.x_displace = 1;
-            param.coeff_cf.dx_displace = 1;
-            param.coeff_cf.cartCurv = 1;
-            param.coeff_cf.dcom = 1;
-            param.coeff_cf.shapeDir = 1;
-            param.coeff_cf.x_cartCurv = 1;
-            
-            %             param.coeff_cf.dddCOM   = 1;
-%             param.coeff_cf.dCOM_mag   = 1;
-%             param.coeff_cf.ddCOM_mag   = 1;
-%             param.coeff_cf.dddCOM_mag   = 1;
-%             param.coeff_cf.COM_height   = 1;
-%             param.coeff_cf.dCOM_height   = 1;
-%             param.coeff_cf.ddCOM_height   = 1;
-%             param.coeff_cf.dddCOM_height   = 1;
-%             
-%             param.coeff_cf.dToeZ   = 1;
-%             param.coeff_cf.ddToeZ   = 1;
-%             
-%             param.coeff_cf.ToeTargX   = 1;
-%             param.coeff_cf.dToeTargX   = 1;
-%             param.coeff_cf.COMToeX   = 1;
-%             param.coeff_cf.dCOMToeX   = 1;
-%             param.coeff_cf.COMTargX   = 1;
-%             param.coeff_cf.dCOMTargX   = 1;
-%             
-%             param.coeff_cf.ddq_leg   = 1;
-%             param.coeff_cf.dddq_leg  = 1;
-%             param.coeff_cf.tau_leg   = 1;
-%             param.coeff_cf.en_leg   = 1;
-%             param.coeff_cf.geo_leg   = 1;
-%             
-%             param.coeff_cf.ddq_arm   = 1;
-%             param.coeff_cf.dddq_arm  = 1;
-%             param.coeff_cf.tau_arm   = 1;
-%             param.coeff_cf.en_arm   = 1;
-%             param.coeff_cf.geo_arm   = 1;
-%             
-%             param.coeff_cf.ddq_tor   = 1;
-%             param.coeff_cf.dddq_tor  = 1;
-%             param.coeff_cf.tau_tor   = 1;
-%             param.coeff_cf.en_tor   = 1;
-%             param.coeff_cf.geo_tor   = 1;
-%             
-%             param.coeff_cf.ang_mom   = 1;
-%             param.coeff_cf.dang_mom   = 1;
-%             param.coeff_cf.ddang_mom   = 1;
-            
-            param.coeff_cf.quantity_motion_dx   = 1;
-            param.coeff_cf.volume_bounding_box   = 1;
-            param.coeff_cf.weight_effort   = 1;
-            param.coeff_cf.time_effort   = 1;
-            param.coeff_cf.space_effort   = 1;
-            param.coeff_cf.flow_effort   = 1;
-
         case 'rset'
             % to obtain values for this, use 'rang' to and average over all
             % the subjects
@@ -262,15 +135,14 @@ function param = feature_cf(config, J_cost_array, param, cost_function_names)
 end
 
 function array = param2array(param)
-
-    array = [param.coeff_cf.ddq param.coeff_cf.dddq param.coeff_cf.ddx param.coeff_cf.dddx ...
-        param.coeff_cf.tau param.coeff_cf.dtau param.coeff_cf.ddtau ...
-        param.coeff_cf.ek param.coeff_cf.geo param.coeff_cf.en, ...
-        param.coeff_cf.quantity_motion_dx, param.coeff_cf.volume_bounding_box, param.coeff_cf.weight_effort, ...
-        param.coeff_cf.time_effort, param.coeff_cf.space_effort, param.coeff_cf.flow_effort, ...
-        param.coeff_cf.x_anchor_1, param.coeff_cf.x_anchor_2, param.coeff_cf.rot_anchor_1, param.coeff_cf.rot_anchor_2, param.coeff_cf.com, ...
-        param.coeff_cf.x_displace,  param.coeff_cf.dx_displace,  param.coeff_cf.cartCurv,  param.coeff_cf.dcom,  param.coeff_cf.shapeDir,...
-        param.coeff_cf.x_cartCurv];
+%     array = [param.coeff_cf.ddq param.coeff_cf.dddq param.coeff_cf.ddx param.coeff_cf.dddx ...
+%         param.coeff_cf.tau param.coeff_cf.dtau param.coeff_cf.ddtau ...
+%         param.coeff_cf.ek param.coeff_cf.geo param.coeff_cf.en, ...
+%         param.coeff_cf.quantity_motion_dx, param.coeff_cf.volume_bounding_box, param.coeff_cf.weight_effort, ...
+%         param.coeff_cf.time_effort, param.coeff_cf.space_effort, param.coeff_cf.flow_effort, ...
+%         param.coeff_cf.x_anchor_1, param.coeff_cf.x_anchor_2, param.coeff_cf.rot_anchor_1, param.coeff_cf.rot_anchor_2, param.coeff_cf.com, ...
+%         param.coeff_cf.x_displace,  param.coeff_cf.dx_displace,  param.coeff_cf.cartCurv,  param.coeff_cf.dcom,  param.coeff_cf.shapeDir,...
+%         param.coeff_cf.x_cartCurv];
 
 %     array = [param.coeff_cf.tau param.coeff_cf.en param.coeff_cf.geo, ...         
 %         param.coeff_cf.quantity_motion_dx, param.coeff_cf.volume_bounding_box, param.coeff_cf.weight_effort, ...         
@@ -278,52 +150,60 @@ function array = param2array(param)
 %         param.coeff_cf.x_anchor_1, param.coeff_cf.x_anchor_2, param.coeff_cf.com, ...         
 %         param.coeff_cf.x_displace,  param.coeff_cf.dx_displace,  param.coeff_cf.cartCurv,  param.coeff_cf.dcom];
 
-    
+    array = [...
+        param.coeff_cf.half_joint_task 
+        param.coeff_cf.joint_length 
+        param.coeff_cf.joint_limit
+        param.coeff_cf.manip_rot
+        param.coeff_cf.manip_trans
+        param.coeff_cf.manipulability
+        param.coeff_cf.orientation_length
+        param.coeff_cf.task_length];
 end
 
 function coeff_cf = array2param(array)
-    coeff_cf.ddq = array(1);
-    coeff_cf.dddq = array(2);
-    coeff_cf.ddx = array(3);
-    coeff_cf.dddx = array(4);
-    coeff_cf.tau = array(5);
-    coeff_cf.dtau = array(6);
-    coeff_cf.ddtau = array(7);
-    coeff_cf.ek = array(8);
-    coeff_cf.geo = array(9);
-    coeff_cf.en = array(10);
-    coeff_cf.quantity_motion_dx = array(11);
-    coeff_cf.volume_bounding_box = array(12);
-    coeff_cf.weight_effort = array(13);
-    coeff_cf.time_effort = array(14);
-    coeff_cf.space_effort = array(15);
-    coeff_cf.flow_effort = array(16);
-    coeff_cf.x_anchor_1 = array(17);
-    coeff_cf.x_anchor_2 = array(18);
-    coeff_cf.rot_anchor_1 = array(19);
-    coeff_cf.rot_anchor_2 = array(20);
-    coeff_cf.com = array(21);
-    coeff_cf.x_displace = array(22);
-    coeff_cf.dx_displace = array(23);
-    coeff_cf.cartCurv = array(24);
-    coeff_cf.dcom = array(25);
-    coeff_cf.shapeDir = array(26);
-    coeff_cf.x_cartCurv = array(27);
-%       coeff_cf.tau = array(1);   
-%       coeff_cf.en = array(2);     
-%       coeff_cf.geo = array(3);     
-%       coeff_cf.quantity_motion_dx = array(4);     
-%       coeff_cf.volume_bounding_box = array(5);     
-%       coeff_cf.weight_effort = array(6);     
-%       coeff_cf.time_effort = array(7);     
-%       coeff_cf.space_effort = array(8);        
-%       coeff_cf.x_anchor_1 = array(9);     
-%       coeff_cf.x_anchor_2 = array(10);     
-%       coeff_cf.com = array(11);         
-%       coeff_cf.x_displace = array(12);     
-%       coeff_cf.dx_displace = array(13);     
-%       coeff_cf.cartCurv = array(14);     
-%       coeff_cf.dcom = array(15);
+%     coeff_cf.ddq = array(1);
+%     coeff_cf.dddq = array(2);
+%     coeff_cf.ddx = array(3);
+%     coeff_cf.dddx = array(4);
+%     coeff_cf.tau = array(5);
+%     coeff_cf.dtau = array(6);
+%     coeff_cf.ddtau = array(7);
+%     coeff_cf.ek = array(8);
+%     coeff_cf.geo = array(9);
+%     coeff_cf.en = array(10);
+%     coeff_cf.quantity_motion_dx = array(11);
+%     coeff_cf.volume_bounding_box = array(12);
+%     coeff_cf.weight_effort = array(13);
+%     coeff_cf.time_effort = array(14);
+%     coeff_cf.space_effort = array(15);
+%     coeff_cf.flow_effort = array(16);
+%     coeff_cf.x_anchor_1 = array(17);
+%     coeff_cf.x_anchor_2 = array(18);
+%     coeff_cf.rot_anchor_1 = array(19);
+%     coeff_cf.rot_anchor_2 = array(20);
+%     coeff_cf.com = array(21);
+%     coeff_cf.x_displace = array(22);
+%     coeff_cf.dx_displace = array(23);
+%     coeff_cf.cartCurv = array(24);
+%     coeff_cf.dcom = array(25);
+%     coeff_cf.shapeDir = array(26);
+%     coeff_cf.x_cartCurv = array(27);
+% %       coeff_cf.tau = array(1);   
+% %       coeff_cf.en = array(2);     
+% %       coeff_cf.geo = array(3);     
+% %       coeff_cf.quantity_motion_dx = array(4);     
+% %       coeff_cf.volume_bounding_box = array(5);     
+% %       coeff_cf.weight_effort = array(6);     
+% %       coeff_cf.time_effort = array(7);     
+% %       coeff_cf.space_effort = array(8);        
+% %       coeff_cf.x_anchor_1 = array(9);     
+% %       coeff_cf.x_anchor_2 = array(10);     
+% %       coeff_cf.com = array(11);         
+% %       coeff_cf.x_displace = array(12);     
+% %       coeff_cf.dx_displace = array(13);     
+% %       coeff_cf.cartCurv = array(14);     
+% %       coeff_cf.dcom = array(15);
 end
 
 function param = feature_norm(config, feature_win, param)
@@ -338,104 +218,14 @@ function param = feature_norm(config, feature_win, param)
             param.coeff_feature.dx    = ones(3, 1);
             param.coeff_feature.ddx   = ones(3, 1);
             param.coeff_feature.dddx  = ones(3, 1);
-            
-            param.coeff_feature.tau   = ones(length(param.dofsFromFull), 1);
-            param.coeff_feature.dtau  = ones(length(param.dofsFromFull), 1);
-            param.coeff_feature.ddtau = ones(length(param.dofsFromFull), 1);
-            param.coeff_feature.ep    = ones(length(param.dofsFromFull), 1);
-            param.coeff_feature.ek    = ones(length(param.dofsFromFull), 1);
-            param.coeff_feature.geo   = ones(length(param.dofsFromFull), 1);
-            param.coeff_feature.en    = ones(length(param.dofsFromFull), 1);
-            param.coeff_feature.cop    = ones(3, 1); %
-            param.coeff_feature.dcop   = ones(3, 1); %
-            param.coeff_feature.ddcop  = ones(3, 1); %
-            param.coeff_feature.com    = ones(3, 1); %
-            param.coeff_feature.dcom   = ones(3, 1); %
-            param.coeff_feature.ddcom  = ones(3, 1); %
-            
-            
-            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-            param.coeff_feature.COM   = ones(3, 1);
-            param.coeff_feature.dCOM   = ones(3, 1);
-            param.coeff_feature.ddCOM   = ones(3, 1);
-            param.coeff_feature.dddCOM   = ones(3, 1);
-            param.coeff_feature.dCOM_mag   = 1;
-            param.coeff_feature.ddCOM_mag   = 1;
-            param.coeff_feature.dddCOM_mag   = 1;
-            param.coeff_feature.COM_height   = 1;
-            param.coeff_feature.dCOM_height   = 1;
-            param.coeff_feature.ddCOM_height   = 1;
-            param.coeff_feature.dddCOM_height   = 1;
-            
-            param.coeff_feature.ToeZ   = 1;
-            param.coeff_feature.dToeZ  = 1;
-            
-            param.coeff_feature.ToeTargX   = 1;
-            param.coeff_feature.dToeTargX   = 1;
-            param.coeff_feature.COMToeX   = 1;
-            param.coeff_feature.dCOMToeX   = 1;
-            param.coeff_feature.COMTargX   = 1;
-            param.coeff_feature.dCOMTargX   = 1;
-            
-            param.coeff_feature.ddq_leg   = ones(6, 1); % hips, knees, ankles
-            param.coeff_feature.dddq_leg  = ones(6, 1);
-            param.coeff_feature.tau_leg   = ones(6, 1);
-            param.coeff_feature.en_leg  = ones(6, 1);
-            param.coeff_feature.geo_leg  = ones(6, 1);
-            
-            param.coeff_feature.ddq_arm  = ones(4, 1); % shoulders, elbows
-            param.coeff_feature.dddq_arm   = ones(4, 1);
-            param.coeff_feature.tau_arm  = ones(4, 1);
-            param.coeff_feature.en_arm  = ones(4, 1);
-            param.coeff_feature.geo_arm  = ones(4, 1);
-            
-            param.coeff_feature.ddq_arm  = ones(4, 1); % torso (p0, p1, r0, back_FB)
-            param.coeff_feature.dddq_arm   = ones(4, 1);
-            param.coeff_feature.tau_arm  = ones(4, 1);
-            param.coeff_feature.en_arm  = ones(4, 1);
-            param.coeff_feature.geo_arm  = ones(4, 1);
-            
-            param.coeff_feature.ang_mom  = 1;
-            param.coeff_feature.dang_mom  = 1;
-            param.coeff_feature.ddang_mom  = 1;
-            
-            
-    end
-    
-    if length(config) == 4
-        masterMultiplier = 1;
-    else
-        switch config(5:8)
-            case 'Half'
-                masterMultiplier = 0.5;
 
-            case 'Doub'
-                masterMultiplier = 2;
-                
-            otherwise
-                masterMultiplier = 1;
-        end
+            param.coeff_feature.half_joint_task   = 1;
+            param.coeff_feature.joint_length   = 1;
+            param.coeff_feature.joint_limit   = 1;
+            param.coeff_feature.manip_rot   = 1;
+            param.coeff_feature.manip_trans   = 1;
+            param.coeff_feature.manipulability   = 1;
+            param.coeff_feature.orientation_length   = 1;
+            param.coeff_feature.task_length   = 1;
     end
-    
-    param.coeff_feature.q     = param.coeff_feature.q*masterMultiplier;
-    param.coeff_feature.dq    = param.coeff_feature.dq*masterMultiplier;
-    param.coeff_feature.ddq   = param.coeff_feature.ddq*masterMultiplier;
-    param.coeff_feature.dddq  = param.coeff_feature.dddq*masterMultiplier;
-    param.coeff_feature.x     = param.coeff_feature.x*masterMultiplier;
-    param.coeff_feature.dx    = param.coeff_feature.dx*masterMultiplier;
-    param.coeff_feature.ddx   = param.coeff_feature.ddx*masterMultiplier;
-    param.coeff_feature.dddx  = param.coeff_feature.dddx*masterMultiplier;
-    param.coeff_feature.tau   = param.coeff_feature.tau*masterMultiplier;
-    param.coeff_feature.dtau  = param.coeff_feature.dtau*masterMultiplier;
-    param.coeff_feature.ddtau = param.coeff_feature.ddtau*masterMultiplier;
-    param.coeff_feature.ep    = param.coeff_feature.ep*masterMultiplier;
-    param.coeff_feature.ek    = param.coeff_feature.ek*masterMultiplier;
-    param.coeff_feature.geo   = param.coeff_feature.geo*masterMultiplier;
-    param.coeff_feature.en    = param.coeff_feature.en*masterMultiplier;
-    param.coeff_feature.cop    = param.coeff_feature.cop*masterMultiplier;
-    param.coeff_feature.dcop   = param.coeff_feature.dcop*masterMultiplier;
-    param.coeff_feature.ddcop  = param.coeff_feature.ddcop*masterMultiplier;
-    param.coeff_feature.com    = param.coeff_feature.com*masterMultiplier;
-    param.coeff_feature.dcom   = param.coeff_feature.dcom*masterMultiplier;
-    param.coeff_feature.ddcom  = param.coeff_feature.ddcom*masterMultiplier;
 end

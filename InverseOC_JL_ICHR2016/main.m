@@ -1,4 +1,4 @@
-function main(filesToLoad, manSegLoadPath, outputPath, currInstName, runSettings, currFilestack, run_mode, cost_function_names, sequenceTime)
+function main(filesToLoad, manSegLoadPath, outputPath, currInstName, runSettings, currFilestack, run_mode, cost_function_names)
 
 % to modify the cost function, update 'cost_function_names', 'ccost_array', 
 % and 'J_array' in calc_direct_cost, and it should automatically proprogate
@@ -70,7 +70,7 @@ end
 
 cconst = currFilestack.cconst_array;  
 
-[param, traj_load, segmentInfo] = setup_main(filesToLoad, manSegLoadPath, currFilestack, run_mode, runSettings, cost_function_names, feature_load_names, sequenceTime);
+[param, traj_load, segmentInfo] = setup_main(filesToLoad, manSegLoadPath, currFilestack, run_mode, runSettings, cost_function_names, feature_load_names);
 % param.cost_functions_ioc = 1:length(cost_function_names); % this initalizes the cost functions to be used. the IOC may remove certain cost functions due to colinearity, and this variables tracks that
 
 runSettings.variableFactors
@@ -80,7 +80,7 @@ runSettings.variableFactors
 runSettings_docsim.variableFactors.doc_sim_win_length = runSettings.variableFactors.doc_sim_win_length_sim;
 runSettings_docsim.variableFactors.spline_length = runSettings.variableFactors.spline_length_sim;
 runSettings_docsim.variableFactors.win_length = runSettings.variableFactors.win_length_sim;
-[param_docsim, ~, ~] = setup_main(filesToLoad, manSegLoadPath, currFilestack, run_mode, runSettings_docsim, cost_function_names, feature_load_names, sequenceTime);
+[param_docsim, ~, ~] = setup_main(filesToLoad, manSegLoadPath, currFilestack, run_mode, runSettings_docsim, cost_function_names, feature_load_names);
 [param_docsim, ccost_array, const_x_array, const_y_array] = halfPhaseConstruction(currFilestack, param_docsim);
 param_docsim.coeff_cf = param.coeff_cf; % the simulation normalization can vary based on the length of window being passed in (ie param.win_length)
 
@@ -696,9 +696,11 @@ for ind_windowCount = 1:windowCount
 %                 q_recon{ind_windowCount}{ind_pivot} = zeros(size(feature_win.q));
 %                 dq_recon{ind_windowCount}{ind_pivot} = zeros(size(feature_win.q));
                 feature_recon_local{ind_windowCount}{ind_pivot} = feature_win;
-                currRMSE_set(ind_pivot) = calc_rmse(rmse_fct, feature_win, feature_recon_local{ind_windowCount}{ind_pivot}, param);
-                rmse_array(:, ind_pivot) = currRMSE_set(ind_pivot).array;
+%                 currRMSE_set(ind_pivot) = calc_rmse(rmse_fct, feature_win, feature_recon_local{ind_windowCount}{ind_pivot}, param);
+%                 rmse_array(:, ind_pivot) = currRMSE_set(ind_pivot).array;
                 
+                currRMSE_set(minRmseInd).q = 0;
+                rmse_array(:, ind_pivot) = 0;
                 direct_check_flags{ind_pivot}.exitflag = 0;
                 direct_check_flags{ind_pivot}.J = 0;
                 direct_check_flags{ind_pivot}.c = 0;

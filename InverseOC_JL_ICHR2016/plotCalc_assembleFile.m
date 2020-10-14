@@ -79,20 +79,20 @@
         packageToAdd = currLoadPackage.ddq_recon_plot_array(targetWindowToPull);
         ddq_recon_plot_array = [ddq_recon_plot_array packageToAdd];
         
-        for j = 1:length(targetWindowToPull)
-            currMin = currLoadPackage.minRmseInd_plot(targetWindowToPull(j));
-%             packageToAdd = currLoadPackage.feature_recon_local{targetWindowToPull(j)}{currMin}.q;
-%             q2_recon_plot_array = [q2_recon_plot_array packageToAdd];
-            
-            packageToAdd = currLoadPackage.feature_recon_local{targetWindowToPull(j)}{currMin}.en;
-            dqtau_recon_plot_array = [dqtau_recon_plot_array packageToAdd];
-            
-            packageToAdd = currLoadPackage.feature_recon_local{targetWindowToPull(j)}{currMin}.ddx;
-            ddx_recon_plot_array = [ddx_recon_plot_array packageToAdd];
-            
-            packageToAdd = currLoadPackage.feature_win_save{targetWindowToPull(j)}.en;
-            dqtau_plot_array = [dqtau_plot_array packageToAdd];
-        end
+%         for j = 1:length(targetWindowToPull)
+%             currMin = currLoadPackage.minRmseInd_plot(targetWindowToPull(j));
+% %             packageToAdd = currLoadPackage.feature_recon_local{targetWindowToPull(j)}{currMin}.q;
+% %             q2_recon_plot_array = [q2_recon_plot_array packageToAdd];
+%             
+%             packageToAdd = currLoadPackage.feature_recon_local{targetWindowToPull(j)}{currMin}.en;
+%             dqtau_recon_plot_array = [dqtau_recon_plot_array packageToAdd];
+%             
+%             packageToAdd = currLoadPackage.feature_recon_local{targetWindowToPull(j)}{currMin}.ddx;
+%             ddx_recon_plot_array = [ddx_recon_plot_array packageToAdd];
+%             
+%             packageToAdd = currLoadPackage.feature_win_save{targetWindowToPull(j)}.en;
+%             dqtau_plot_array = [dqtau_plot_array packageToAdd];
+%         end
         
         packageToAdd = currLoadPackage.minRmseIndArray(targetWindowToPull);
         minRmseIndArray = [minRmseIndArray packageToAdd];

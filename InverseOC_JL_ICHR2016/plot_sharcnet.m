@@ -2,13 +2,14 @@ function al
     clearvars
     clc
 
+    setting_dataset = 'pr2';
+    baseSourceFolder = 'D:/data/results_pr2/';
+    
+    addpath('project_pr2');
     addpath(genpath(fullfile('Common')));
-    addpath(genpath('../../../kalmanfilter/ik_framework/common'));
-    addpath(genpath('../../../kalmanfilter/ik_framework/instance_expressiveioc'));
-    addpath(genpath('../../../kalmanfilter/General_FKEKF/DynamicsModelMatlab/MatlabWrapper'));
-
-     baseSourceFolder = '../../expressiveiocData/results/';
-    %baseSourceFolder = 'D:/results/expressive_ioc/PamelasIOCResults/';
+    addpath(genpath('../Libraries/rl/ik_framework/common'));
+    addpath(genpath('../Libraries/rl/General_FKEKF/DynamicsModelMatlab/MatlabWrapper'));
+    
     commentsArray = {''};
     SVDArray = {'10000'};
     thresholdMultiplierArray = [1];
@@ -32,8 +33,8 @@ function al
                 basePathPlot_array{1} =       [];
                 basePathMasterPlot_array{1} = [];
 
-                basePath_array{end+1} =           [baseSourceFolder 'expressive_ioc/'];
-                basePathPlot_array{end+1} =       [baseSourceFolder 'expressive_ioc/' 'p_' nowStr '_' comments '_' svdEntry '/'];
+                basePath_array{end+1} =           [baseSourceFolder setting_dataset '/'];
+                basePathPlot_array{end+1} =       [baseSourceFolder setting_dataset '/' 'p_' nowStr '_' comments '_' svdEntry '/'];
                 basePathMasterPlot_array{end+1} = basePathPlot_array{end};
 
                 for i = 1:length(basePath_array)
@@ -116,10 +117,6 @@ function al
                             elseif length(currDir_layer2.name) < 3
                                 continue
                             end
-
-                            if ~strcmp(currDir_layer2.name, '20191126_111924')
-                                continue
-                            end
                             
                             dir_layer3 = dir([currDir_layer2_fullName]);
 
@@ -149,8 +146,8 @@ function al
                                      matFilesToLoad{ind_layer4} = [currDir_layer3_fullName currDir_layer4.name];
 
                                      subtextString = strsplit(currDir_layer4.name, '_');
-                                     indStart(ind_layer4) = str2num(subtextString{3});
-                                     indEnd(ind_layer4) = str2num(subtextString{4});
+                                     indStart(ind_layer4) = str2num(subtextString{end-2});
+                                     indEnd(ind_layer4) = str2num(subtextString{end-1});
                                  end
 
                                  [Y, I] = sort(indStart);
@@ -159,7 +156,7 @@ function al
                                  indTotal = [indStart' indEnd'];
                                  matFilesToLoadUse = matFilesToLoad(I);
 
-                                 instanceName = currDir_layer3.name;
+                                 instanceName = [currDir_layer2.name '_' currDir_layer3.name];
                                  currDir_layer4_plotFullName = [basePathPlot currDir_layer1.name '/' currDir_layer3.name];
 
                                  if ~isempty(matFilesToLoadUse)    
@@ -167,7 +164,7 @@ function al
                                      masterSave1 = fullfile(basePathMasterPlot, [currDir_layer1.name '_fig_' nowStr]);
                                      [t_obs{jumpInd}, avgWeightArray_ioc{jumpInd}, avgRatioArray_ioc{jumpInd}, ...
                                          cost_function_names_sorted, outputStruct(jumpInd)] = loadFileAndPlot_overlapMode(matFilesToLoadUse, instanceName, indTotal, currDir_layer4_plotFullName, masterSaveOverall, masterSave1);
-                                     writeTrajectoryToFile(currDir_layer4_plotFullName,instanceName, cost_function_names_sorted, t_obs{jumpInd}, avgWeightArray_ioc{jumpInd}, avgRatioArray_ioc{jumpInd});
+%                                      writeTrajectoryToFile(currDir_layer4_plotFullName,instanceName, cost_function_names_sorted, t_obs{jumpInd}, avgWeightArray_ioc{jumpInd}, avgRatioArray_ioc{jumpInd});
                                  end
 
                                  fclose all;

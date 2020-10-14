@@ -1,4 +1,4 @@
-function main_batch(specStruct, run_mode, cost_function_names, outputString, variableFactorsInput, pathToRawData, pathToOutput)
+function main_batch(specStruct, run_mode, cost_function_names, outputString, variableFactorsInput, sourceDataMatFolder, resultsDataFolder)
     % preamble loading of background parameters
        
 %     addpath(genpath(fullfile('Common')));
@@ -13,33 +13,25 @@ function main_batch(specStruct, run_mode, cost_function_names, outputString, var
 %     sourceDataTrcFolder = 'D:/aslab/data/expressiveiocData/dataTrc/PamelasData/';
 %     sourceDataMatFolder = 'D:/aslab/data/expressiveiocData/dataMat/2019_04_11_rightarm3/matEkfIk';
 
+    addpath('project_pr2');
     addpath(genpath(fullfile('Common')));
-    addpath(genpath('../../../kalmanfilter/ik_framework/common'));
-    addpath(genpath('../../../kalmanfilter/ik_framework/instance_expressiveioc'));
-    addpath(genpath('../../../kalmanfilter/General_FKEKF/DynamicsModelMatlab/MatlabWrapper'));
-    
-    sourceDataTrcFolder = '../../expressiveiocData/dataTrc/PamelasData/';
-    sourceDataMatFolder = '../../expressiveiocData/dataMat/2019_04_11_rightarm3/matEkfIk';
+    addpath(genpath('../Libraries/rl/ik_framework/common'));
+    addpath(genpath('../Libraries/rl/General_FKEKF/DynamicsModelMatlab/MatlabWrapper'));
 
-    fileStackTempTemp = dir(sourceDataMatFolder);
+    fileStackTempTemp = dir([sourceDataMatFolder '/*.mat']);
     fileStackTempInd = 0;
     
     calculateNormalization = 0;
-    
-    segmentsOfInterest = createTaskRepetitionTimeStruct;
-    
+       
     norm_coeff_calc = [];
     
     for i = 1:length(fileStackTempTemp)
         if ~fileStackTempTemp(i).isdir
             fileStackTempInd = fileStackTempInd + 1;
             strSp = strsplit(fileStackTempTemp(i).name, '_');
-            fileStackTemp(fileStackTempInd).id = [strSp{1} '_' strSp{2}];
             
-            fileStackTemp(fileStackTempInd).fullPathTrc = ...
-                fullfile(sourceDataTrcFolder, strSp{1}, 'Only_Right_arm', [strSp{1} '_' strSp{2} '_' strSp{3} '.trc']); 
-            fileStackTemp(fileStackTempInd).fullPathMat = ...
-                fullfile(fileStackTempTemp(i).folder, fileStackTempTemp(i).name); 
+            fileStackTemp(fileStackTempInd).id = [strSp{1} '_' strSp{2} '_' strSp{3}];
+            fileStackTemp(fileStackTempInd).fullPathMat = fullfile(fileStackTempTemp(i).folder, fileStackTempTemp(i).name); 
         end
     end
     
@@ -61,39 +53,18 @@ function main_batch(specStruct, run_mode, cost_function_names, outputString, var
     for ind_fileStack = 1:length(fileStackTemp)
         currInstName = fileStackTemp(ind_fileStack).id;
         fprintf('(%u/%u): %s\n', ind_fileStack, length(fileStackTemp), currInstName);
-
-% %         if ~strcmpi(currInstName, 'Subject05_SingleArmBaseLine')
-% %             fprintf('Skipping file %s\n', currInstName);
-% %             continue
-% %         end
         
-        strsplitStr = strsplit(currInstName, '_');
-        if ~strcmpi(strsplitStr(end), 'SingleArmBaseLine')
-            fprintf('Skipping file %s\n', currInstName);
-            continue
-        end
-        
-        outputPath = fullfile(pathToOutput, specStruct.dataset, outputString, outputInstancePath, currInstName);
+        outputPath = fullfile(resultsDataFolder, specStruct.dataset, outputString, outputInstancePath, currInstName);
         checkMkdir(outputPath);
         
         currFilestack.dataset = specStruct.dataset;
-        
-        switch currFilestack.dataset                
-            case {'expressive_ioc'}
-                manSeg = '';
-                jumpFilePath = pathToRawData;
-                filesToLoad = fileStackTemp(ind_fileStack);
-        end
+        filesToLoad = fileStackTemp(ind_fileStack);
         
         currFilestack.ccost_array = specStruct.ccost_array;
         currFilestack.cconst_array = specStruct.cconst_array;
 
         runSettings.nowTimeStr = nowTimeStr;
         runSettings.variableFactors = variableFactorsInput;
-        
-        % Find information specifying pick and place timestamps
-        sequenceTime = findElementInStruct(segmentsOfInterest, currInstName);
-        sequenceTime.use = 1;
          
         if calculateNormalization
             strsplitStr = strsplit(currInstName, '_');
@@ -118,16 +89,19 @@ function main_batch(specStruct, run_mode, cost_function_names, outputString, var
         end
                         
         % load the data to know how much of the file needs parsing        
-        [param] = setup_main(filesToLoad, '', currFilestack, 'win', runSettings, [], [], sequenceTime); % always set up in 'win' mode not 'sim'
+        [param] = setup_main(filesToLoad, '', currFilestack, 'win', runSettings, [], []); % always set up in 'win' mode not 'sim'
                 
-        if (~isempty(fieldnames(sequenceTime)) && ~calculateNormalization) && sequenceTime.use
-            startLength = round(sequenceTime.start/2);
-            endLength = round(sequenceTime.end/2);
-        else      
-            startLength = round(length(param.t_full)/10)*10 - 30/param.dt_full + 1;
-            endLength = length(param.t_full);
-        end
+%         if (~isempty(fieldnames(sequenceTime)) && ~calculateNormalization) && sequenceTime.use
+%             startLength = round(sequenceTime.start/2);
+%             endLength = round(sequenceTime.end/2);
+%         else      
+%             startLength = round(length(param.t_full)/10)*10 - 30/param.dt_full + 1;
+%             endLength = length(param.t_full);
+%         end
         
+        startLength = 1;
+        endLength = length(param.t_full);
+
         switch run_mode
             case 'win'
                 ind = 0;
@@ -151,7 +125,7 @@ function main_batch(specStruct, run_mode, cost_function_names, outputString, var
                 indToUse_window(1, 2) = 1;
         end
         
-        try
+% % %         try
             windowCount = size(indToUse_window, 1);
             for ind_windowCount = 1:windowCount
                 currInstNameUse = [currInstName '_' num2str(indToUse_window(ind_windowCount, 1)) '_' num2str(indToUse_window(ind_windowCount, 2))];
@@ -159,21 +133,21 @@ function main_batch(specStruct, run_mode, cost_function_names, outputString, var
                 variableFactors.dataLoadLength = indToUse_window(ind_windowCount, 1):indToUse_window(ind_windowCount, 2);
                 runSettings.variableFactors = variableFactors;
                 
-                main(filesToLoad, '', outputPath, currInstNameUse, runSettings, currFilestack, run_mode, cost_function_names, sequenceTime);
+                main(filesToLoad, '', outputPath, currInstNameUse, runSettings, currFilestack, run_mode, cost_function_names);
             end
             
-        catch err
-            errMessageTmp = regexp(err.message,',','split'); % error messages with commas in it
-            errMessageFirstComma = errMessageTmp{1};
-            errMessage = [errMessageFirstComma ' - ' err.stack(1).file];
-            fprintf('Error START: [%s]\n', errMessage);
-            
-            for err_ind = 1:length(err.stack)
-%                             print the error messages to screen
-                err.stack(err_ind)
-            end
+% % %         catch err
+% % %             errMessageTmp = regexp(err.message,',','split'); % error messages with commas in it
+% % %             errMessageFirstComma = errMessageTmp{1};
+% % %             errMessage = [errMessageFirstComma ' - ' err.stack(1).file];
+% % %             fprintf('Error START: [%s]\n', errMessage);
 % % %             
-% % %             fprintf('Error END: [%s]\n', errMessage);
+% % %             for err_ind = 1:length(err.stack)
+% % % %                             print the error messages to screen
+% % %                 err.stack(err_ind)
+% % %             end
+% % % % % %             
+% % % % % %             fprintf('Error END: [%s]\n', errMessage);
+% % % % % %         end
 % % %         end
-        end
     end

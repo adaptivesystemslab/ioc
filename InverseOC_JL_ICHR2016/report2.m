@@ -1,7 +1,7 @@
 len_name = length(cost_function_names);
 len_ran = length(param.cost_functions_ioc);
 len_svd = length([output_inverse{ind_windowCount}(1).svd_s]);
-len_rmse = length(currRMSE_set(1).arrayName);
+% len_rmse = length(currRMSE_set(1).arrayName);
 len_lambda = size(lambda_array, 1);
 len_Jbreakdown = length(direct_check_flags{1}.J_breakdown.report);
 len_residual = length(output_inverse{ind_windowCount}(1).residual_lsqlin);
