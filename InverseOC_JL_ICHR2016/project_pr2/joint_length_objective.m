@@ -10,7 +10,7 @@ pos1 = q(:, index1);
 pos2 = dq(:, index2);
 
 % Compute the distance in joint space
-distance = sqrt((pos1(1)-pos2(1))^2 + (pos1(2)-pos2(2))^2 + (pos1(3)-pos2(3))^2);
+distance = sum((pos1 - pos2).^2);
 
 % Return the cost for the joint_length_objective
 cost = distance;

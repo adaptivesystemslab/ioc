@@ -28,4 +28,4 @@ pos2 = end_eff.t(1:3, 4);
 
 % Compute the cost for the task_length_objective
 displace = (pos1 - pos2);
-cost = norm(displace);
+cost = norm(displace.^2);
