@@ -391,12 +391,12 @@ set_ioc_check_struct.const_ddy = const_ddy;
 
 set_ioc_check_struct.dt_spline = mean(diff(feature_win.t));
 
-set_ioc_check_struct.spline_endcond_dx = spline_endcond_dx;
-set_ioc_check_struct.spline_endcond_dy = spline_endcond_dy;
-set_ioc_check_struct.spline_endcond_ddx = spline_endcond_ddx;
-set_ioc_check_struct.spline_endcond_ddy = spline_endcond_ddy;
-set_ioc_check_struct.spline_endcond_dddx = spline_endcond_dddx;
-set_ioc_check_struct.spline_endcond_dddy = spline_endcond_dddy;
+% set_ioc_check_struct.spline_endcond_dx = spline_endcond_dx;
+% set_ioc_check_struct.spline_endcond_dy = spline_endcond_dy;
+% set_ioc_check_struct.spline_endcond_ddx = spline_endcond_ddx;
+% set_ioc_check_struct.spline_endcond_ddy = spline_endcond_ddy;
+% set_ioc_check_struct.spline_endcond_dddx = spline_endcond_dddx;
+% set_ioc_check_struct.spline_endcond_dddy = spline_endcond_dddy;
 set_ioc_check_struct.intermed_ind_setArray = set_ioc_check_struct.intermed_ind_set + startTime - 1;
 
 set_ioc_check_struct

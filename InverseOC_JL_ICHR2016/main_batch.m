@@ -47,7 +47,8 @@ function main_batch(specStruct, run_mode, cost_function_names, outputString, var
     runSettings.verbose = 1;      % should we be verbose to the console or not?
     
     nowTimeStr = datestr(now, 'yyyymmdd_HHMMSS');
-    outputInstancePath = [nowTimeStr];
+%     outputInstancePath = [nowTimeStr];
+    outputInstancePath = [variableFactorsInput.outputPathSuffix '_' nowTimeStr];
     
 %     for ind_fileStack = (0*3+3):4:length(fileStackTemp) % number of jumps        
     for ind_fileStack = 1:length(fileStackTemp)

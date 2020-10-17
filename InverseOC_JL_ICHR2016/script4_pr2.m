@@ -1,23 +1,34 @@
-function [specStru  ct, variableFactors] = script3_testingSpec
+function [specStruct, variableFactors] = script3_testingSpec
 % set up base settings
 setting_costfunction = '8';
 setting_dataset = 'pr2';
 setting_iocvalidation = 'resnorm';
 setting_outputstring = 'test';
-setting_normalization = 'rang'; % rang rset none
+setting_normalization = 'none'; % rang rset none
 
 sourceDataMatFolder = 'D:/data/data_pr2';
 resultsDataFolder = 'D:/data/results_pr2';
 
 
 
-
+variableFactors.outputPathSuffix = [setting_normalization '_' setting_costfunction '_' 'cfSumSq'];
 
 docsim_gen_settings_20knots; % 10knots 20knots
 variableFactors.knots = 20; % 4 7 10 12 // 10 20
 cconst_array = [1 1 1 1 1 1];
 
 switch setting_costfunction
+    case '7'
+        cost_function_names{1} = 'half_joint_task';
+        cost_function_names{2} = 'joint_length';
+        cost_function_names{3} = 'manip_rot';
+        cost_function_names{4} = 'manip_trans';
+        cost_function_names{5} = 'manipulability'; %'';
+        cost_function_names{6} = 'orientation_length'; %
+        cost_function_names{7} = 'task_length'; %
+        
+        ccost_array{1} = [1 0 0 0 0 0 0 0];
+        
     case '8'
         cost_function_names{1} = 'half_joint_task';
         cost_function_names{2} = 'joint_length';
@@ -33,7 +44,7 @@ end
 
 variableFactors.outputString = setting_outputstring;
 variableFactors.win_length = 41; % 61 121 181 -- 101 201
-variableFactors.win_shift = 20;
+variableFactors.win_shift = 10;
 variableFactors.ioc_cf_q_constraint = 'startmid1endonknotbelow'; %  (fixed, variable, edge, startmidend, startmidmidend) where to set the consts? 3 points (fixed), global matching constraint (variable).
 
 variableFactors.generateSimOnly = 0;

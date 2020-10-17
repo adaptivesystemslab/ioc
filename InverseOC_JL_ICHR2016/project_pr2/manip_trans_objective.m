@@ -13,6 +13,7 @@ mdl.forwardPosition();
 mdl.forwardVelocity();
 mdl.forwardAcceleration();
 mdl.inverseDynamics();
+
 mdl.calculateJacobian();
 
 % Grab the top 3 rows (translational component)

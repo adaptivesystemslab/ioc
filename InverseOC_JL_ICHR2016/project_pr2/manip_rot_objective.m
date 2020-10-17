@@ -13,6 +13,7 @@ mdl.forwardPosition();
 mdl.forwardVelocity();
 mdl.forwardAcceleration();
 mdl.inverseDynamics();
+
 mdl.calculateJacobian();
 
 % Grab the lower 3 rows of the Jacobian (rotational component)

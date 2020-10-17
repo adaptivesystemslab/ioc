@@ -432,6 +432,11 @@ function J = cost_fct_calc_sq(feat, len)
 % 	J = sum(sum(abs(feat))) / len;
 end
 
+function J = cost_fct_abs_avg(feat, len)
+	J = mean(abs(feat)) / len;
+% 	J = sum(sum(abs(feat))) / len;
+end
+
 function J = cost_fct_calc_abs(feat, len)
 % 	J = sum(sum(feat .^ 2)) / len;
 	J = sum(sum(abs(feat))) / len;

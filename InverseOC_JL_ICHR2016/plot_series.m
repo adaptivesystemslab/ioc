@@ -46,3 +46,21 @@ saveas(h4, fullfile(outputPath, [currInstName '_q_all_' outputStr '.fig']));
 saveas(h4, fullfile(outputPath, [currInstName '_q_all_' outputStr '.png']));
 
 close all;
+
+% now also write the contents to file
+outputFileName = fullfile(outputPath, [currInstName '_n_' outputStr '.csv']);
+
+for i = 1:size(cost_function_names_sorted, 2)
+    headerC{i} = ['c_' cost_function_names_sorted{i}];
+    headerJ{i} = ['J_' cost_function_names_sorted{i}];
+end
+
+avgWeightArray_ioc(avgWeightArray_ioc < 1e-3) = 0;
+avgRatioArray_ioc(avgRatioArray_ioc < 1e-3) = 0;
+
+tableC = array2table(avgWeightArray_ioc, 'VariableNames', headerC);
+tableJ = array2table(avgRatioArray_ioc, 'VariableNames', headerJ);
+tableOut = [tableC tableJ];
+
+writetable(tableOut, outputFileName);
+
