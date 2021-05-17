@@ -7,6 +7,6 @@
 - Then make a copy of https://github.com/adaptivesystemslab/ioc/blob/master/Logic/ModelRL_Template.m and update this appropriately. It's mainly making sure the joint angle array are loaded properly, as well as any kinematic/dynamic models. 
 
 - To add new cost functions, you need to name it in `common\featuresEnum`. This name is what `trialInfo` is looking for. Then just add a corresponding entry in `featuresCalc`. If you look in `featuresCalc.initCf`, you will see that each enum has a set of basis fucntions (bf), and the actual cost function (cf) itself. The basis function is the fundamental feature required. So how to go from the model kinematics/dynamics to the cost function. It's listed here so it gets calculated at each iteration, to save computational effort. You can either just use a inline function (ie featuresEnums.cartVeloSumSqu), or write your own function if the cf calculation has a few steps (ie featuresEnums.cartCurvatureSumSqu)
-- The gradient should be calculated
+- The gradient should be calculated automatically, but you can see the results in `inverseIOC\IOCRun.m` line 76, where the cost function values (called features here) and the model dynamics are gradients are being calculated
 
 Once this is done, you should be able to run the function, and graph the outputs using `analysis\iocAnalysis00_plot_demo'
